@@ -7,7 +7,6 @@ from tqdm import tqdm
 
 from models.hetero_model import ConditionalGenerator, Classifier
 
-
 class Server:
     def __init__(self, args):
         self.args = args

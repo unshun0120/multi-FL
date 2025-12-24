@@ -8,7 +8,7 @@ from config import get_config
 from utils.seed import set_seed
 from utils.logger import Logger
 from data.datasets import load_partitioned_datasets
-from utils.utils import initialize_training_clients, record_plot_total_acc, record_round_acc, save_gen_model
+from utils.utils import initialize_training_clients, record_plot_total_acc, record_round_acc
 from server import Server
 from utils.plotting import plot_accuracy_curves
   
@@ -72,83 +72,42 @@ def main():
         acc = client.test()
         round_acc_dataset = record_round_acc(0, client, 0, acc, id_to_dataset, round_acc_dataset, logger)
 
-    history = record_plot_total_acc(0, round_acc_dataset, history, logger, args, "Ours")
+    history = record_plot_total_acc(0, round_acc_dataset, history, logger, args)
 
     # =========================================
-    # FL Loop
+    # Local-Only Loop
     # =========================================
     logger.log("\n" + "="*100)
-    logger.log("--- Start Federated Learning Loop ---")
+    logger.log("--- Start Local-Only Loop ---")
     logger.log("="*100)
 
     for rnd in range(args.global_rounds):
         round_start_time = time.time()
         logger.log(f"--- Round {rnd + 1} ---")
 
-        client_uploads = []
         round_acc_by_dataset = defaultdict(list)
 
         for client in tqdm(train_clients, desc="Local Training"):
             loss = client.local_train()
             acc = client.test()
 
-            payload = {
-                'client_id': client.client_id,
-                'class_names' : client.class_names,
-                'classifier_state_dict': client.model.classifier.state_dict()
-            }
-            client_uploads.append(payload)
-
             round_acc_dataset = record_round_acc(rnd+1, client, loss, acc, id_to_dataset, round_acc_dataset, logger)
 
-        history = record_plot_total_acc(rnd+1, round_acc_dataset, history, logger, args, mode="Ours")
+        history = record_plot_total_acc(rnd+1, round_acc_dataset, history, logger, args, mode="local_only")
 
-        # ----------------------------------------------
-        # server Aggregation
-        # ----------------------------------------------
-        print(f"[Server] Aggregating...")
-        server.aggregate_clients(client_uploads, logger)
-
-        # ----------------------------------------------
-        # server Generator & Classifier Training
-        # ----------------------------------------------
-        print("[Server] Training Generator...")
-        server.train_generator(logger)
-
-        print("[Server] Training Shared Classifier...")
-        server.train_global_shared_classifier(logger)
-        # ----------------------------------------------
-        # distribute generator to clients
-        # ---------------------------------------------- 
-        print("[Server] Distributing generator and update classifier...")
-        for client in train_clients:
-            # 根據這個client的類別名稱集合去server找對應的global classifier
-            global_clf_weight = server.get_global_classifier(client.class_names)
-            client.update_local_model(global_clf_weight)
- 
-        # save generator model
-        if args.save_model and rnd % args.save_model_epoch == 0 :
-            save_gen_model(args, rnd+1, logger)
-
-        plot_accuracy_curves(history, save_dir=logger.get_log_dir(), args=args)
+        plot_accuracy_curves(history, save_dir=logger.get_log_dir(), args=args, mode="local_only")
         round_end_time = time.time()
         round_duration = round_end_time - round_start_time
         print(f"> Round Time: {str(timedelta(seconds=int(round_duration)))}")
-
-    # save generator model
-    if args.no_save_model:
-        print("Skipping model saving.")
-    else:
-        save_gen_model(args, rnd+1, logger)
 
 if __name__ == "__main__": 
     total_start_time = time.time()
     args = get_config()
     set_seed(args.seed)
-    logger = Logger(args, mode='Ours')
+    logger = Logger(args, mode="local_only")
 
     # Start Messages
-    logger.log("=== Started ===") 
+    logger.log("=== Local-Only Baseline Started ===") 
     logger.log(f"{'='*100}")
 
     main()
@@ -157,6 +116,6 @@ if __name__ == "__main__":
     total_end_time = time.time()
     total_duration = total_end_time - total_start_time
     formatted_total_time = str(timedelta(seconds=int(total_duration)))
-    logger.log(f"=== Finished. Total Time: {formatted_total_time} ===")
+    logger.log(f"=== Baseline Finished. Total Time: {formatted_total_time} ===")
 
 

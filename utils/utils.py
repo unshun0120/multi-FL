@@ -46,7 +46,7 @@ def record_round_acc(rnd, client, loss, acc, id_to_dataset, round_acc_dataset, l
 
     return round_acc_dataset
 
-def record_plot_total_acc(rnd, round_acc_dataset, history, logger, args):
+def record_plot_total_acc(rnd, round_acc_dataset, history, logger, args, mode=""):
     log_msg_parts = []
     for d_name, acc_list in round_acc_dataset.items():
         avg = sum(acc_list) / len(acc_list)
@@ -59,13 +59,13 @@ def record_plot_total_acc(rnd, round_acc_dataset, history, logger, args):
         full_log_msg = f"Round {rnd} Train Acc | " + " | ".join(log_msg_parts)
     logger.log(full_log_msg)
 
-    if args.plot_log: 
-        plot_accuracy_curves(history, save_dir=logger.get_log_dir(), args=args)
+    if args.no_plot_log: 
+        plot_accuracy_curves(history, mode=mode, save_dir=logger.get_log_dir(), args=args)
 
     return history
 
 def initialize_training_clients(all_client_data_loaders, dataset_meta, model_list, args, data_root):
-    print("Initializing Clients...")
+    print("Initializing Training Clients...")
     train_clients = []  # 存所有訓練client object
     id_to_dataset = {}  # 存{client_id: dataset_name}的mapping, 用來統計每個資料集的準確率
     client_id_counter = 0   # FL架構下所有client的編號（所有資料集共用）
@@ -114,3 +114,36 @@ def initialize_training_clients(all_client_data_loaders, dataset_meta, model_lis
     print(f"Total Training Clients Initialized: {len(train_clients)}")
 
     return train_clients, id_to_dataset
+
+def initialize_new_clients(all_client_data_loaders, dataset_meta, model_list, args, data_root):
+    print("Initializing New Clients...")
+    new_clients = []
+    id_to_dataset = {}  
+    client_id_counter = 0   
+
+    for d_name, loaders_list in all_client_data_loaders.items():
+        d_meta = dataset_meta.get(d_name)
+        full_class_names = get_readable_class_names(d_name, data_root)
+        num_train_client = len(loaders_list) - args.num_new_clients
+
+        for idx, loader_dict in enumerate(loaders_list):
+            if idx >= num_train_client:
+                train_loader = loader_dict['train']
+                test_loader = loader_dict['test']
+
+                client = Client(
+                    client_id=client_id_counter,
+                    args=args,
+                    train_dataset=train_loader.dataset,
+                    test_dataset=test_loader.dataset,
+                    class_names=full_class_names
+                )
+
+                new_clients.append(client)
+                id_to_dataset[client_id_counter] = d_name
+
+            client_id_counter += 1
+
+    print(f"Total New Clients Initialized: {len(new_clients)}")
+
+    return new_clients, id_to_dataset

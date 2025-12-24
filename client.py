@@ -12,7 +12,8 @@ class Client:
         self.args = args
         self.train_dataset = train_dataset
         self.test_dataset = test_dataset
-        self.model = model.to(args.device)
+        if model is not None:
+            self.model = model.to(args.device)
         self.class_names = class_names 
         self.model_name = model_name
 

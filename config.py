@@ -2,13 +2,13 @@ import argparse
 
 def get_config():
     parser = argparse.ArgumentParser()
-
+ 
     # --- Basic setup ---
     parser.add_argument('--device', type=str, default='cuda', help='Device to use (cuda/cpu)')
     parser.add_argument('--seed', type=int, default=42, help='Random seed')
-    parser.add_argument('--write_log', action='store_true', help='logging and plotting to files')
-    parser.add_argument('--plot_log', action='store_true', help='logging and plotting to files')
-    parser.add_argument('--save_model', action='store_true', help='Whether to save the trained model checkpoints')
+    parser.add_argument('--no_write_log', action='store_true', help='logging and plotting to files')
+    parser.add_argument('--no_plot_log', action='store_true', help='logging and plotting to files')
+    parser.add_argument('--no_save_model', action='store_true', help='Whether to save the trained model checkpoints')
     parser.add_argument('--save_model_epoch', type=int, default=5, help='The frequency to save the trained model checkpoints')
 
 

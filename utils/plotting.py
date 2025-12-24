@@ -1,7 +1,7 @@
 import os
 import matplotlib.pyplot as plt
 
-def plot_accuracy_curves(history, save_dir, args, filename="accuracy_curve.png"):
+def plot_accuracy_curves(history, save_dir, args, mode=""):
     train_data = history.get('train_detail', {})
     if not train_data: return
 
@@ -26,6 +26,31 @@ def plot_accuracy_curves(history, save_dir, args, filename="accuracy_curve.png")
     plt.grid(True)
     plt.tight_layout()
     
-    save_path_train = os.path.join(save_dir, filename.replace('.png', '_train.png'))
-    plt.savefig(save_path_train)
+    filename = "accuracy_curve.png"
+    if mode == "Ours":
+        filename = "Ours" + filename
+    elif mode == "local_only":
+        filename = "local_only" + filename
+
+    plt.savefig(filename)
+    plt.close()
+
+def plot_new_client_accuracy(curves, save_dir, args, dataset_name, model_list):
+    if not os.path.exists(save_dir):
+        os.makedirs(save_dir)
+
+    plt.figure()
+
+    for arch_id, acc_list in curves.items():
+        name = model_list[arch_id]
+        plt.plot(range(len(acc_list)), acc_list, linewidth=1.0, label=name)
+
+    plt.xlabel("Epoch")
+    plt.ylabel("Accuracy (%)")
+    plt.title(f"Baseline: New Clients Training from Scratch (No Generator, Single dataset) - {dataset_name}")
+    plt.legend()
+    plt.grid(True, linestyle='--', alpha=0.3)
+
+    out_path = os.path.join(save_dir, f"{dataset_name}_scratch_single_dataset.png")
+    plt.savefig(out_path, bbox_inches="tight")
     plt.close()
