@@ -6,6 +6,7 @@ from collections import defaultdict
 from tqdm import tqdm
 
 from models.hetero_model import ConditionalGenerator, Classifier
+from utils.utils import get_ood_soft_label
 
 class Server:
     def __init__(self, args):
@@ -126,11 +127,20 @@ class Server:
 
                     # observer (logit distillation)
                     if (~mask_expert).any():
-                        # 取mask=false的算loss
-                        probs = F.log_softmax(logits[~mask_expert], dim=1)
-                        uniform_target = torch.full_like(probs, 1.0 / logits.size(1))
+                        ood_logits = logits[~mask_expert]
+                        ood_probs = F.log_softmax(ood_logits, dim=1)
                         
-                        loss_kl = F.kl_div(probs, uniform_target, reduction='batchmean')
+                        num_ood_samples = ood_logits.size(0)
+                        num_classes = ood_logits.size(1)
+
+                        random_targets = get_ood_soft_label(
+                            args=self.args,
+                            batch_size=num_ood_samples, 
+                            num_classes=num_classes, 
+                            threshold=self.args.ood_threshold
+                        )
+
+                        loss_kl = F.kl_div(ood_probs, random_targets, reduction='batchmean')
                         batch_loss_observer += loss_kl
 
                 # normalization

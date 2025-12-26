@@ -52,10 +52,6 @@ def main():
         9: 'SqueezeNet'
     }
 
-    # Initializing Server
-    print("Initializing Server...")
-    server = Server(args)
-
     # Initializing Client
     new_clients, id_to_dataset = initialize_new_clients(
         all_client_data_loaders, 

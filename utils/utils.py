@@ -1,10 +1,13 @@
 import os
 import torch
+import torch.nn.functional as F
 
 from data.datasets import get_readable_class_names
 from models.hetero_model import get_heterogeneous_model
 from client import Client
 from utils.plotting import plot_accuracy_curves
+
+
 
 def save_gen_model(self, args, rnd, logger):
     save_path = os.path.join(logger.get_log_dir(), 'checkpoint.pth')

@@ -3,13 +3,14 @@ import argparse
 def get_config():
     parser = argparse.ArgumentParser()
  
-    # --- Basic setup ---
+    # --- System setup ---
     parser.add_argument('--device', type=str, default='cuda', help='Device to use (cuda/cpu)')
     parser.add_argument('--seed', type=int, default=42, help='Random seed')
     parser.add_argument('--no_write_log', action='store_true', help='logging and plotting to files')
     parser.add_argument('--no_plot_log', action='store_true', help='logging and plotting to files')
     parser.add_argument('--no_save_model', action='store_true', help='Whether to save the trained model checkpoints')
     parser.add_argument('--save_model_epoch', type=int, default=5, help='The frequency to save the trained model checkpoints')
+    parser.add_argument('--model_path', type=str, default='saved_models/best_model.pth', help='Path to the trained model checkpoint')
 
 
     # --- Dataset ---
@@ -41,6 +42,7 @@ def get_config():
     parser.add_argument('--gen_lr', type=float, default=0.001, help='Learning rate of Generator')
     parser.add_argument('--server_gen_epochs', type=int, default=20, help='Generator training epochs per round')
     parser.add_argument("--gen_observer_weight", type=float, default=0.5, help='Weight for generator observer loss')
+    parser.add_argument("--ood_threshold", type=float, default=0.5, help='Threshold for generator teacher soft label')
 
 
 
