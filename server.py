@@ -6,7 +6,7 @@ from collections import defaultdict
 from tqdm import tqdm
 
 from models.hetero_model import ConditionalGenerator, Classifier
-from utils.utils import get_ood_soft_label
+from utils.train_utils import get_ood_soft_label
 
 class Server:
     def __init__(self, args):
