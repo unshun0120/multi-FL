@@ -42,9 +42,12 @@ def get_config():
     parser.add_argument('--gen_lr', type=float, default=0.001, help='Learning rate of Generator')
     parser.add_argument('--server_gen_epochs', type=int, default=20, help='Generator training epochs per round')
     parser.add_argument("--gen_observer_weight", type=float, default=0.5, help='Weight for generator observer loss')
-    parser.add_argument("--ood_threshold", type=float, default=0.5, help='Threshold for generator teacher soft label')
+    parser.add_argument("--ood_threshold", type=float, default=0.3, help='Threshold for generator teacher soft label')
 
-
+    # --- New Client ---
+    parser.add_argument('--new_client_epochs', type=int, default=10, help='Training epochs for new client')
+    parser.add_argument('--distill_weight', type=float, default=0.5, help='Weight for feature distillation loss')
+    parser.add_argument('--pred_lambda', type=float, default=0.5, help='Lambda for ensemble prediction: (1-lambda)*local + lambda*gen')
 
     args = parser.parse_args()
 

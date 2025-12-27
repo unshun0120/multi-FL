@@ -1,12 +1,39 @@
 import os
 import torch
 import torch.nn.functional as F
+from tqdm import tqdm
+from collections import defaultdict
 
 from data.datasets import get_readable_class_names
 from models.hetero_model import get_heterogeneous_model
 from client import Client
 from utils.plotting import plot_accuracy_curves
 
+def get_ood_soft_label(args, batch_size, num_classes, threshold, max_iter=1000):
+    device = args.device
+    
+    perfect_soft_label = torch.ones(num_classes, device=device) / num_classes
+
+    soft_labels = []
+    for _ in range(batch_size):
+        SL_found = False
+        for i in range(max_iter):
+            random_logits = torch.randn(num_classes, device=device)
+            random_soft_label = F.softmax(random_logits, dim=0)
+
+            kl_div = F.kl_div(perfect_soft_label.log(), random_soft_label, reduction='sum')
+            
+            if kl_div.item() <= threshold:
+                soft_labels.append(random_soft_label)
+                SL_found = True
+                break
+        
+        if not SL_found:
+            soft_labels.append(perfect_soft_label)
+    
+    soft_labels = torch.stack(soft_labels, dim=0)
+    
+    return soft_labels
 
 
 def save_gen_model(self, args, rnd, logger):
@@ -39,17 +66,54 @@ def save_gen_model(self, args, rnd, logger):
     torch.save(checkpoint, save_path)
     print(f"[Server] Models saved to {save_path}")
 
+
+def distribute_to_clients(server, clients):
+    print("[Server] Distributing generator and update classifier...")
+    for client in clients:
+        global_clf_weight = server.get_global_classifier(client.class_names)
+        client.update_local_model(global_clf_weight)
+
+
+def server_update(server, client_uploads, logger):
+    print(f"[Server] Aggregating...")
+    server.aggregate_clients(client_uploads, logger)
+
+    print("[Server] Training Generator...")
+    server.train_generator(logger)
+
+    print("[Server] Training Shared Classifier...")
+    server.train_global_shared_classifier(logger)
+
+
+def client_local_training(clients, id_to_dataset, round_acc, rnd, logger):
+    client_uploads = []
+    
+    for client in tqdm(clients, desc="Local Training"):
+        loss = client.local_train()
+        acc = client.test()
+
+        # 給server的東西
+        payload = {
+            'client_id': client.client_id,
+            'class_names': client.class_names,
+            'classifier_state_dict': client.model.classifier.state_dict()
+        }
+        client_uploads.append(payload)
+
+        round_acc = record_round_acc(rnd, client, loss, acc, id_to_dataset, round_acc, logger)
+
+    return client_uploads, round_acc
+
+
 def record_round_acc(rnd, client, loss, acc, id_to_dataset, round_acc_dataset, logger): 
     d_name = id_to_dataset[client.client_id]
     round_acc_dataset[d_name].append(acc)
-    if rnd == 0: 
-        logger.log(f"Round 0 | Client {client.client_id} | Acc: {acc:.2f}%", print_to_console=False)
-    else:
-        logger.log(f"Round {rnd} | Client {client.client_id} | Model: ({client.model_name}) | Loss: {loss:.4f} | Acc: {acc:.2f}%")
+    logger.log(f"Round {rnd} | Client {client.client_id} | Model: ({client.model_name}) | Loss: {loss:.4f} | Acc: {acc:.2f}%")
 
     return round_acc_dataset
 
-def record_plot_total_acc(rnd, round_acc_dataset, history, logger, args, mode=""):
+
+def final_round_acc(rnd, round_acc_dataset, history, logger, args, mode=""):
     log_msg_parts = []
     for d_name, acc_list in round_acc_dataset.items():
         avg = sum(acc_list) / len(acc_list)
@@ -66,6 +130,16 @@ def record_plot_total_acc(rnd, round_acc_dataset, history, logger, args, mode=""
         plot_accuracy_curves(history, mode=mode, save_dir=logger.get_log_dir(), args=args)
 
     return history
+
+
+def initial_evaluation(clients, id_to_dataset, logger):
+    round_acc = defaultdict(list)
+    for client in tqdm(clients, desc="Initial Testing", ncols=100):
+        acc = client.test()
+        round_acc = record_round_acc(0, client, 0, acc, id_to_dataset, round_acc, logger)
+    
+    return round_acc
+
 
 def initialize_training_clients(all_client_data_loaders, dataset_meta, model_list, args, data_root):
     print("Initializing Training Clients...")
@@ -117,36 +191,3 @@ def initialize_training_clients(all_client_data_loaders, dataset_meta, model_lis
     print(f"Total Training Clients Initialized: {len(train_clients)}")
 
     return train_clients, id_to_dataset
-
-def initialize_new_clients(all_client_data_loaders, dataset_meta, model_list, args, data_root):
-    print("Initializing New Clients...")
-    new_clients = []
-    id_to_dataset = {}  
-    client_id_counter = 0   
-
-    for d_name, loaders_list in all_client_data_loaders.items():
-        d_meta = dataset_meta.get(d_name)
-        full_class_names = get_readable_class_names(d_name, data_root)
-        num_train_client = len(loaders_list) - args.num_new_clients
-
-        for idx, loader_dict in enumerate(loaders_list):
-            if idx >= num_train_client:
-                train_loader = loader_dict['train']
-                test_loader = loader_dict['test']
-
-                client = Client(
-                    client_id=client_id_counter,
-                    args=args,
-                    train_dataset=train_loader.dataset,
-                    test_dataset=test_loader.dataset,
-                    class_names=full_class_names
-                )
-
-                new_clients.append(client)
-                id_to_dataset[client_id_counter] = d_name
-
-            client_id_counter += 1
-
-    print(f"Total New Clients Initialized: {len(new_clients)}")
-
-    return new_clients, id_to_dataset
