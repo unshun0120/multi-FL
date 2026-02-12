@@ -2,6 +2,7 @@ import torch
 import torch.nn as nn
 import torch.nn.functional as F
 import torchvision.models as models
+import copy
 
 # ==========================================
 # Global Classifier
@@ -374,12 +375,206 @@ class SqueezeNet(BaseHeteroModel):
         
         self.classifier = nn.Linear(global_dim, num_classes)
 
+
+# ==========================================
+# Twin Branch Nets (for FedTED baseline)
+# ==========================================
+
+class TwinBranchNets(nn.Module):
+    def __init__(self, base_model: BaseHeteroModel):
+        super().__init__()
+        self.feature_extractor = base_model.feature_extractor
+        self.adapter = base_model.adapter
+        self.classifier = base_model.classifier  # generic branch
+        self.twin_classifier = copy.deepcopy(base_model.classifier)  # personalized branch
+        self.output_dim = base_model.output_dim
+        self.use_twin = False
+    
+    def forward(self, x):
+        native_feat = self.feature_extractor(x)
+        native_feat = torch.flatten(native_feat, 1)
+        global_feat = self.adapter(native_feat)
+        
+        if self.use_twin:
+            logits = self.classifier(global_feat) + self.twin_classifier(global_feat)
+        else:
+            logits = self.classifier(global_feat)
+        
+        return global_feat, logits
+
+
+def get_twin_branch_model(client_id, in_channels, num_classes, img_size, global_dim=256):
+    base_model = get_heterogeneous_model(client_id, in_channels, num_classes, img_size, global_dim)
+    return TwinBranchNets(base_model)   
+
+
+# ==========================================
+# 4. UDON Components (for UDON baseline)
+# ==========================================
+
+
+class CosineClassifier(nn.Module):
+    """Cosine similarity classifier (normalized weights, no bias)"""
+    def __init__(self, input_dim, num_classes):
+        super().__init__()
+        self.weight = nn.Parameter(torch.empty(num_classes, input_dim))
+        nn.init.xavier_uniform_(self.weight)
+    
+    def forward(self, x):
+        # L2 normalize weights and input
+        weight_norm = F.normalize(self.weight, p=2, dim=1)
+        x_norm = F.normalize(x, p=2, dim=1)
+        logits = F.linear(x_norm, weight_norm)
+        return logits
+
+
+class UDONModel(nn.Module):
+    def __init__(self, backbone, feature_dim, num_classes, 
+                 student_dim=[64], teacher_dim=[256]):
+        super(UDONModel, self).__init__()
+        
+        # 1. Backbone (Shared)
+        self.backbone = backbone
+        self.feature_dim = feature_dim
+        
+        # 2. Universal Student Projection (Shared in FL)
+        # Corresponds to 'universal_student_projection_domain_0'
+        # Output dim is usually the last element of the list
+        self.universal_projection = MLP(feature_dim, student_dim[:-1], student_dim[-1])
+        
+        # 3. Teacher Projection (Private/Local in FL)
+        # Corresponds to 'teacher_projection_domain_{domain}'
+        self.teacher_projection = MLP(feature_dim, teacher_dim[:-1], teacher_dim[-1])
+        
+        # 4. Classifiers (Private/Local in FL)
+        # UDON uses separate classifiers per domain
+        # Universal Student Head
+        self.student_classifier = CosineClassifier(student_dim[-1], num_classes)
+        # Teacher Head
+        self.teacher_classifier = CosineClassifier(teacher_dim[-1], num_classes)
+
+    def forward(self, x, train=True):
+        outputs = {}
+        
+        # Backbone features
+        backbone_feats = self.backbone(x)
+        # Flatten if needed (assuming backbone output is [B, C, H, W] or similar)
+        if len(backbone_feats.shape) > 2:
+            backbone_feats = backbone_feats.view(backbone_feats.size(0), -1)
+            
+        # L2 Normalize backbone features (as per Flax code)
+        backbone_feats = F.normalize(backbone_feats, p=2, dim=1)
+        
+        outputs['backbone_out'] = backbone_feats
+        
+        # --- Teacher Branch ---
+        teacher_embedd = self.teacher_projection(backbone_feats)
+        teacher_embedd = F.normalize(teacher_embedd, p=2, dim=1)
+        outputs['teacher_embedd'] = teacher_embedd
+        
+        teacher_logits = self.teacher_classifier(teacher_embedd, normalize_input=False) # already normalized
+        outputs['teacher_logits'] = teacher_logits
+        
+        # --- Universal Student Branch ---
+        student_embedd = self.universal_projection(backbone_feats)
+        student_embedd = F.normalize(student_embedd, p=2, dim=1)
+        outputs['universal_student_embedd'] = student_embedd
+        
+        student_logits = self.student_classifier(student_embedd, normalize_input=False)
+        outputs['universal_student_logits'] = student_logits
+        
+        return outputs
+
+
+class CCVAE(nn.Module):
+    def __init__(self, num_classes=10, latent_size=16, img_size=32, channels=3, **kwargs):
+        super(CCVAE, self).__init__()
+        self.num_classes = num_classes
+        self.latent_size = latent_size
+        self.img_size = img_size
+        self.channels = channels
+        
+        # Encoder
+        self.conv1 = nn.Conv2d(channels + 1, 64, kernel_size=4, stride=2, padding=1)
+        self.bn1 = nn.BatchNorm2d(64)
+        self.conv2 = nn.Conv2d(64, 128, kernel_size=4, stride=2, padding=1)
+        self.bn2 = nn.BatchNorm2d(128)
+        self.conv3 = nn.Conv2d(128, 256, kernel_size=4, stride=2, padding=1)
+        self.bn3 = nn.BatchNorm2d(256)
+        
+        # Calculate Flatten Size
+        self.flat_size = 256 * (img_size // 8) * (img_size // 8) 
+        
+        self.mu = nn.Linear(self.flat_size, latent_size)
+        self.logvar = nn.Linear(self.flat_size, latent_size)
+
+        # Decoder
+        self.linear = nn.Linear(latent_size + num_classes, self.flat_size)
+        self.convT1 = nn.ConvTranspose2d(256, 128, kernel_size=4, stride=2, padding=1)
+        self.bnT1 = nn.BatchNorm2d(128)
+        self.convT2 = nn.ConvTranspose2d(128, 64, kernel_size=4, stride=2, padding=1)
+        self.bnT2 = nn.BatchNorm2d(64)
+        self.convT3 = nn.ConvTranspose2d(64, channels, kernel_size=4, stride=2, padding=1)
+
+    def encode(self, x, y):
+        # Conditioning on label
+        y_cond = y.argmax(dim=1).view(-1, 1, 1, 1).to(x.device)
+        y_cond = torch.ones(x.size(0), 1, x.size(2), x.size(3)).to(x.device) * y_cond
+        
+        x = torch.cat([x, y_cond], dim=1)
+        
+        x = F.relu(self.bn1(self.conv1(x)))
+        x = F.relu(self.bn2(self.conv2(x)))
+        x = F.relu(self.bn3(self.conv3(x)))
+        x = x.view(x.size(0), -1)
+        
+        return self.mu(x), self.logvar(x)
+
+    def reparameterize(self, mu, logvar):
+        std = torch.exp(0.5 * logvar)
+        eps = torch.randn_like(std)
+        return mu + eps * std
+
+    def decode(self, z):
+        x = F.relu(self.linear(z))
+        x = x.view(x.size(0), 256, self.img_size // 8, self.img_size // 8)
+        
+        x = F.relu(self.bnT1(self.convT1(x)))
+        x = F.relu(self.bnT2(self.convT2(x)))
+        x = torch.tanh(self.convT3(x)) # Output range [-1, 1]
+        return x
+
+    def forward(self, x, y):
+        mu, logvar = self.encode(x, y)
+        z = self.reparameterize(mu, logvar)
+        
+        # Concat label info for decoder
+        z = torch.cat([z, y.float()], dim=1)
+        recon_x = self.decode(z)
+        return recon_x, mu, logvar
+
+    def sample(self, num_samples, labels=None, device='cuda'):
+        with torch.no_grad():
+            z = torch.randn(num_samples, self.latent_size).to(device)
+            if labels is None:
+                labels = torch.randint(0, self.num_classes, (num_samples,), device=device)
+            
+            y_onehot = F.one_hot(labels, self.num_classes).float().to(device)
+            z = torch.cat([z, y_onehot], dim=1)
+            return self.decode(z), labels
+
+def vae_loss(recon_x, x, mu, logvar, beta=1.0):
+    recon_loss = F.mse_loss(recon_x, x, reduction='sum') / x.size(0)
+    kl_loss = -0.5 * torch.sum(1 + logvar - mu.pow(2) - logvar.exp()) / x.size(0)
+    return recon_loss + beta * kl_loss, recon_loss, kl_loss
+
+
 # ==========================================
 # 3. Factory Function
 # 用 client_id % 10 決定這個 client 用哪一種 backbone → Model Heterogeneity
 # ==========================================
-def get_heterogeneous_model(client_id, in_channels, num_classes, img_size, global_dim=256):
-    model_idx = client_id % 10
+def get_heterogeneous_model(node_id, in_channels, num_classes, img_size, global_dim=256):
+    model_idx = node_id % 10
     
     # MLP 需要 img_size 來決定第一層輸入
     if model_idx == 0: return MLP(in_channels, num_classes, img_size, global_dim)

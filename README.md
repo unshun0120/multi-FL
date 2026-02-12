@@ -3,12 +3,12 @@
 
 ### download datasets
 ```
-python utils/prepare_dataset.py
+python data/prepare_dataset.py
 ```
 
-### download datasets
+### experiment run
 ```
-python main.py --dirichlet_alpha=0.1
+python main.py --seed=15698 --dirichlet_alpha=0.1 
 ```
 
 ```

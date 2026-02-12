@@ -45,12 +45,11 @@ def partition_data(train_labels, test_labels, alpha, total_clients, num_new_clie
         # New Client
         # ---------------------------------------------
         if num_new_clients > 0:
-            # 平分
             train_splits_iid = np.array_split(train_idx_iid, num_new_clients)
             test_splits_iid = np.array_split(test_idx_iid, num_new_clients)
             
             for i in range(num_new_clients):
-                # new client id 給最後一個訓練 client id+1
+                # new client id = last training client id+1
                 cid = num_train_clients + i 
                 train_client_idcs[cid] += train_splits_iid[i].tolist()
                 test_client_idcs[cid] += test_splits_iid[i].tolist()

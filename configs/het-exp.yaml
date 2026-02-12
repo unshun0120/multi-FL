@@ -1,0 +1,52 @@
+# All algorithm in the same experiment use same confing file
+# 1. Settings
+exp_name: "model-heterogeneity" # name of experiment
+heterogeneous: True
+
+# 2. Basic args for FedAvg
+dirichlet_alpha: 0.1
+global_rounds: 2 # communication rounds
+local_epochs: 1 # epochs of local update
+loss: 'CrossEntropyLoss' # loss fn name in torch.nn.*
+optim: 'Adam'  # optimizer name in torch.optim.*, e.g. Adam, SGD
+optim_kwargs: # args for optimizer
+  lr: 1e-3 # learning rate of local update
+batch_size: 64 # batch_size of local update
+sample_frac: 1.0 # select fraction of clients
+test_interval: 1
+metric_type: 'accuracy'
+new_client_epochs : 50 # epochs for new joined clients
+global_feature_dim : 256 # = generator feature dimension = classifier input dimension 
+global_model_arch: 'ResNet18' # global model architecture, e.g. resnet18, resnet34, resnet50
+
+
+# 3. Optional args for FL algorithms
+
+# ----3.0 Args for Generator (including Ours-1, Ours-2, FedTED)
+global_feat_gen_epochs : 10
+local_gen_epochs : 1  # epochs for local generator update
+feat_gen_noise_dim : 128 # dimension of noise input for feature-generator
+feat_gen_optim : 'Adam' # optimizer name for feature-generator in torch.optim.*, e.g. Adam, SGD
+feat_gen_optim_lr: 1e-3 # learning rate of feature-generator optimizer
+
+
+# ----3.1 Args for Ours
+shared_cls_epochs : 5 # epochs for shared classifier on server
+shared_cls_optim : 'Adam' # optimizer name for shared classifier in torch.optim.*, e.g. Adam, SGD
+shared_cls_optim_lr: 1e-3 # learning rate of shared classifier optimizer
+
+feat_gen_observer_weight: 1.0 # weight for feature-generator observer loss
+num_local_feat_gen_noise: 10 # number of noise samples for local feature-generator update
+local_relation_weight: 1.0 # weight for local relation distillation loss
+
+
+# ----3.2 Args for FedTED
+
+distill_lr: 1e-5  # lr for distillation
+distill_epochs: 1 # epochs for distillation
+distill_temperature: 20 # temperature for distillation
+rebuild_generic_model_epochs: 15
+gen_div_beta: 1.0  # weight for feature-generator diversity loss
+
+
+# ----3.2 Args for UDON

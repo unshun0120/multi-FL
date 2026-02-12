@@ -1,52 +1,26 @@
 import os
 import json
+import torch
 import numpy as np
 from collections import Counter
 from torchvision import datasets, transforms
-from torch.utils.data import DataLoader, Subset
+from torch.utils.data import Dataset, ConcatDataset, DataLoader, Subset
 from data.dirichlet_noniid import partition_data
 
-CIFAR100_SUPER_NAMES = [
-    "aquatic_mammals",
-    "fish",
-    "flowers",
-    "food_containers",
-    "fruit_and_vegetables",
-    "household_electrical_devices",
-    "household_furniture",
-    "insects",
-    "large_carnivores",
-    "large_man_made_outdoor_things",
-    "large_natural_outdoor_scenes",
-    "large_omnivores_and_herbivores",
-    "medium_mammals",
-    "non_insect_invertebrates",
-    "people",
-    "reptiles",
-    "small_mammals",
-    "trees",
-    "vehicles_1",
-    "vehicles_2"
-]
+class Global_Dataset(Dataset):
+    def __init__(self, dataset, mapping):
+        self.dataset = dataset
+        self.mapping = mapping
 
-FINE_TO_COARSE = [
-    4,  1, 14,  8,  0,  6,  7,  7, 18,  3,  
-    3, 14,  9, 18,  7, 11,  3,  9,  7, 11,
-    6, 11,  5, 10,  7,  6, 13, 15,  3, 15, 
-    0, 11,  1, 10, 12, 14, 16,  9, 11,  5, 
-    5, 19,  8,  8, 15, 13, 14, 17, 18, 10, 
-    16, 4, 17,  4,  2,  0, 17,  4, 18, 17, 
-    10, 3,  2, 12, 12, 16, 12,  1,  9, 19, 
-    2, 10,  0,  1, 16, 12,  9, 13, 15, 13, 
-    16, 19,  2,  4,  6, 19,  5,  5,  8, 19, 
-    18, 1,  2, 15,  6,  0, 17,  8, 14, 13
-]
+    def __len__(self):
+        return len(self.dataset)
+
+    def __getitem__(self, idx):
+        img, local_label = self.dataset[idx]
+        global_label = self.mapping[int(local_label)]
+        return img, global_label
 
 def get_split_cache_path(DATA_ROOT, dataset_name, alpha, total_clients, num_new_clients, seed):
-    """
-    回傳某個(dataset, alpha, client 數, new_client 數, seed)對應的split檔案路徑
-    只要參數一樣就會用同一個non-iid切的檔案
-    """
     cache_dir = os.path.join(DATA_ROOT, "splits")
     os.makedirs(cache_dir, exist_ok=True)
 
@@ -73,10 +47,6 @@ def get_label_counts(dataset, indices, mapping=None):
     
     subset_labels = all_labels[indices]
 
-    # cifar100 從 sub-class 轉成 super-class
-    if mapping is not None:
-        subset_labels = np.array([mapping[y] for y in subset_labels])
-
     counter = Counter(subset_labels)
     
     return ", ".join([f"{k}:{v}" for k, v in sorted(counter.items())])
@@ -87,11 +57,13 @@ def get_label_counts(dataset, indices, mapping=None):
 def get_transforms(name):
     if name in ['MNIST', 'EMNIST', 'FashionMNIST']:
         return transforms.Compose([
+            transforms.Resize((32, 32)),                 
+            transforms.Grayscale(num_output_channels=3), 
             transforms.ToTensor(),
             transforms.Normalize((0.5,), (0.5,))
         ])
     
-    elif name in ['CIFAR10', 'CIFAR100', 'CIFAR100_SUPER']:
+    elif name in ['CIFAR10', 'CIFAR100']:
         return transforms.Compose([
             transforms.ToTensor(),
             transforms.Normalize((0.5, 0.5, 0.5), (0.5, 0.5, 0.5))
@@ -102,7 +74,7 @@ def get_transforms(name):
 # ==========================================
 # Reading Raw Datasets
 # ==========================================
-def get_raw_dataset(name, root, train=True):
+def get_raw_dataset_transform(name, root, train=True):
     transform = get_transforms(name)
     
     if name == 'MNIST':
@@ -119,10 +91,7 @@ def get_raw_dataset(name, root, train=True):
     
     elif name == 'CIFAR100':
         return datasets.CIFAR100(root, train=train, download=False, transform=transform)
-    
-    elif name == 'CIFAR100_SUPER':
-        return datasets.CIFAR100(root, train=train, download=False, transform=transform, target_transform=lambda y: FINE_TO_COARSE[y]
-)
+
     
 # ==========================================
 # Get Readable Class Names
@@ -142,48 +111,65 @@ def get_readable_class_names(name, root='./data/raw'):
         # CIFAR10 in-build classes: ['airplane', 'automobile', 'bird', ...]
         d = datasets.CIFAR10(root, train=True, download=False)
         return d.classes
-        
+    
     elif name == 'CIFAR100':
         # CIFAR100 in-build classes: ['apple', 'aquarium_fish', ...]
         d = datasets.CIFAR100(root, train=True, download=False)
-        return d.classes
-    
-    elif name == 'CIFAR100_SUPER':
-        return CIFAR100_SUPER_NAMES
+        return d.classes        
 
 # ==========================================
 # Loading Datasets
 # ==========================================
-def load_partitioned_datasets(args, DATA_ROOT):
+def load_partitioned_datasets(args, DATA_ROOT, **kwargs):
     dataset_configs = {
-        'MNIST': args.num_mnist,
-        'FashionMNIST': args.num_fashionmnist,
-        'EMNIST': args.num_emnist,
-        'CIFAR10': args.num_cifar10,
-        'CIFAR100': args.num_cifar100,
-        'CIFAR100_SUPER': args.num_cifar100_super
+        'MNIST': args.num_train_mnist + args.num_new_clients,
+        'FashionMNIST': args.num_train_fashionmnist + args.num_new_clients,
+        'EMNIST': args.num_train_emnist + args.num_new_clients,
+        'CIFAR10': args.num_train_cifar10 + args.num_new_clients,
+        'CIFAR100': args.num_train_cifar100 + args.num_new_clients
     }
+    batch_size = kwargs.get('batch_size', 64)
+    dirichlet_alpha = kwargs.get('dirichlet_alpha', 0.1)
 
     all_client_data_loaders = {}
+    
+    global_id_map = {}
+    global_registry = {}  
+    next_global_id = 0    
+    super_dataset_train_list = [] 
+    super_dataset_test_list = []
 
     print(f"{'='*100}")
-    print(f"Loading Datasets with Non-IID Split (Dirichlet distribution, Alpha={args.dirichlet_alpha})")
+    print(f"Loading Datasets with Non-IID Split (Dirichlet distribution, Alpha={dirichlet_alpha})")
     print(f"{'='*100}")
 
-    # 把資料集分給 client
     for d_name, n_clients in dataset_configs.items():
         if n_clients == 0:
             continue
-
-        print(f"\n>>> Processing {d_name} ({n_clients} Clients)...")
-
-        # --- Readable Class Names (e.g. dog, cat ...)---
+        
+        # --- Readable Class Names (e.g. dog, cat ...) ---
         class_names = get_readable_class_names(d_name, root=DATA_ROOT)
         print(f"[-] Readable Class Names ({len(class_names)} classes): {class_names}\n")
 
+        current_dataset_map = {}
+
+        for local_id, class_name in enumerate(class_names):
+            if class_name in global_registry:
+                gid = global_registry[class_name]
+            else:
+                gid = next_global_id
+                global_registry[class_name] = gid
+                next_global_id += 1
+            
+            current_dataset_map[local_id] = gid
+
+        global_id_map[d_name] = current_dataset_map
+
+        print(f"\n>>> Processing {d_name} ({n_clients} Clients)")   
+
         # Getting Datasets
-        train_dataset = get_raw_dataset(d_name, DATA_ROOT, train=True)
-        test_dataset = get_raw_dataset(d_name, DATA_ROOT, train=False)
+        train_dataset = get_raw_dataset_transform(d_name, DATA_ROOT, train=True)
+        test_dataset = get_raw_dataset_transform(d_name, DATA_ROOT, train=False)
 
         # Getting Labels
         # 拿這個 dataset 底下每一筆資料的 label
@@ -204,19 +190,15 @@ def load_partitioned_datasets(args, DATA_ROOT):
             test_labels = []
             for path, label in test_dataset.samples:
                 test_labels.append(label)
-
-        if d_name == 'CIFAR100_SUPER':
-            train_labels_for_split = [FINE_TO_COARSE[y] for y in train_labels]
-            test_labels_for_split  = [FINE_TO_COARSE[y] for y in test_labels]
-        else:
-            train_labels_for_split = train_labels
-            test_labels_for_split  = test_labels
+                
+        train_labels_for_split = train_labels
+        test_labels_for_split  = test_labels
 
         # Dirichlet Non-IID Partition
         cache_path = get_split_cache_path(
             DATA_ROOT,
             d_name,
-            args.dirichlet_alpha,
+            dirichlet_alpha,
             n_clients,
             args.num_new_clients,
             args.seed 
@@ -234,7 +216,7 @@ def load_partitioned_datasets(args, DATA_ROOT):
             train_idcs, test_idcs = partition_data(
                 train_labels_for_split, 
                 test_labels_for_split, 
-                alpha=args.dirichlet_alpha, 
+                alpha=dirichlet_alpha, 
                 total_clients=n_clients, 
                 num_new_clients=args.num_new_clients
             )
@@ -244,7 +226,7 @@ def load_partitioned_datasets(args, DATA_ROOT):
                 "test": test_idcs,
                 "meta": {
                     "dataset": d_name,
-                    "alpha": args.dirichlet_alpha,
+                    "alpha": dirichlet_alpha,
                     "total_clients": n_clients,
                     "num_new_clients": args.num_new_clients,
                     "seed": args.seed,
@@ -265,22 +247,16 @@ def load_partitioned_datasets(args, DATA_ROOT):
 
             train_cnt = len(train_subset)
             test_cnt = len(test_subset)
-
-            if d_name == 'CIFAR100_SUPER':
-                # super-class 0~19
-                train_info_str = get_label_counts(train_dataset, train_idcs[i], mapping=FINE_TO_COARSE)
-                test_info_str  = get_label_counts(test_dataset,  test_idcs[i], mapping=FINE_TO_COARSE)
-            else:
-                train_info_str = get_label_counts(train_dataset, train_idcs[i])
-                test_info_str  = get_label_counts(test_dataset,  test_idcs[i])
+            train_info_str = get_label_counts(train_dataset, train_idcs[i])
+            test_info_str  = get_label_counts(test_dataset,  test_idcs[i])
 
 
             print(f"{i:<6} | {train_cnt:<6} | {test_cnt:<6} | Train: [{train_info_str}]")
             print(f"{'':<6} | {'':<6} | {'':<6} | Test : [{test_info_str}]")
             print("-" * 60) 
             
-            train_loader = DataLoader(train_subset, batch_size=args.batch_size, shuffle=True, num_workers=0)
-            test_loader = DataLoader(test_subset, batch_size=args.batch_size, shuffle=False, num_workers=0)
+            train_loader = DataLoader(train_subset, batch_size=batch_size, shuffle=True, num_workers=0)
+            test_loader = DataLoader(test_subset, batch_size=batch_size, shuffle=False, num_workers=0)
             
             client_loaders.append({
                 'train': train_loader,
@@ -289,7 +265,30 @@ def load_partitioned_datasets(args, DATA_ROOT):
 
         all_client_data_loaders[d_name] = client_loaders
 
+        global_train_ds = Global_Dataset(train_dataset, mapping=current_dataset_map)
+        global_test_ds = Global_Dataset(test_dataset, mapping=current_dataset_map)
+        
+        super_dataset_train_list.append(global_train_ds)
+        super_dataset_test_list.append(global_test_ds)
+
     print(f"{'='*100}\n")
 
-    return all_client_data_loaders
+    super_train_dataset = ConcatDataset(super_dataset_train_list)
+    super_test_dataset = ConcatDataset(super_dataset_test_list)
+
+    server_train_loader = DataLoader(
+        super_train_dataset, 
+        batch_size=batch_size, 
+        shuffle=True, 
+        num_workers=0
+    )
+
+    server_test_loader = DataLoader(
+        super_test_dataset, 
+        batch_size=batch_size, 
+        shuffle=False, 
+        num_workers=0
+    )
+
+    return all_client_data_loaders, global_id_map, global_registry, server_train_loader, server_test_loader
 
