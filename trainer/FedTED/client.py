@@ -1,6 +1,7 @@
 import copy
 import numpy as np
 import torch
+import torch.nn as nn
 from torch.optim import *
 import torch.nn.functional as F
 
@@ -8,49 +9,42 @@ from utils.train_utils import train_model, freeze, unfreeze
 from utils.nets import TwinBranchNets, ConditionalGenerator
 from trainer.BaseFL.client import Client as BaseClient
 
-
 class Client(BaseClient):
     def __init__(self, fedted_lambda1=1.0, fedted_lambda2=1.0, **kwargs):
         super(Client, self).__init__(**kwargs)
 
-        # flag for work mode, will be set by server
-        self.mode = 'all'
         self.lambda1, self.lambda2 = fedted_lambda1, fedted_lambda2
 
-        # validation the model
-        assert isinstance(self.model, TwinBranchNets), \
-            "FedTED model in format of [feature_extractor, classifier]. Now, only TwinBranchNets is ok."
+        self.optim_name =  kwargs.get('optim', 'Adam')
+        self.optim_lr = kwargs.get('optim_lr', 1e-3)
+
+        self.distill_lr = kwargs.get('distill_lr', 1e-3)
+        self.distill_optimizer = eval(self.optim_name)(
+            list(self.model.feature_extractor.parameters()) + list(self.model.adapter.parameters()),
+            self.distill_lr)
 
         # optimizer for feature_extractor
-        self.optimizer_fe = eval(self.opt_name)(
+        self.optimizer_fe = eval(self.optim_name)(
             filter(lambda p: p.requires_grad, self.model.feature_extractor.parameters()),
-            **self.optim_kwargs)
-
+            self.optim_lr)
+        
         # optimizer for classifiers
         unfreeze(self.model)
         freeze(self.model.feature_extractor)
-        self.optimizer_cls = eval(self.opt_name)(
+        self.optimizer_cls = eval(self.optim_name)(
             filter(lambda p: p.requires_grad, self.model.parameters()), 
-            **self.optim_kwargs)
+            self.optim_lr)
         unfreeze(self.model)
 
-        # distill optimizer and params
-        self.distill_lr = kwargs.get('distill_lr', 1e-5)
-        self.distill_optimizer = eval(self.opt_name)(
-            self.model.feature_extractor.parameters(), self.distill_lr)
-
-        self.distill_epochs = kwargs.get('distill_epochs', 1)
-
+        self.global_feat_gen = None
         self.feat_gen_noise_dim = kwargs.get('feat_gen_noise_dim', 128) 
 
-        self.global_feature_gen = ConditionalGenerator(
-            num_global_classes=len(self.local_label_to_global_id),
-            noise_dim=self.feat_gen_noise_dim,
-            output_dim=self.global_feature_dim 
-        ).to(self.device)
+        self.distill_epochs = kwargs.get('distill_epochs', 1) 
+        self.kd_loss_fn = nn.MSELoss() 
 
         self.prox_z = None
         self.prox_y = None
+
 
     def local_fine_tune(self):
         # one shot fine tune to match feature extractor and local classifier
@@ -60,7 +54,11 @@ class Client(BaseClient):
 
     def update(self, epochs=1):
         # 1. distill feature extractor by generator
-        self.distill_feature_extractor()
+        if (self.glob_iter + 1) >= self.start_mapping_epoch: 
+            if self.global_feat_gen is not None:
+                self.distill_feature_extractor()
+            else:
+                pass
 
         # 2. decouple train feature extractor and classifier
         self.update_twin_branch(epochs)
@@ -69,8 +67,8 @@ class Client(BaseClient):
         self.model.to(self.device)
         self.model.train()
 
-        self.global_feature_gen.to(self.device)
-        self.global_feature_gen.eval()
+        self.global_feat_gen.to(self.device)
+        self.global_feat_gen.eval()
 
         feature_extractor = self.model.feature_extractor
         adapter = self.model.adapter
@@ -83,12 +81,12 @@ class Client(BaseClient):
 
                 x, y = x.to(self.device), y.to(self.device)
 
-                global_y_list = [self.local_int_to_global_int[label.item()] for label in y]
+                global_y_list = [self.local_id_to_global_id[label.item()] for label in y]
                 global_y = torch.tensor(global_y_list, dtype=torch.long).to(self.device)
 
                 with torch.no_grad():
                     z_noise = torch.randn(y.size(0), self.feat_gen_noise_dim).to(self.device)
-                    z_teacher = self.global_feature_gen(z_noise, global_y)
+                    z_teacher = self.global_feat_gen(z_noise, global_y)
 
                 native_feat = feature_extractor(x)           
                 native_feat = torch.flatten(native_feat, 1)  
@@ -137,8 +135,8 @@ class Client(BaseClient):
                 y_p = classifier_p(z)
 
                 # c. calculate loss
-                loss_g = self.loss_fn(y_g, y)
-                loss_p = self.loss_fn(y_p, y)
+                loss_g = self.local_loss_fn(y_g, y)
+                loss_p = self.local_loss_fn(y_p, y)
                 loss = loss_g + loss_p
 
                 # d. backward & step optim
@@ -170,8 +168,8 @@ class Client(BaseClient):
                 y_p = classifier_p(z)
 
                 # c. calculate loss
-                loss_g = self.loss_fn(y_g, y)
-                loss_p = self.loss_fn(y_p, y)
+                loss_g = self.local_loss_fn(y_g, y)
+                loss_p = self.local_loss_fn(y_p, y)
                 loss_norm = self.norm_loss_fn(classifier_g, classifier_p)
                 loss = loss_p + self.lambda1*loss_g + self.lambda2*loss_norm
 

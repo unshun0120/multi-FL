@@ -1,45 +1,43 @@
 import argparse
-import os
-import shutil
-from importlib import import_module
-import sys
-import torch
-import numpy as np
-import random
-from omegaconf import OmegaConf
-import copy
 import time 
+import os
+import random
+import numpy as np
+import torch
+from omegaconf import OmegaConf
 from datetime import timedelta
+from importlib import import_module
 
-from data.datasets import load_partitioned_datasets
 from utils.logger import Logger
-from utils.nets import get_heterogeneous_model, TwinBranchNets
-from utils.train_utils import (
-    initialize_training_clients
-)
+from data.datasets import load_partitioned_datasets
+from utils.train_utils import initialize_training_clients
+from utils.nets import ResNet, BasicBlock 
 
-  
+
 DATA_ROOT = './data/raw'
 
 IMPLEMENTED_ALGORITHMS = ["Local", # FL with local only
                           "FedTED", # FL with data free knowledge distillation 
                           "PACFL", # FL with mix-dataset
                           "GeFL", # FL with generative model 
-                          "UDON-hom", "UDON-het", # Only KD not FL
+                          "UDON", # Only KD not FL
                           "GLFC", # FL with incremental learning
                           "", # FL with foudation model
                           "Ours" # Ours
                           ]
 
-MODEL_HET_ALGORITHMS = ["Local", "FedTED", "GeFL", "UDON-het", "Ours"]
-NEED_PUBLIC_DATASET_ALGORITHMS = ["FedTED", "UDON-hom", "UDON-het"]
+MODEL_HET_ALGORITHMS = ["Local", "FedTED", "GeFL", "UDON", "Ours"]
 
 DATASET_META = { 
     'MNIST':        {'in_ch': 3, 'classes': 10,  'size': 32},  
     'FashionMNIST': {'in_ch': 3, 'classes': 10,  'size': 32},
-    'EMNIST':       {'in_ch': 3, 'classes': 47,  'size': 32},
+    #'EMNIST':       {'in_ch': 3, 'classes': 47,  'size': 32},
+    'EMNIST':       {'in_ch': 3, 'classes': 62,  'size': 32},
     'CIFAR10':      {'in_ch': 3, 'classes': 10,  'size': 32},
-    'CIFAR100':     {'in_ch': 3, 'classes': 100, 'size': 32}
+    'CIFAR100':     {'in_ch': 3, 'classes': 100, 'size': 32},
+    #'USPS':        {'in_ch': 3, 'classes': 10,  'size': 32}, 
+    # 'MNIST':        {'in_ch': 1, 'classes': 10,  'size': 28}, 
+    # 'USPS':        {'in_ch': 1, 'classes': 10,  'size': 28}
 }
 
 MODEL_LIST = {
@@ -55,16 +53,12 @@ def parser_args():
     # --- System setup ---
     parser.add_argument('--exp_timestamp', type=str, default=None, 
                         help='Shared timestamp for batch experiments (from .sh script)')
-    parser.add_argument('--no_write_log', action='store_true', 
-                        help='logging and plotting to files')
     parser.add_argument("--exp_conf", type=str, default="./configs/het-exp.yaml",
                         help="experiment config yaml files")
-    parser.add_argument("--device", type=str, default="cuda:0", 
+    parser.add_argument("--device", type=str, default="cuda:1", 
                         help="run device (cpu | cuda:x, x:int > 0)")
     parser.add_argument("--seed", type=int, default=None, 
                         help="random seed")
-    parser.add_argument('--no_save_model', action='store_true', 
-                        help='Whether to save the trained model checkpoints')
     parser.add_argument("--algorithm", type=str, default="Ours", choices=IMPLEMENTED_ALGORITHMS,
                         help=f"the implemented algorithms, choices include: {IMPLEMENTED_ALGORITHMS}")
     
@@ -72,68 +66,54 @@ def parser_args():
     parser.add_argument('--num_new_clients', type=int, default=1, 
                         help='Number of IID New clients for generalization test (for all dataset)')
     parser.add_argument("--num_train_mnist", type=int, default=10, 
-                        help="number of training clients")
-    parser.add_argument("--num_train_emnist", type=int, default=10)
-    parser.add_argument("--num_train_fashionmnist", type=int, default=10)
-    parser.add_argument("--num_train_cifar10", type=int, default=10)
-    parser.add_argument("--num_train_cifar100", type=int, default=10)
+                        help="number of training clients for mnist")
+    parser.add_argument("--num_train_emnist", type=int, default=10, 
+                        help="number of training clients for emnist")
+    parser.add_argument("--num_train_fashionmnist", type=int, default=10, 
+                        help="number of training clients for fashion-mnist")
+    parser.add_argument("--num_train_cifar10", type=int, default=10, 
+                        help="number of training clients for cifar-10")
+    parser.add_argument("--num_train_cifar100", type=int, default=10, 
+                        help="number of training clients for cifar100")
+    parser.add_argument("--num_train_usps", type=int, default=10, 
+                        help="number of training clients for USPS")
 
     return parser.parse_args()
 
 
 def exp_run(args, logger, **exp_conf):
-    """ Run experiments with args and conf.yaml
-    :return: log_dir
-    """
     # 1. set random seed
     set_seed(args.seed)
 
     # 2. prepare dataset and public dataset
-    all_client_data_loaders, global_id_map, global_registry, super_train_ds, super_test_ds = load_partitioned_datasets(args, DATA_ROOT, **exp_conf)
+    all_client_data_loaders, public_train_loaders, public_test_loaders = load_partitioned_datasets(args, DATA_ROOT, **exp_conf)
 
-    logger.log(global_id_map)
-    logger.log('='*30)
-    logger.log(global_registry)
-
-    # 5. create clients
+    # 3. create FL training clients
     Client = getattr(import_module("trainer.%s.client" % args.algorithm), 'Client')
     train_clients = initialize_training_clients(
-        Client, all_client_data_loaders, DATASET_META, MODEL_LIST, args, DATA_ROOT, global_registry, logger, **exp_conf
+        Client, all_client_data_loaders, DATASET_META, MODEL_LIST, args, DATA_ROOT, logger, **exp_conf
     )
 
-    # 6. create server
+    # 4. create server
     Server = getattr(import_module("trainer.%s.server" % args.algorithm), 'Server')
-
-    model_arch_id = next(k for k, v in MODEL_LIST.items() if v == exp_conf.get('global_model_arch', 'ResNet8'))
-    global_in_channels = 3 
-    global_img_size = 32
-    global_num_classes = len(global_registry)
-
-    global_full_model = get_heterogeneous_model(
-        node_id=model_arch_id,
-        in_channels=global_in_channels,
-        num_classes=global_img_size,
-        img_size=global_num_classes,
-        global_dim=exp_conf.get('global_feature_dim', 128)
-    )
-
+    server_model = ResNet(BasicBlock, [2, 2, 2, 2], in_channels=3, num_classes=100, global_dim=256)
     server = Server(
-        node_id=0,
+        node_id=-1,
         args=args, 
         clients=train_clients,
         dataset_name = None, 
-        train_loader=super_train_ds, 
-        test_loader=super_test_ds,   
-        model=global_full_model,
+        train_loader=public_train_loaders, 
+        test_loader=public_test_loaders,
+        model=server_model,
         class_name_set=None,
-        model_name=MODEL_LIST[model_arch_id],
-        global_registry=global_registry, 
+        model_name="ServerResNet18",
         device=args.device,
         logger=logger,
+        exp_conf=dict(exp_conf),
         **exp_conf,
     )
 
-    # 7. start training
+    # 5. start training
     server.run()
 
 
@@ -146,7 +126,7 @@ def set_seed(seed):
         torch.cuda.manual_seed(seed)
         torch.cuda.manual_seed_all(seed)                
         torch.backends.cudnn.deterministic = True        
-        torch.backends.cudnn.benchmark = False           
+        torch.backends.cudnn.benchmark = False 
 
 
 def main():
@@ -160,7 +140,7 @@ def main():
     logger.log('\n')
     logger.log("=" * 30 + "{:^20}".format("Args") + "=" * 30)
     for arg, value in vars(args).items():
-        logger.log(f"  {arg}: {value}\n")
+        logger.log(f"  {arg}: {value}")
     logger.log("=" * 80)
 
     logger.log("=" * 30 + "{:^20}".format("Exp Configs") + "=" * 30)
@@ -177,9 +157,3 @@ def main():
 
 if __name__ == "__main__":
     main()
-
-
-
-
-
-

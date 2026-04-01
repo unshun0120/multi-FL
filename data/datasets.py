@@ -32,9 +32,8 @@ def get_split_cache_path(DATA_ROOT, dataset_name, alpha, total_clients, num_new_
 
 # ==========================================
 # Get Label Counts
-# 統計每個類別出現次數
 # ==========================================
-def get_label_counts(dataset, indices, mapping=None):
+def get_label_counts(dataset, indices):
     """
     label count of subset
     """
@@ -55,11 +54,25 @@ def get_label_counts(dataset, indices, mapping=None):
 # Dataset Transform
 # ==========================================
 def get_transforms(name):
-    if name in ['MNIST', 'EMNIST', 'FashionMNIST']:
+    if name in ['MNIST', 'FashionMNIST', 'USPS']:
         return transforms.Compose([
             transforms.Resize((32, 32)),                 
             transforms.Grayscale(num_output_channels=3), 
             transforms.ToTensor(),
+            transforms.Normalize((0.5,), (0.5,))
+
+            # transforms.RandomAffine(degrees=15, translate=(0.1, 0.1), scale=(0.8, 1.2)),
+            # transforms.ToTensor(),
+            # transforms.Normalize((0.5,), (0.5,))
+        ])
+
+    elif name == 'EMNIST':
+        return transforms.Compose([
+            transforms.Resize((32, 32)),                 
+            transforms.Grayscale(num_output_channels=3),
+            # transforms.RandomAffine(degrees=15, translate=(0.1, 0.1), scale=(0.8, 1.2)),
+            transforms.ToTensor(),
+            transforms.Lambda(lambda x: x.transpose(1, 2)),
             transforms.Normalize((0.5,), (0.5,))
         ])
     
@@ -84,7 +97,9 @@ def get_raw_dataset_transform(name, root, train=True):
         return datasets.FashionMNIST(root, train=train, download=False, transform=transform)
     
     elif name == 'EMNIST':
-        return datasets.EMNIST(root, split='balanced', train=train, download=False, transform=transform)
+        # return datasets.EMNIST(root, split='balanced', train=train, download=False, transform=transform)
+        # return datasets.EMNIST(root, split='bymerge', train=train, download=False, transform=transform)
+        return datasets.EMNIST(root, split='byclass', train=train, download=False, transform=transform)
     
     elif name == 'CIFAR10':
         return datasets.CIFAR10(root, train=train, download=False, transform=transform)
@@ -92,19 +107,23 @@ def get_raw_dataset_transform(name, root, train=True):
     elif name == 'CIFAR100':
         return datasets.CIFAR100(root, train=train, download=False, transform=transform)
 
+    elif name == 'USPS':
+        return datasets.USPS(root, train=train, download=True, transform=transform)
     
 # ==========================================
 # Get Readable Class Names
 # ==========================================
 def get_readable_class_names(name, root='./data/raw'):
-    if name == 'MNIST':
+    if name in ['MNIST', 'USPS']:
         return [str(i) for i in range(10)]
 
     elif name == 'FashionMNIST':
         return ['T-shirt/top', 'Trouser', 'Pullover', 'Dress', 'Coat', 'Sandal', 'Shirt', 'Sneaker', 'Bag', 'Ankle boot']
         
     elif name == 'EMNIST':
-        d = datasets.EMNIST(root, split='balanced', train=True, download=False)
+        # d = datasets.EMNIST(root, split='balanced', train=True, download=False)
+        # d = datasets.EMNIST(root, split='bymerge', train=True, download=True)
+        d = datasets.EMNIST(root, split='byclass', train=True, download=True)
         return d.classes
         
     elif name == 'CIFAR10':
@@ -120,28 +139,28 @@ def get_readable_class_names(name, root='./data/raw'):
 # ==========================================
 # Loading Datasets
 # ==========================================
-def load_partitioned_datasets(args, DATA_ROOT, **kwargs):
+def load_partitioned_datasets(args, DATA_ROOT, **exp_conf):
+    # configs
     dataset_configs = {
-        'MNIST': args.num_train_mnist + args.num_new_clients,
-        'FashionMNIST': args.num_train_fashionmnist + args.num_new_clients,
-        'EMNIST': args.num_train_emnist + args.num_new_clients,
-        'CIFAR10': args.num_train_cifar10 + args.num_new_clients,
-        'CIFAR100': args.num_train_cifar100 + args.num_new_clients
+        'MNIST': (args.num_train_mnist + args.num_new_clients) if args.num_train_mnist > 0 else 0,
+        'FashionMNIST': (args.num_train_fashionmnist + args.num_new_clients) if args.num_train_fashionmnist > 0 else 0,
+        'EMNIST': (args.num_train_emnist + args.num_new_clients) if args.num_train_emnist > 0 else 0,
+        'CIFAR10': (args.num_train_cifar10 + args.num_new_clients) if args.num_train_cifar10 > 0 else 0,
+        'CIFAR100': (args.num_train_cifar100 + args.num_new_clients) if args.num_train_cifar100 > 0 else 0,
+        'USPS': (args.num_train_usps + args.num_new_clients) if args.num_train_usps > 0 else 0
     }
-    batch_size = kwargs.get('batch_size', 64)
-    dirichlet_alpha = kwargs.get('dirichlet_alpha', 0.1)
+    batch_size = exp_conf.get('batch_size', 64)
+    dirichlet_alpha = exp_conf.get('dirichlet_alpha', 0.1)
+    public_ratio = exp_conf.get('public_data_ratio', 1.0)
 
-    all_client_data_loaders = {}
-    
-    global_id_map = {}
-    global_registry = {}  
-    next_global_id = 0    
-    super_dataset_train_list = [] 
-    super_dataset_test_list = []
-
+    # Partition Datasets
     print(f"{'='*100}")
     print(f"Loading Datasets with Non-IID Split (Dirichlet distribution, Alpha={dirichlet_alpha})")
     print(f"{'='*100}")
+
+    all_client_data_loaders = {}
+    server_train_loaders = {}
+    server_test_loaders = {}
 
     for d_name, n_clients in dataset_configs.items():
         if n_clients == 0:
@@ -150,20 +169,6 @@ def load_partitioned_datasets(args, DATA_ROOT, **kwargs):
         # --- Readable Class Names (e.g. dog, cat ...) ---
         class_names = get_readable_class_names(d_name, root=DATA_ROOT)
         print(f"[-] Readable Class Names ({len(class_names)} classes): {class_names}\n")
-
-        current_dataset_map = {}
-
-        for local_id, class_name in enumerate(class_names):
-            if class_name in global_registry:
-                gid = global_registry[class_name]
-            else:
-                gid = next_global_id
-                global_registry[class_name] = gid
-                next_global_id += 1
-            
-            current_dataset_map[local_id] = gid
-
-        global_id_map[d_name] = current_dataset_map
 
         print(f"\n>>> Processing {d_name} ({n_clients} Clients)")   
 
@@ -250,7 +255,6 @@ def load_partitioned_datasets(args, DATA_ROOT, **kwargs):
             train_info_str = get_label_counts(train_dataset, train_idcs[i])
             test_info_str  = get_label_counts(test_dataset,  test_idcs[i])
 
-
             print(f"{i:<6} | {train_cnt:<6} | {test_cnt:<6} | Train: [{train_info_str}]")
             print(f"{'':<6} | {'':<6} | {'':<6} | Test : [{test_info_str}]")
             print("-" * 60) 
@@ -265,30 +269,31 @@ def load_partitioned_datasets(args, DATA_ROOT, **kwargs):
 
         all_client_data_loaders[d_name] = client_loaders
 
-        global_train_ds = Global_Dataset(train_dataset, mapping=current_dataset_map)
-        global_test_ds = Global_Dataset(test_dataset, mapping=current_dataset_map)
-        
-        super_dataset_train_list.append(global_train_ds)
-        super_dataset_test_list.append(global_test_ds)
+        if public_ratio < 1.0:
+            total_len = len(train_dataset)
+            subset_len = int(total_len * public_ratio)
+            indices = torch.randperm(total_len)[:subset_len]
+            public_train_dataset = Subset(train_dataset, indices)
+            
+            print(f"   [Data Subsampling] Using {subset_len}/{total_len} samples ({public_ratio*100}%) for {d_name}")
+        else:
+            public_train_dataset = train_dataset
+
+        server_train_loaders[d_name] = DataLoader(
+            public_train_dataset, 
+            batch_size=batch_size, 
+            shuffle=True,  
+            num_workers=0
+        )
+
+        server_test_loaders[d_name] = DataLoader(
+            test_dataset, 
+            batch_size=batch_size, 
+            shuffle=False, 
+            num_workers=0
+        )
 
     print(f"{'='*100}\n")
 
-    super_train_dataset = ConcatDataset(super_dataset_train_list)
-    super_test_dataset = ConcatDataset(super_dataset_test_list)
-
-    server_train_loader = DataLoader(
-        super_train_dataset, 
-        batch_size=batch_size, 
-        shuffle=True, 
-        num_workers=0
-    )
-
-    server_test_loader = DataLoader(
-        super_test_dataset, 
-        batch_size=batch_size, 
-        shuffle=False, 
-        num_workers=0
-    )
-
-    return all_client_data_loaders, global_id_map, global_registry, server_train_loader, server_test_loader
+    return all_client_data_loaders, server_train_loaders, server_test_loaders
 

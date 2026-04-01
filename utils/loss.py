@@ -2,22 +2,89 @@ import torch
 from torch import nn
 import torch.nn.functional as F
 
+class CAM_Hook:
+    def __init__(self, module):
+        # 攔截最後一個 Conv2d 層的輸出
+        self.hook = module.register_forward_hook(self.hook_fn)
+        self.activation_map = None
 
-class VanillaKDLoss(nn.Module):
-    """ According to: Distilling the Knowledge in a Neural Network,
-        https://arxiv.org/pdf/1503.02531.pdf
+    def hook_fn(self, module, input, output):
+        # output 維度: [Batch, Channels, Height, Width]
+        # 我們取 Channels 維度的絕對值平均，得到二維的空間啟動強度圖 [Batch, 1, Height, Width]
+        self.activation_map = output.abs().mean(dim=1, keepdim=True)
+
+    def close(self):
+        self.hook.remove()
+
+def get_gaussian_mask(size, device, sigma=0.3):
     """
+    """
+    x = torch.linspace(-1, 1, size, device=device)
+    y = torch.linspace(-1, 1, size, device=device)
+    x, y = torch.meshgrid(x, y, indexing='ij')
+    mask = torch.exp(-(x**2 + y**2) / (2 * sigma**2))
+    return mask.unsqueeze(0).unsqueeze(0) # [1, 1, size, size]
 
-    def __init__(self, temperature):
-        super(VanillaKDLoss, self).__init__()
-        self.temperature = temperature
+def get_cam_loss(cam_hooks, target_mask):
+    cam_loss = 0.0
+    valid_hooks = 0
+    for hook in cam_hooks:
+        if hook.activation_map is not None:
+            # 將 activation map 縮放到與 target_mask 一樣大 (例如 32x32 或更小)
+            act_map_resized = F.interpolate(hook.activation_map, size=target_mask.shape[-2:], mode='bilinear', align_corners=False)
+            
+            # 正規化啟動圖到 0~1 之間
+            act_min = act_map_resized.view(act_map_resized.size(0), -1).min(dim=1)[0].view(-1, 1, 1, 1)
+            act_max = act_map_resized.view(act_map_resized.size(0), -1).max(dim=1)[0].view(-1, 1, 1, 1)
+            act_norm = (act_map_resized - act_min) / (act_max - act_min + 1e-8)
+            
+            # MUSE 論文的 Margin Loss 精神：當啟動值沒有達到 Target 遮罩的強度時給予懲罰
+            # L_cam = max(0, M_target - M(x))
+            loss = F.relu(target_mask - act_norm).mean()
+            cam_loss += loss
+            valid_hooks += 1
+            
+    if valid_hooks > 0:
+        return cam_loss / valid_hooks
+    return 0.0
 
-    def forward(self, student_logits, teacher_logits):
-        loss = F.kl_div(F.log_softmax(student_logits / self.temperature, dim=-1),
-                        F.softmax(teacher_logits / self.temperature, dim=-1),
-                        reduction='batchmean') * self.temperature * self.temperature
-        return loss
-    
+class BNSM_Hook:
+    def __init__(self, module):
+        self.hook = module.register_forward_hook(self.hook_fn)
+        self.running_mean = module.running_mean
+        self.running_var = module.running_var
+        self.batch_mean = None
+        self.batch_var = None
+
+    def hook_fn(self, module, input, output):
+        self.batch_mean = input[0].mean([0, 2, 3])
+        self.batch_var = input[0].var([0, 2, 3], unbiased=False)
+
+    def close(self):
+        self.hook.remove()
+
+def get_bn_loss(bn_hooks):
+    bn_loss = 0.0
+    valid_hooks_count = 0
+    for hook in bn_hooks:
+        if hook.batch_mean is not None and hook.batch_var is not None:
+            bn_loss += torch.norm(hook.batch_mean - hook.running_mean, 2)
+            bn_loss += torch.norm(hook.batch_var - hook.running_var, 2)
+            valid_hooks_count += 1
+            
+    if valid_hooks_count > 0:
+        return bn_loss / valid_hooks_count
+    return 0.0
+
+
+def total_variation_loss(img):
+    """計算相鄰像素的差異，讓生成的圖片變平滑，避免對抗性雜訊"""
+    tv_h = torch.sum(torch.abs(img[:, :, 1:, :] - img[:, :, :-1, :]))
+    tv_w = torch.sum(torch.abs(img[:, :, :, 1:] - img[:, :, :, :-1]))
+    # 除以總像素量做正規化
+    return (tv_h + tv_w) / (img.shape[0] * img.shape[1] * img.shape[2] * img.shape[3])
+
+
 class Gen_DiversityLoss(nn.Module):
     """
     Diversity loss for improving the performance.
@@ -62,229 +129,3 @@ class Gen_DiversityLoss(nn.Module):
         layer_dist = self.pairwise_distance(layer, how=self.metric)
         noise_dist = self.pairwise_distance(noises, how='l2')
         return torch.exp(torch.mean(-noise_dist * layer_dist))
-    
-
-"""
-UDON Loss Functions
-- Classification loss with margin (ArcFace, CosFace, NormFace)
-- Logits distillation loss (KL divergence)
-- Embedding similarity distillation loss (MSE on batch similarities)
-"""
-
-class ArcFaceMargin(nn.Module):
-    """ArcFace margin transformation for cosine logits"""
-    def __init__(self, scale=64.0, margin=0.5):
-        super().__init__()
-        self.scale = scale
-        self.margin = margin
-    
-    def forward(self, logits, targets):
-        """
-        Args:
-            logits: cosine similarity logits (B, C)
-            targets: ground truth labels (B,)
-        """
-        one_hot = F.one_hot(targets, logits.size(-1)).float()
-        
-        # ArcFace: add margin to angle
-        theta = torch.acos(torch.clamp(logits * one_hot.sum(dim=1, keepdim=True), -1+1e-7, 1-1e-7))
-        marginal_logits = torch.cos(theta + self.margin) * one_hot + logits * (1 - one_hot)
-        
-        return marginal_logits * self.scale
-
-
-class CosFaceMargin(nn.Module):
-    """CosFace margin transformation"""
-    def __init__(self, scale=64.0, margin=0.35):
-        super().__init__()
-        self.scale = scale
-        self.margin = margin
-    
-    def forward(self, logits, targets):
-        one_hot = F.one_hot(targets, logits.size(-1)).float()
-        marginal_logits = (logits - self.margin) * one_hot + logits * (1 - one_hot)
-        return marginal_logits * self.scale
-
-
-class NormFaceMargin(nn.Module):
-    """NormFace (no margin, just scale)"""
-    def __init__(self, scale=64.0):
-        super().__init__()
-        self.scale = scale
-    
-    def forward(self, logits, targets):
-        return logits * self.scale
-
-
-class UDONLoss(nn.Module):
-    def __init__(self, loss_config):
-        super(UDONLoss, self).__init__()
-        self.config = loss_config
-        
-        # Margin Loss Type
-        self.loss_type = loss_config.get('type', 'normface')
-        self.s = loss_config.get('scale', 30.0)
-        self.m = loss_config.get('margin', 0.5)
-        
-        if self.loss_type == 'arcface':
-            self.margin_fn = ArcFaceMargin(s=self.s, m=self.m)
-        elif self.loss_type == 'cosface':
-            self.margin_fn = CosFaceMargin(s=self.s, m=self.m)
-        else:
-            self.margin_fn = NormFaceMargin(s=self.s)
-            
-        self.ce_loss = nn.CrossEntropyLoss()
-        
-    def forward(self, outputs, labels):
-        """
-        Calculates:
-        1. Classification loss for Teacher
-        2. Classification loss for Student
-        3. Distillation loss (Logits KL)
-        4. Distillation loss (Embedding Similarity)
-        """
-        loss_dict = {}
-        total_loss = 0.0
-        
-        # 1. Classification Losses
-        # Transform logits using margin
-        teacher_logits = self.margin_fn(outputs['teacher_logits'].clone(), labels)
-        student_logits = self.margin_fn(outputs['universal_student_logits'].clone(), labels)
-        
-        loss_teacher = self.ce_loss(teacher_logits, labels)
-        loss_student = self.ce_loss(student_logits, labels)
-        
-        w_t = self.config.get('classif_teacher_weight', 1.0)
-        w_s = self.config.get('classif_student_weight', 1.0)
-        
-        total_loss += w_t * loss_teacher
-        total_loss += w_s * loss_student
-        
-        loss_dict['loss_teacher'] = loss_teacher.item()
-        loss_dict['loss_student'] = loss_student.item()
-        
-        # 2. Distillation: Logits (KL Divergence)
-        if self.config.get('distill_logits', True):
-            T = self.config.get('temperature', 1.0)
-            
-            # Detach teacher for distillation
-            t_logits = outputs['teacher_logits'].detach() / T
-            s_logits = outputs['universal_student_logits'] / T
-            
-            # KL(Student || Teacher)
-            loss_distill_logits = F.kl_div(
-                F.log_softmax(s_logits, dim=1),
-                F.softmax(t_logits, dim=1),
-                reduction='batchmean'
-            ) * (T * T)
-            
-            w_d_l = self.config.get('distill_logits_weight', 1.0)
-            total_loss += w_d_l * loss_distill_logits
-            loss_dict['loss_distill_logits'] = loss_distill_logits.item()
-
-        # 3. Distillation: Embeddings (Cosine Similarity or MSE)
-        if self.config.get('distill_embeddings', True):
-            t_emb = outputs['teacher_embedd'].detach()
-            s_emb = outputs['universal_student_embedd']
-            
-            # Maximize cosine similarity -> Minimize 1 - cos_sim
-            # Vectors are already L2 normalized in model
-            cos_sim = (t_emb * s_emb).sum(dim=1).mean()
-            loss_distill_embed = 1.0 - cos_sim
-            
-            w_d_e = self.config.get('distill_embed_weight', 1.0)
-            total_loss += w_d_e * loss_distill_embed
-            loss_dict['loss_distill_embed'] = loss_distill_embed.item()
-            
-        loss_dict['total_loss'] = total_loss
-        return total_loss, loss_dict
-
-
-"""
-GeFL Loss Functions for generative models.
-"""
-
-
-def vae_loss(recon_x, x, mu, logvar, beta=1.0):
-    """
-    VAE ELBO loss = Reconstruction loss + β * KL divergence.
-    
-    Args:
-        recon_x: Reconstructed samples
-        x: Original samples
-        mu: Mean of approximate posterior
-        logvar: Log variance of approximate posterior
-        beta: Weight for KL term (β-VAE)
-    
-    Returns:
-        (total_loss, recon_loss, kl_loss)
-    """
-    # Reconstruction loss (per-sample)
-    batch_size = x.size(0)
-    recon_loss = F.mse_loss(recon_x, x, reduction='sum') / batch_size
-    
-    # KL divergence: -0.5 * sum(1 + log(σ²) - μ² - σ²)
-    kl_loss = -0.5 * torch.sum(1 + logvar - mu.pow(2) - logvar.exp()) / batch_size
-    
-    total_loss = recon_loss + beta * kl_loss
-    
-    return total_loss, recon_loss, kl_loss
-
-
-def gan_loss(d_real, d_fake, loss_type='bce'):
-    """
-    GAN loss for generator and discriminator.
-    
-    Args:
-        d_real: Discriminator output for real samples
-        d_fake: Discriminator output for fake samples
-        loss_type: 'bce' for binary cross entropy, 'wgan' for Wasserstein
-    
-    Returns:
-        (d_loss, g_loss)
-    """
-    if loss_type == 'bce':
-        real_label = torch.ones_like(d_real)
-        fake_label = torch.zeros_like(d_fake)
-        
-        # Discriminator loss: maximize log(D(x)) + log(1 - D(G(z)))
-        d_loss_real = F.binary_cross_entropy(d_real, real_label)
-        d_loss_fake = F.binary_cross_entropy(d_fake, fake_label)
-        d_loss = d_loss_real + d_loss_fake
-        
-        # Generator loss: maximize log(D(G(z))) == minimize log(1 - D(G(z)))
-        g_loss = F.binary_cross_entropy(d_fake, real_label)
-        
-    elif loss_type == 'wgan':
-        # Wasserstein GAN loss
-        d_loss = -(torch.mean(d_real) - torch.mean(d_fake))
-        g_loss = -torch.mean(d_fake)
-    
-    else:
-        raise ValueError(f"Unknown loss type: {loss_type}")
-    
-    return d_loss, g_loss
-
-
-class FeatureMatchingLoss(nn.Module):
-    """Feature matching loss for GAN training stability."""
-    
-    def __init__(self):
-        super().__init__()
-    
-    def forward(self, real_features, fake_features):
-        """
-        Compute feature matching loss.
-        
-        Args:
-            real_features: Features from discriminator for real samples
-            fake_features: Features from discriminator for fake samples
-        
-        Returns:
-            Feature matching loss
-        """
-        loss = 0
-        for rf, ff in zip(real_features, fake_features):
-            loss += F.mse_loss(ff.mean(dim=0), rf.mean(dim=0).detach())
-        return loss
-

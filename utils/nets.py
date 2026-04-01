@@ -3,6 +3,8 @@ import torch.nn as nn
 import torch.nn.functional as F
 import torchvision.models as models
 import copy
+import numpy as np
+
 
 # ==========================================
 # Global Classifier
@@ -17,6 +19,41 @@ class Classifier(nn.Linear):
 # ==========================================
 # Global Conditional Generator
 # ==========================================
+
+class ConditionalImageGenerator(nn.Module):
+    def __init__(self, num_classes, noise_dim, img_channels=3, img_size=32):
+        super().__init__()
+        self.label_emb = nn.Embedding(num_classes, num_classes)
+        self.init_size = img_size // 4
+        
+        # 初始空間：7x7
+        self.l1 = nn.Sequential(
+            nn.Linear(noise_dim + num_classes, 256 * self.init_size * self.init_size),
+            nn.BatchNorm1d(256 * self.init_size * self.init_size),
+            nn.ReLU()
+        )
+        
+        self.conv_blocks = nn.Sequential(
+            nn.BatchNorm2d(256),
+            # 7x7 -> 14x14
+            nn.ConvTranspose2d(256, 128, kernel_size=4, stride=2, padding=1),
+            nn.BatchNorm2d(128),
+            nn.ReLU(),
+            # 14x14 -> 28x28
+            nn.ConvTranspose2d(128, 64, kernel_size=4, stride=2, padding=1),
+            nn.BatchNorm2d(64),
+            nn.ReLU(),
+            nn.Conv2d(64, img_channels, kernel_size=3, stride=1, padding=1),
+            nn.Tanh()
+        )
+
+    def forward(self, noise, labels):
+        gen_input = torch.cat((self.label_emb(labels), noise), -1)
+        out = self.l1(gen_input)
+        out = out.view(out.shape[0], 256, self.init_size, self.init_size)
+        img = self.conv_blocks(out)
+        return img
+
 class ConditionalGenerator(nn.Module):
     def __init__(self, num_global_classes, noise_dim, output_dim, embedding_dim=32):
         super().__init__()
@@ -40,6 +77,75 @@ class ConditionalGenerator(nn.Module):
         x = torch.cat([z, c], dim=1) 
         out = self.net(x)
         return out
+    
+
+class NLGenerator(nn.Module):
+    def __init__(self, ngf=64, img_size=32, nc=3, nl=100, label_emb=None, le_emb_size=256, le_size=512, sbz=200):
+        super(NLGenerator, self).__init__()
+        self.params = (ngf, img_size, nc, nl, label_emb, le_emb_size, le_size, sbz)
+        self.le_emb_size = le_emb_size
+        self.label_emb = label_emb
+        self.init_size = img_size // 4
+        self.le_size = le_size
+        self.nl = nl
+        self.nle = int(np.ceil(sbz/nl))
+        self.sbz = sbz
+
+        self.n1 = nn.BatchNorm1d(le_size)
+        self.sig1 = nn.Sigmoid()
+        self.le1 = nn.ModuleList([nn.Linear(le_size, le_emb_size) for i in range(self.nle)])
+        self.l1 = nn.Sequential(nn.Linear(le_emb_size, ngf * 2 * self.init_size ** 2))
+
+        self.conv_blocks = nn.Sequential(
+            nn.BatchNorm2d(ngf * 2),
+            nn.Upsample(scale_factor=2),
+
+            nn.Conv2d(ngf*2, ngf*2, 3, stride=1, padding=1, bias=False),
+            nn.BatchNorm2d(ngf*2),
+            nn.LeakyReLU(0.2, inplace=True),
+
+            nn.Upsample(scale_factor=2),
+
+            nn.Conv2d(ngf*2, ngf, 3, stride=1, padding=1, bias=False),
+            nn.BatchNorm2d(ngf),
+            nn.LeakyReLU(0.2, inplace=True),
+            nn.Conv2d(ngf, nc, 3, stride=1, padding=1),
+            nn.Sigmoid(),
+        )
+
+        self.dr1 = nn.Dropout(p=0.25)
+        self.le_sig = nn.Sigmoid()
+
+    def re_init_le(self):
+        for i in range(self.nle):
+            nn.init.normal_(self.le1[i].weight, mean=0, std=1)
+            nn.init.constant_(self.le1[i].bias, 0)
+
+    def forward(self, targets=None):
+        le = self.label_emb[targets]
+        # le = self.sig1(le)
+        le = self.n1(le)
+        v = None
+        for i in range(self.nle):
+            if (i+1)*self.nl > le.shape[0]:
+                sle = le[i*self.nl:]
+            else:
+                sle = le[i*self.nl:(i+1)*self.nl]
+            sv = self.le1[i](sle)
+            if v is None:
+                v = sv
+            else:
+                v = torch.cat((v, sv))
+
+        out = self.l1(v)
+        out = out.view(out.shape[0], -1, self.init_size, self.init_size)
+        img = self.conv_blocks(out)
+        return img
+
+    def reinit(self):
+        return NLGenerator(self.params[0], self.params[1], self.params[2], self.params[3], self.params[4],
+                             self.params[5], self.params[6], self.params[7]).cuda()
+
 
 # ==========================================
 # 1. Base Interface
@@ -82,6 +188,7 @@ class BaseHeteroModel(nn.Module):
         # local training 用 logits 做 CE loss
         # FL / KD / Prototype / Generator 用 global_feat
         return global_feat, logits
+
 
 # ==========================================
 # 2. Heterogeneous Architectures
@@ -126,13 +233,19 @@ class CNN(BaseHeteroModel):
         
         self.feature_extractor = nn.Sequential(
             nn.Conv2d(in_channels, 32, 3, padding=1), 
+            nn.BatchNorm2d(32),
             nn.ReLU(), 
             nn.MaxPool2d(2),
+            
             nn.Conv2d(32, 64, 3, padding=1), 
+            nn.BatchNorm2d(64),
             nn.ReLU(), 
             nn.MaxPool2d(2),
+
             nn.Conv2d(64, self.output_dim, 3, padding=1), 
+            nn.BatchNorm2d(self.output_dim),
             nn.ReLU(), 
+
             nn.AdaptiveAvgPool2d((1, 1)) # 強制變成 (B, 64, 1, 1)
         )
 
@@ -401,173 +514,7 @@ class TwinBranchNets(nn.Module):
             logits = self.classifier(global_feat)
         
         return global_feat, logits
-
-
-def get_twin_branch_model(client_id, in_channels, num_classes, img_size, global_dim=256):
-    base_model = get_heterogeneous_model(client_id, in_channels, num_classes, img_size, global_dim)
-    return TwinBranchNets(base_model)   
-
-
-# ==========================================
-# 4. UDON Components (for UDON baseline)
-# ==========================================
-
-
-class CosineClassifier(nn.Module):
-    """Cosine similarity classifier (normalized weights, no bias)"""
-    def __init__(self, input_dim, num_classes):
-        super().__init__()
-        self.weight = nn.Parameter(torch.empty(num_classes, input_dim))
-        nn.init.xavier_uniform_(self.weight)
     
-    def forward(self, x):
-        # L2 normalize weights and input
-        weight_norm = F.normalize(self.weight, p=2, dim=1)
-        x_norm = F.normalize(x, p=2, dim=1)
-        logits = F.linear(x_norm, weight_norm)
-        return logits
-
-
-class UDONModel(nn.Module):
-    def __init__(self, backbone, feature_dim, num_classes, 
-                 student_dim=[64], teacher_dim=[256]):
-        super(UDONModel, self).__init__()
-        
-        # 1. Backbone (Shared)
-        self.backbone = backbone
-        self.feature_dim = feature_dim
-        
-        # 2. Universal Student Projection (Shared in FL)
-        # Corresponds to 'universal_student_projection_domain_0'
-        # Output dim is usually the last element of the list
-        self.universal_projection = MLP(feature_dim, student_dim[:-1], student_dim[-1])
-        
-        # 3. Teacher Projection (Private/Local in FL)
-        # Corresponds to 'teacher_projection_domain_{domain}'
-        self.teacher_projection = MLP(feature_dim, teacher_dim[:-1], teacher_dim[-1])
-        
-        # 4. Classifiers (Private/Local in FL)
-        # UDON uses separate classifiers per domain
-        # Universal Student Head
-        self.student_classifier = CosineClassifier(student_dim[-1], num_classes)
-        # Teacher Head
-        self.teacher_classifier = CosineClassifier(teacher_dim[-1], num_classes)
-
-    def forward(self, x, train=True):
-        outputs = {}
-        
-        # Backbone features
-        backbone_feats = self.backbone(x)
-        # Flatten if needed (assuming backbone output is [B, C, H, W] or similar)
-        if len(backbone_feats.shape) > 2:
-            backbone_feats = backbone_feats.view(backbone_feats.size(0), -1)
-            
-        # L2 Normalize backbone features (as per Flax code)
-        backbone_feats = F.normalize(backbone_feats, p=2, dim=1)
-        
-        outputs['backbone_out'] = backbone_feats
-        
-        # --- Teacher Branch ---
-        teacher_embedd = self.teacher_projection(backbone_feats)
-        teacher_embedd = F.normalize(teacher_embedd, p=2, dim=1)
-        outputs['teacher_embedd'] = teacher_embedd
-        
-        teacher_logits = self.teacher_classifier(teacher_embedd, normalize_input=False) # already normalized
-        outputs['teacher_logits'] = teacher_logits
-        
-        # --- Universal Student Branch ---
-        student_embedd = self.universal_projection(backbone_feats)
-        student_embedd = F.normalize(student_embedd, p=2, dim=1)
-        outputs['universal_student_embedd'] = student_embedd
-        
-        student_logits = self.student_classifier(student_embedd, normalize_input=False)
-        outputs['universal_student_logits'] = student_logits
-        
-        return outputs
-
-
-class CCVAE(nn.Module):
-    def __init__(self, num_classes=10, latent_size=16, img_size=32, channels=3, **kwargs):
-        super(CCVAE, self).__init__()
-        self.num_classes = num_classes
-        self.latent_size = latent_size
-        self.img_size = img_size
-        self.channels = channels
-        
-        # Encoder
-        self.conv1 = nn.Conv2d(channels + 1, 64, kernel_size=4, stride=2, padding=1)
-        self.bn1 = nn.BatchNorm2d(64)
-        self.conv2 = nn.Conv2d(64, 128, kernel_size=4, stride=2, padding=1)
-        self.bn2 = nn.BatchNorm2d(128)
-        self.conv3 = nn.Conv2d(128, 256, kernel_size=4, stride=2, padding=1)
-        self.bn3 = nn.BatchNorm2d(256)
-        
-        # Calculate Flatten Size
-        self.flat_size = 256 * (img_size // 8) * (img_size // 8) 
-        
-        self.mu = nn.Linear(self.flat_size, latent_size)
-        self.logvar = nn.Linear(self.flat_size, latent_size)
-
-        # Decoder
-        self.linear = nn.Linear(latent_size + num_classes, self.flat_size)
-        self.convT1 = nn.ConvTranspose2d(256, 128, kernel_size=4, stride=2, padding=1)
-        self.bnT1 = nn.BatchNorm2d(128)
-        self.convT2 = nn.ConvTranspose2d(128, 64, kernel_size=4, stride=2, padding=1)
-        self.bnT2 = nn.BatchNorm2d(64)
-        self.convT3 = nn.ConvTranspose2d(64, channels, kernel_size=4, stride=2, padding=1)
-
-    def encode(self, x, y):
-        # Conditioning on label
-        y_cond = y.argmax(dim=1).view(-1, 1, 1, 1).to(x.device)
-        y_cond = torch.ones(x.size(0), 1, x.size(2), x.size(3)).to(x.device) * y_cond
-        
-        x = torch.cat([x, y_cond], dim=1)
-        
-        x = F.relu(self.bn1(self.conv1(x)))
-        x = F.relu(self.bn2(self.conv2(x)))
-        x = F.relu(self.bn3(self.conv3(x)))
-        x = x.view(x.size(0), -1)
-        
-        return self.mu(x), self.logvar(x)
-
-    def reparameterize(self, mu, logvar):
-        std = torch.exp(0.5 * logvar)
-        eps = torch.randn_like(std)
-        return mu + eps * std
-
-    def decode(self, z):
-        x = F.relu(self.linear(z))
-        x = x.view(x.size(0), 256, self.img_size // 8, self.img_size // 8)
-        
-        x = F.relu(self.bnT1(self.convT1(x)))
-        x = F.relu(self.bnT2(self.convT2(x)))
-        x = torch.tanh(self.convT3(x)) # Output range [-1, 1]
-        return x
-
-    def forward(self, x, y):
-        mu, logvar = self.encode(x, y)
-        z = self.reparameterize(mu, logvar)
-        
-        # Concat label info for decoder
-        z = torch.cat([z, y.float()], dim=1)
-        recon_x = self.decode(z)
-        return recon_x, mu, logvar
-
-    def sample(self, num_samples, labels=None, device='cuda'):
-        with torch.no_grad():
-            z = torch.randn(num_samples, self.latent_size).to(device)
-            if labels is None:
-                labels = torch.randint(0, self.num_classes, (num_samples,), device=device)
-            
-            y_onehot = F.one_hot(labels, self.num_classes).float().to(device)
-            z = torch.cat([z, y_onehot], dim=1)
-            return self.decode(z), labels
-
-def vae_loss(recon_x, x, mu, logvar, beta=1.0):
-    recon_loss = F.mse_loss(recon_x, x, reduction='sum') / x.size(0)
-    kl_loss = -0.5 * torch.sum(1 + logvar - mu.pow(2) - logvar.exp()) / x.size(0)
-    return recon_loss + beta * kl_loss, recon_loss, kl_loss
-
 
 # ==========================================
 # 3. Factory Function
@@ -594,3 +541,5 @@ def get_heterogeneous_model(node_id, in_channels, num_classes, img_size, global_
     if model_idx == 9: return SqueezeNet(in_channels, num_classes, global_dim)
     
     return MLP(in_channels, num_classes, img_size, global_dim)
+
+

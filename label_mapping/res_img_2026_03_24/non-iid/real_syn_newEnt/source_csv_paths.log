@@ -1,0 +1,7 @@
+=== Plotting Source Information ===
+Generated at: 2026-03-24_23-41-01
+
+Input CSV Files:
+[Found] logs/2026-03-19_18-17-49/new_client_2026-03-24_19-43-22/real_new_entropy.csv
+[Found] logs/2026-03-19_18-17-49/new_client_2026-03-24_19-43-22/syn_oldGen_newEnt.csv
+[Found] logs/2026-03-19_18-17-49/new_client_2026-03-24_19-43-22/syn_newGen_newEnt.csv

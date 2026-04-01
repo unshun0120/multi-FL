@@ -5,8 +5,8 @@ from ..BaseFL.server import Server as Base_Server
 
 class Server(Base_Server):
 
-    def __init__(self, **kwargs):
-        super(Server, self).__init__(**kwargs)
+    def __init__(self, **exp_conf):
+        super(Server, self).__init__(**exp_conf)
         self.algorithm_name = "Local"
 
     """use the run process of Center, i.e. pass all FL process except metric model"""
