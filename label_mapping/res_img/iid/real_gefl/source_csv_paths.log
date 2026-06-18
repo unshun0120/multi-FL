@@ -1,0 +1,8 @@
+=== Plotting Source Information ===
+Generated at: 2026-04-16_23-46-26
+
+Input CSV Files:
+[Found] logs/2026-04-16_13-34-59/real_img/Real_real_old_entropy.csv
+[Found] logs/2026-04-16_13-34-59/real_img/Real_real_new_entropy.csv
+[Found] logs/2026-04-16_13-34-59/GeFL_GAN/GeFL_syn_GeFL_oldEnt.csv
+[Found] logs/2026-04-16_13-34-59/GeFL_GAN/GeFL_syn_GeFL_newEnt.csv

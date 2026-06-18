@@ -1,13 +1,30 @@
 import torch
+import torch.nn as nn
 import torch.nn.functional as F
 import torch.autograd as autograd
 from torch.autograd import Variable
 import random
 import clip
+import kornia.augmentation as Kaug
 
 # -------------------------
 # DFKD General Utils
 # -------------------------
+
+def evaluate_student_model(student_model, test_loader, device):
+    student_model.eval()
+    correct = 0
+    total = 0
+    with torch.no_grad():
+        for inputs, targets in test_loader:
+            inputs, targets = inputs.to(device), targets.to(device)
+            _, logits = student_model(inputs) 
+            
+            preds = logits.argmax(dim=1)
+            correct += (preds == targets).sum().item()
+            total += targets.size(0)
+    
+    return (correct / total) * 100.0 if total > 0 else 0.0
 
 def KLDiv( logits, targets, T=1.0, reduction='batchmean'):
     q = F.log_softmax(logits/T, dim=1)
@@ -83,18 +100,31 @@ def fomaml_grad(src, tar):
             p.grad = Variable(torch.zeros(p.size())).to(p.device)
         p.grad.data.add_(tar_p.grad.data)
 
+def get_fast_augmentation(img_size=(32, 32)):
+    return nn.Sequential(
+        Kaug.RandomCrop(size=img_size, padding=4, padding_mode="reflect"),
+        Kaug.RandomHorizontalFlip()
+    )
+
 # -------------------------
 # NAYER Utils
 # -------------------------
 
+def nayer_cross_entropy(logits, targets, cr=0.5):
+    ys = torch.zeros_like(logits)
+    ys.fill_(cr / (ys.shape[1] - 1))
+    ys.scatter_(1, targets.unsqueeze(1), (1 - cr))
+    log_preds = F.log_softmax(logits, dim=1)
+    cls_loss = -(ys * log_preds).sum(dim=1).mean()
+    return cls_loss
+
 def get_nayer_label_embedding(class_names, device):
     model, _ = clip.load("ViT-B/32", device=device)
+    model = model.to(device)
     model.eval()
 
-    # NAYER 論文中的 Prompt 處理方式
     text_prompts = []
     for l in class_names:
-        # NAYER 會把底線和破折號替換掉，並加上 a image of
         l_str = str(l).replace("_", " ").replace("-", " ")
         prompt = f"a image of {l_str}"
         text_prompts.append(prompt)
@@ -103,7 +133,6 @@ def get_nayer_label_embedding(class_names, device):
     
     with torch.no_grad():
         text_features = model.encode_text(text_tokens)
-        # NAYER 使用 float() 而非 float16 確保 Generator 訓練穩定
         text_features = text_features.float() 
         
     return text_features

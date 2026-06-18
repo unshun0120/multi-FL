@@ -46,7 +46,7 @@ def initialize_training_clients(Client, all_client_data_loaders, dataset_meta, m
                         global_dim=global_feature_dim
                     )
 
-                if args.algorithm == 'FedTED':
+                if args.algorithm == 'FedTED' or args.algorithm == 'FedTED_dir' or args.algorithm == 'FedTED_DDPM' or args.algorithm == 'FedTED_DDPM_2':
                     model = TwinBranchNets(model)
 
                 client = Client(

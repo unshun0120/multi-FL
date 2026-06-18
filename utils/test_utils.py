@@ -80,3 +80,10 @@ def evaluate_client(client, args):
             correct += (logits.argmax(dim=1) == labels).sum().item()
             total += labels.size(0)
     return 100.0 * correct / total if total > 0 else 0.0
+
+
+def load_checkpoint(path, device):
+    if not os.path.exists(path):
+        raise FileNotFoundError(f"Model checkpoint not found at {path}")
+    print(f"Loading checkpoint from {path}...")
+    return torch.load(path, map_location=device, weights_only=False)

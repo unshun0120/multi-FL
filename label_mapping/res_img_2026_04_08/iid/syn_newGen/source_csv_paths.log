@@ -1,0 +1,7 @@
+=== Plotting Source Information ===
+Generated at: 2026-04-08_10-32-26
+
+Input CSV Files:
+[Found] logs/Local_iid_het_gb40/di_newGen/DI_syn_newGen_oldEnt.csv
+[Found] logs/Local_iid_het_gb40/fast_newGen/FAST_syn_newGen_oldEnt.csv
+[Found] logs/Local_iid_het_gb40/nayer_newGen/NAYER_syn_newGen_oldEnt.csv

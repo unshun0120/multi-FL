@@ -1,0 +1,363 @@
+import torch
+import copy
+from collections import OrderedDict, defaultdict
+import os
+import csv
+import numpy as np
+import torch.nn as nn
+from tqdm import tqdm
+import random
+from torch.optim import *
+from torch.utils.data import TensorDataset, DataLoader
+
+from trainer.BaseFL.server import Server as BaseServer
+from utils.plotting import plot_accuracy_curves
+from utils.nets import ContextUnet, DDPM
+from label_mapping.label_mapping_utils import (
+    label_mapping, evaluate_mapping_results, 
+    feature_bi_direction_label_mapping, single_direction_label_mapping,
+    get_gen_images, global_to_local_mapping, clear_image_caches,
+    image_cosine_similarity_mapping,
+)
+from utils.nets import ResNet, BasicBlock
+
+class Server(BaseServer):
+    def __init__(self, **kwargs):
+        super(Server, self).__init__(**kwargs)
+
+        self.global_ddpm_states = {}
+
+    def run(self):
+        self.logger.log("")
+        self.logger.log("=" * 50)
+        self.logger.log(f"Start {self.global_rounds} rounds training by {self.algorithm}")
+
+        for r in range(self.global_rounds):
+            self.glob_iter = r
+
+            self.sample_clients()
+            self.distribute_model()
+            self.local_update()
+
+            if (r + 1) % self.test_interval == 0:
+                self.evaluate_private()
+                #self.record_metric()
+
+            self.aggregate()
+
+            # if (r+1) % 5 == 0:
+            #     self.evaluate_mapping(r + 1)
+
+            # self.evaluate_mapping(r + 1)
+
+            if r+1 == 40:
+                self.save_model() 
+
+        # self.save_metric()
+
+        self.save_model()
+        plot_accuracy_curves(self.dataset_acc_history, self.logger.log_dir, self.args, self.global_rounds, self.dirichlet_alpha)
+
+    def get_all_clients_averaged_features(self):
+        dataset_features = {}
+        for client in self.clients:
+            d_id = client.dataset_name
+            if d_id not in dataset_features:
+                dataset_features[d_id] = {}
+            
+            client_avg_feats = client.get_avg_features()
+            for lbl, feat in client_avg_feats.items():
+                if lbl not in dataset_features[d_id]:
+                    dataset_features[d_id][lbl] = []
+                dataset_features[d_id][lbl].append(feat)
+                
+        for d_id in dataset_features:
+            for lbl in dataset_features[d_id]:
+                dataset_features[d_id][lbl] = torch.cat(dataset_features[d_id][lbl], dim=0)
+                
+        return dataset_features
+
+    def aggregate(self):
+        groups = defaultdict(list)
+        for client in self.selected_clients:
+            d_name = client.dataset_name  
+            groups[d_name].append(client)
+
+            if d_name not in self.label_space_meta:
+                self.label_space_meta[d_name] = client.class_name_set
+
+        print(f"[Server] Aggregating from {len(self.selected_clients)} clients (grouped by {len(groups)} datasets)...")
+
+        for d_name, group_clients in groups.items():
+            ddpm_msg_list = [
+                (client.num_samples, client.ddpm.state_dict())
+                for client in group_clients
+            ]
+            w_ddpm = self.aggregate_weights(ddpm_msg_list)
+            self.global_ddpm_states[d_name] = w_ddpm
+
+        if (self.glob_iter + 1) >= self.start_mapping_epoch and (self.glob_iter + 1) % 5 == 0:
+            print(f"\n[EVAL] Executing 4 Mapping Baselines at Round {self.glob_iter + 1} ...")
+            clear_image_caches()
+            dataset_clients_dict = {}   
+            active_datasets = []
+            dataset_label_space_meta = {}
+            
+            for client in self.clients: 
+                d_name = client.dataset_name
+                
+                if d_name not in dataset_clients_dict:
+                    dataset_clients_dict[d_name] = []
+                    active_datasets.append(d_name)
+                    dataset_label_space_meta[d_name] = self.label_space_meta[d_name]
+                
+                dataset_clients_dict[d_name].append(client.model.to(self.device))
+            
+            active_datasets = list(dataset_clients_dict.keys())
+            dynamic_entropy_ratios = [round(x, 2) for x in np.arange(0.10, 1.05, 0.05)]
+            dynamic_cs_thresholds = [round(x, 2) for x in np.arange(-1.0, 1.05, 0.10)]
+
+            class DummyLogger:
+                def log(self, msg): pass
+            
+            identical_map = self.identical_label_mapping()
+            independent_map = self.independent_label_mapping()
+            
+            dataset_feats = self.get_all_clients_averaged_features()
+            
+            ddpm_dict = {}
+            for d_name in active_datasets:
+                if d_name in self.global_ddpm_states:
+                    nn_model = ContextUnet(
+                        in_channels=self.exp_conf.get('channels', 3), 
+                        n_feat=self.exp_conf.get('n_feat', 64), 
+                        n_classes=len(self.label_space_meta[d_name])
+                    ).to(self.device)
+                    
+                    ddpm = DDPM(
+                        nn_model=nn_model, 
+                        betas=(1e-4, 0.02), 
+                        n_T=1000, 
+                        device=self.device, 
+                        drop_prob=0.1
+                    ).to(self.device)
+
+                    ddpm.load_state_dict(self.global_ddpm_states[d_name])
+                    ddpm.eval()
+                    ddpm_dict[d_name] = ddpm
+
+            if not active_datasets:
+                return 
+            
+            use_new_ent = self.exp_conf.get('use_new_entropy_method', False)
+
+            for thresh in dynamic_entropy_ratios:
+                print(thresh)
+                self.evaluate_and_save_baseline('Identical', identical_map, self.glob_iter + 1, thresh, dataset_clients_dict, dataset_label_space_meta)
+                
+                self.evaluate_and_save_baseline('Independent', independent_map, self.glob_iter + 1, thresh, dataset_clients_dict, dataset_label_space_meta)
+                
+                unidir_map = single_direction_label_mapping(
+                    get_images_func=get_gen_images,  
+                    dataset_ids=active_datasets,
+                    clients_dict=dataset_clients_dict,
+                    label_space_meta=dataset_label_space_meta,
+                    entropy_ratio=thresh, 
+                    use_new_entropy_method=use_new_ent,
+                    logger=DummyLogger(),
+                    args=self.args,
+                    gen_dict=ddpm_dict 
+                )
+                global_to_local_mapping(self.local_id_to_global_id, logger=self.logger, label_space_meta=self.label_space_meta)
+                self.evaluate_and_save_baseline('Single_Direction', unidir_map, self.glob_iter + 1, thresh, dataset_clients_dict, dataset_label_space_meta)
+                
+                feature_bi_map = feature_bi_direction_label_mapping(
+                    dataset_features_dict=dataset_feats,
+                    dataset_ids=active_datasets,
+                    clients_dict=dataset_clients_dict,
+                    label_space_meta=dataset_label_space_meta,
+                    entropy_ratio=thresh, 
+                    use_new_entropy_method=use_new_ent,
+                    logger=DummyLogger(),
+                )
+                self.evaluate_and_save_baseline('Feature_Bi_Direction', feature_bi_map, self.glob_iter + 1, thresh, dataset_clients_dict, dataset_label_space_meta)
+
+                ours_map = label_mapping(
+                    get_images_func=get_gen_images, 
+                    dataset_ids=active_datasets,    
+                    clients_dict=dataset_clients_dict,
+                    label_space_meta=dataset_label_space_meta,
+                    entropy_ratio=thresh,
+                    use_new_entropy_method=use_new_ent, 
+                    logger=DummyLogger(), 
+                    args=self.args,
+                    gen_dict=ddpm_dict
+                )
+                self.evaluate_and_save_baseline('Ours', ours_map, self.glob_iter + 1, thresh, dataset_clients_dict, dataset_label_space_meta)
+
+            for cs_thresh in dynamic_cs_thresholds:
+                cs_map = image_cosine_similarity_mapping(
+                    get_images_func=get_gen_images,
+                    dataset_ids=active_datasets,
+                    label_space_meta=dataset_label_space_meta,
+                    cs_threshold=cs_thresh,
+                    logger=DummyLogger(),
+                    args=self.args,
+                    gen_dict=ddpm_dict
+                )
+                self.evaluate_and_save_baseline('Cosine_Similarity', cs_map, self.glob_iter + 1, cs_thresh, dataset_clients_dict, dataset_label_space_meta)
+
+
+    def independent_label_mapping(self):
+        self.logger.log("[Server] Performing Independent Label Mapping (All Different)...")
+        self.local_id_to_global_id = {}
+        current_gid = 0
+        for d_name, class_names in self.label_space_meta.items():
+            self.local_id_to_global_id[d_name] = {}
+            for l_id in range(len(class_names)):
+                self.local_id_to_global_id[d_name][l_id] = current_gid
+                current_gid += 1
+
+        global_to_local_mapping(self.local_id_to_global_id, logger=self.logger, label_space_meta=self.label_space_meta)
+        return self.local_id_to_global_id
+
+
+    def identical_label_mapping(self):
+        self.logger.log("[Server] Performing Identical Label Mapping (All Same by Local ID)...")
+        self.local_id_to_global_id = {}
+        for d_name, class_names in self.label_space_meta.items():
+            self.local_id_to_global_id[d_name] = {}
+            for l_id in range(len(class_names)):
+                self.local_id_to_global_id[d_name][l_id] = l_id
+                
+        global_to_local_mapping(self.local_id_to_global_id, logger=self.logger, label_space_meta=self.label_space_meta)
+        return self.local_id_to_global_id
+
+
+    def get_ddpm_dict(self, active_datasets):
+        ddpm_dict = {}
+        for d_name in active_datasets:
+            if d_name in self.global_ddpm_states:
+                nn_model = ContextUnet(
+                    in_channels=self.exp_conf.get('channels', 3), 
+                    n_feat=self.exp_conf.get('n_feat', 64), 
+                    n_classes=len(self.label_space_meta[d_name])
+                ).to(self.device)
+                
+                ddpm = DDPM(
+                    nn_model=nn_model, betas=(1e-4, 0.02), n_T=1000, 
+                    device=self.device, drop_prob=0.1
+                ).to(self.device)
+
+                ddpm.load_state_dict(self.global_ddpm_states[d_name])
+                ddpm.eval()
+                ddpm_dict[d_name] = ddpm
+        return ddpm_dict
+
+    def evaluate_and_save_baseline(self, baseline_name, mapping_dict, current_round, thresh, dataset_clients_dict, dataset_label_space_meta):
+        if mapping_dict is None: return
+        
+        metrics = evaluate_mapping_results(
+            list(dataset_clients_dict.keys()), 
+            dataset_label_space_meta, 
+            mapping_dict
+        )
+        
+        csv_dir = os.path.join(self.logger.log_dir, "mapping_results")
+        os.makedirs(csv_dir, exist_ok=True)
+        csv_filename = os.path.join(csv_dir, f"{self.algorithm}_{baseline_name}_mapping_acc.csv")
+        file_exists = os.path.isfile(csv_filename)
+        
+        with open(csv_filename, mode='a', newline='', encoding='utf-8') as f:
+            writer = csv.writer(f)
+            if not file_exists:
+                writer.writerow(['global_round', 'entropy_ratio', 'recall', 'specificity', 'precision', 'average_accuracy', 'f1_score', 'mcc', 'TP', 'FP', 'TN', 'FN'])
+            writer.writerow([
+                current_round, thresh, 
+                metrics['Recall'], metrics['Specificity'], metrics['Precision'], 
+                metrics['AvgAccuracy'], metrics['F1-Score'], metrics['MCC'],
+                metrics['TP'], metrics['FP'], metrics['TN'], metrics['FN']
+            ])
+
+        
+    def distribute_model(self):
+        for client in self.selected_clients:
+            d_name = client.dataset_name
+            if d_name in self.global_ddpm_states:
+                client.ddpm.load_state_dict(self.global_ddpm_states[d_name])
+
+
+    def aggregate_weights(self, weights_list):
+        """
+        FedAvg aggregation for Generator
+        """
+        total_samples = sum([w[0] for w in weights_list])
+        avg_params = OrderedDict()
+        
+        for name in weights_list[0][1].keys():
+            avg_params[name] = torch.zeros_like(weights_list[0][1][name], dtype=torch.float32)
+            
+            for num_samples, params in weights_list:
+                avg_params[name] += params[name] * (num_samples / total_samples)
+                
+        return avg_params
+
+
+    def save_model(self, fname='checkpoints.pth'):
+        self.logger.log("Saving checkpoints ...")
+
+        dataset_classifiers = {}
+        for ls_id, model_dict in self.global_models.items():
+            if 'classifier' in model_dict:
+                dataset_classifiers[ls_id] = model_dict['classifier'].state_dict()
+
+        client_label_distributions = {}
+        for client in self.clients:
+            unique_labels = set()
+            for _, labels in client.train_loader:
+                unique_labels.update(labels.tolist())
+            client_label_distributions[client.id] = list(unique_labels)
+
+        checkpoint = {
+            'client_label_distributions': client_label_distributions,
+            'global_registry': self.local_id_to_global_id,
+            'label_space_meta': self.label_space_meta,
+            'global_feature_dim': self.global_feature_dim,
+            'exp_conf': self.exp_conf,
+            'args': {
+                'num_train_mnist': self.args.num_train_mnist,
+                'num_train_emnist': self.args.num_train_emnist,
+                'num_train_fashionmnist': self.args.num_train_fashionmnist,
+                'num_train_cifar10': self.args.num_train_cifar10,
+                'num_train_cifar100': self.args.num_train_cifar100,
+                'num_new_clients': self.args.num_new_clients,
+                'seed': self.args.seed,
+                'device': str(self.args.device),
+                'algorithm': self.args.algorithm,
+            },
+        }
+
+        server_save_path = os.path.join(self.logger.log_dir, 'server_'+fname)
+        torch.save(checkpoint, server_save_path)
+        self.logger.log(f"[Server] Checkpoint saved to {server_save_path}")
+
+        gen_dir = os.path.join(self.logger.log_dir, 'global_gans')
+        os.makedirs(gen_dir, exist_ok=True)
+        
+        for d_name in self.global_ddpm_states.keys():
+            gan_checkpoint = {
+                'generator': self.global_ddpm_states[d_name]
+            }
+            gan_save_path = os.path.join(gen_dir, f'{d_name}_DDPM.pth')
+            torch.save(gan_checkpoint, gan_save_path)
+            self.logger.log(f"[Server] Global DDPM for {d_name} saved to {gan_save_path}")
+
+        clients_dir = os.path.join(self.logger.log_dir, f'clients_last_round_checkpoints')
+        os.makedirs(clients_dir, exist_ok=True)
+
+        for client in self.clients:
+            arch_name = getattr(client, 'model_name', 'Unknown')
+            client_path = os.path.join(clients_dir, f'client_model_{client.dataset_name}_c{client.id}_{arch_name}.pth')
+            torch.save(client.model.state_dict(), client_path)
+            
+        self.logger.log(f"[Server] All {len(self.clients)} clients saved in {clients_dir}/")

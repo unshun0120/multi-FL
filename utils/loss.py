@@ -129,3 +129,37 @@ class Gen_DiversityLoss(nn.Module):
         layer_dist = self.pairwise_distance(layer, how=self.metric)
         noise_dist = self.pairwise_distance(noises, how='l2')
         return torch.exp(torch.mean(-noise_dist * layer_dist))
+    
+
+class RelationDistillationLoss(nn.Module):
+    def __init__(self):
+        super(RelationDistillationLoss, self).__init__()
+
+    def forward(self, s_feat, t_feat):
+        s_feat = F.normalize(s_feat, p=2, dim=1)
+        t_feat = F.normalize(t_feat, p=2, dim=1)
+        
+        s_dist = torch.cdist(s_feat, s_feat, p=2)
+        t_dist = torch.cdist(t_feat, t_feat, p=2)
+        
+        s_dist = s_dist / (s_dist.mean() + 1e-8)
+        t_dist = t_dist / (t_dist.mean() + 1e-8)
+        
+        loss = F.mse_loss(s_dist, t_dist)
+        return loss
+    
+
+class VanillaKDLoss(nn.Module):
+    """ According to: Distilling the Knowledge in a Neural Network,
+        https://arxiv.org/pdf/1503.02531.pdf
+    """
+
+    def __init__(self, temperature):
+        super(VanillaKDLoss, self).__init__()
+        self.temperature = temperature
+
+    def forward(self, student_logits, teacher_logits):
+        loss = F.kl_div(F.log_softmax(student_logits / self.temperature, dim=-1),
+                        F.softmax(teacher_logits / self.temperature, dim=-1),
+                        reduction='batchmean') * self.temperature * self.temperature
+        return loss

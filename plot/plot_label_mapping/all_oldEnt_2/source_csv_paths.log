@@ -1,0 +1,9 @@
+=== Plotting Source Information ===
+Generated at: 2026-05-27_15-23-02
+
+Input CSV Files:
+[Found] logs/2026-05-12_17-40-17/gan_ddpm_oldEnt/GeFL_GAN_DDPM_Real_mapping_acc_per_round.csv
+[Found] logs/2026-05-12_17-40-17/new_client_2026-05-12_18-47-52/DI_syn_oldGen_oldEnt.csv
+[Found] logs/2026-05-12_17-40-17/new_client_2026-05-13_14-32-41/Fed_syn_oldGen_oldEnt.csv
+[Found] logs/2026-05-12_17-40-17/gan_ddpm_oldEnt/GeFL_GAN_DDPM_GAN_mapping_acc_per_round.csv
+[Found] logs/2026-05-12_17-40-17/gan_ddpm_oldEnt/new_GeFL_DDPM_DDPM_mapping_acc_per_round.csv

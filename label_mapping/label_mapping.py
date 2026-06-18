@@ -14,7 +14,8 @@ from utils.nets import MLP, CNN, ResNet, BasicBlock, MobileNetV2, MobileNetV3, L
 from label_mapping_utils import (
     label_mapping, 
     evaluate_mapping_results, save_mapping_results_to_csv, 
-    get_gen_images, get_real_images
+    get_gen_images, get_real_images, global_to_local_mapping,
+    single_direction_label_mapping,
 )
 
 
@@ -33,9 +34,10 @@ def set_seed(seed):
 def main():
     parser = argparse.ArgumentParser()
     parser.add_argument("--model_path", type=str, required=True, help="Path to models")
+    parser.add_argument("--gan_path", type=str, help="Path to GAN models")
     parser.add_argument("--device", type=str, default="cuda:1")
     parser.add_argument("--seed", type=int, default=15698)
-    parser.add_argument("--method", type=str, default="all", choices=['syn', 'real', 'all', 'DI', 'FAST', 'NAYER'], 
+    parser.add_argument("--method", type=str, default="all", choices=['syn', 'real', 'real_seperate','all', 'DI', 'DIG', 'FAST', 'NAYER', 'Fed', 'GeFL', 'GeFL_DDPM', 'GeFL_local', 'GeFL_DDPM_single'], 
                         help="Choose experiment method: 'syn' (Synthetic), 'real' (Real Images), or 'all' (Both)")
     parser.add_argument("--gen_mode", type=str, default="all", choices=['old', 'new', 'all'], 
                         help="")
@@ -54,6 +56,7 @@ def main():
         'CIFAR10':  {'in_ch': 3, 'classes': 10,  'size': 32}, 
         'FashionMNIST': {'in_ch': 3, 'classes': 10,  'size': 32},
         'CIFAR100':     {'in_ch': 3, 'classes': 100, 'size': 32},
+        'USPS':        {'in_ch': 3, 'classes': 10,  'size': 32}, 
     }
 
     DATA_ROOT = './data/raw'
@@ -118,21 +121,31 @@ def main():
     clients_dict = {k: clients_dict[k] for k in active_datasets}
     label_space_meta = {k: label_space_meta[k] for k in active_datasets}
 
-    if len(active_datasets) < 2:
-        logger.log("Not enough dataset models.")
-        return
+    # if len(active_datasets) < 2:
+    #     logger.log("Not enough dataset models.")
+    #     return
+
+    test_loaders = {}
+    for d_name in active_datasets:
+        test_dataset = get_raw_dataset_transform(name=d_name, root=DATA_ROOT, train=False)
+        test_loaders[d_name] = DataLoader(test_dataset, batch_size=64, shuffle=False) 
     
     dynamic_entropy_ratios = [round(x, 2) for x in np.arange(0.10, 1.05, 0.05)]
+    #dynamic_entropy_ratios = [0.7]
+
+    server_ckpt_path = os.path.join(args.model_path, "server_checkpoints.pth")
+    client_label_distributions = {}
+    if os.path.exists(server_ckpt_path):
+        server_ckpt = torch.load(server_ckpt_path, map_location=args.device)
+        client_label_distributions = server_ckpt.get('client_label_distributions', {})
+        logger.log(">>> Loaded client data distributions directly from server checkpoint.")
+    else:
+        logger.log(f">>> [!] Checkpoint not found at {server_ckpt_path}")
 
     if args.method in ['real', 'all']:
         logger.log("\n" + "="*40)
         logger.log(">>> [METHOD: REAL] Starting Real Image Label Mapping...")
         logger.log("="*40)
-        
-        test_loaders = {}
-        for d_name in active_datasets:
-            test_dataset = get_raw_dataset_transform(name=d_name, root=DATA_ROOT, train=False)
-            test_loaders[d_name] = DataLoader(test_dataset, batch_size=64, shuffle=True)
 
         # 1. Real Img + Old Entropy
         logger.log("\n>>> Exp 1 (Real): Real Img + Old Entropy <<<")
@@ -156,13 +169,55 @@ def main():
             metrics = evaluate_mapping_results(active_datasets, label_space_meta, map_res)
             save_mapping_results_to_csv(save_dir, "Real", "real_new_entropy.csv", metrics, ["thresh"], [thresh])
 
-    if args.method in ['syn', 'all', 'DI', 'FAST', 'NAYER']:
+    if args.method in ['real_seperate', 'all']:
+        logger.log("\n" + "="*40)
+        logger.log(">>> [METHOD: REAL] Starting Real Image Seperate Label Mapping...")
+        logger.log("="*40)
+
+        local_clients_dict = {}
+        local_label_space_meta = {}
+        local_valid_labels_dict = {}
+        active_local_ids = []
+        local_test_loaders = {}
+
+        for d_name in active_datasets:
+            dataset_client_models = clients_dict.get(d_name, [])
+            for model in dataset_client_models:
+                c_id = model.client_id
+                local_id = f"client_c{c_id}_{d_name}"
+
+                if c_id in client_label_distributions:
+                    local_valid_labels_dict[local_id] = client_label_distributions[c_id]
+                else:
+                    local_valid_labels_dict[local_id] = list(range(meta['classes'])) 
+
+                print(f"-> {local_id} Label Distribution: {local_valid_labels_dict[local_id]}")
+                
+                local_clients_dict[local_id] = [model]
+                local_label_space_meta[local_id] = label_space_meta[d_name]
+                active_local_ids.append(local_id)
+                local_test_loaders[local_id] = test_loaders[d_name]
+
+        # 1. Real Img + Old Entropy
+        logger.log("\n>>> Exp 1 (Real): Real Img + Old Entropy <<<")
+        for thresh in dynamic_entropy_ratios:
+            map_res = label_mapping(
+                get_real_images, active_local_ids, local_clients_dict, local_label_space_meta,
+                entropy_ratio=thresh, use_new_entropy_method=False, logger=logger, args=args,
+                test_loaders=local_test_loaders
+            )
+            metrics = evaluate_mapping_results(active_local_ids, local_label_space_meta, map_res, local_valid_labels_dict)
+            save_mapping_results_to_csv(save_dir, "Real_seperate", "real_old_entropy.csv", metrics, ["thresh"], [thresh])
+            global_map = global_to_local_mapping(map_res, logger=logger, label_space_meta=local_label_space_meta)
+
+            
+    if args.method in ['syn', 'all', 'DI', 'DIG', 'FAST', 'NAYER', 'Fed', 'GeFL', 'GeFL_DDPM', 'GeFL_local', 'GeFL_DDPM_single']:
         logger.log("\n" + "="*40)
         logger.log(">>> [METHOD: SYNTHETIC] Starting Synthetic Label Mapping...")
         logger.log("="*40)
 
         if args.method in ['syn', 'all']:
-            target_methods = ['DI', 'FAST', 'NAYER']
+            target_methods = ['DI', 'DIG', 'FAST', 'NAYER', 'GeFL', 'GeFL_local']
         else:
             target_methods = [args.method]
 
@@ -214,24 +269,29 @@ def main():
                 from generator_trainer_2 import train_generators_NAYER as trainer_func
             elif method_name == 'DI': 
                 from generator_trainer_2 import train_generators_DeepInversion as trainer_func
+            elif method_name == 'Fed': 
+                from generator_trainer_2 import train_generators_Fed as trainer_func
 
             student_models_old = {}
             student_models_new = {}
 
             for d_name in active_datasets:
                 meta = DATASET_META[d_name]
-                student_old = MobileNetV2(in_channels=meta['in_ch'], num_classes=meta['classes']).to(args.device)
-                student_new = MobileNetV2(in_channels=meta['in_ch'], num_classes=meta['classes']).to(args.device)
+                # student_old = MobileNetV2(in_channels=meta['in_ch'], num_classes=meta['classes']).to(args.device)
+                # student_new = MobileNetV2(in_channels=meta['in_ch'], num_classes=meta['classes']).to(args.device)
+
+                student_old = CNN(in_channels=meta['in_ch'], num_classes=meta['classes']).to(args.device)
+                student_new = CNN(in_channels=meta['in_ch'], num_classes=meta['classes']).to(args.device)
                 
                 student_models_old[d_name] = student_old
                 student_models_new[d_name] = student_new
 
-            if args.gen_mode in ['old', 'all']:
+            if args.gen_mode in ['old', 'all'] and method_name not in ['GeFL', 'GeFL_DDPM', 'GeFL_local', 'GeFL_DDPM_single']:
                 logger.log(f"\n>>> Syn-{method_name} Training Old Generators...")
                 gens_old = trainer_func(
                     clients_dict, label_space_meta, DATASET_META, args.device, logger, 
                     use_new_gen_method=False, client_label_mask_dict=None, 
-                    student_model=student_models_old
+                    student_model=student_models_old, test_loaders_dict=test_loaders
                 )
 
                 # 1: Old Gen + Old Entropy 
@@ -248,55 +308,223 @@ def main():
                     metrics = evaluate_mapping_results(active_datasets, label_space_meta, res)
                     save_mapping_results_to_csv(save_dir, method_name, "syn_oldGen_newEnt.csv", metrics, ["thresh"], [t])
 
-            elif args.gen_mode in ['new', 'all']:
+            elif args.gen_mode in ['new', 'all'] and method_name not in ['GeFL', 'GeFL_DDPM', 'GeFL_local', 'GeFL_DDPM_single']:
                 logger.log(f"\n>>> Syn-{method_name} Training New Generators...")
                 gens_new = trainer_func(
                     clients_dict, label_space_meta, DATASET_META, args.device, logger, 
                     use_new_gen_method=True, client_label_mask_dict=client_label_mask_dict,
-                    student_model=student_models_new
+                    student_model=student_models_new, test_loaders_dict=test_loaders
                 )
 
-                # 2: New Gen + Old Entropy
+                # Old Entropy
                 for t in dynamic_entropy_ratios:
                     logger.log(f"Exp (Syn): New Gen + Old Ent ({t})")
                     res = label_mapping(get_gen_images, active_datasets, clients_dict, label_space_meta, t, False, logger, args=args, gen_dict=gens_new)
                     metrics = evaluate_mapping_results(active_datasets, label_space_meta, res)
                     save_mapping_results_to_csv(save_dir, method_name, "syn_newGen_oldEnt.csv", metrics, ["thresh"], [t])
 
-                # 4: New Gen + New Entropy
+                # New Entropy
                 for t in dynamic_entropy_ratios:
                     logger.log(f"Exp (Syn): New Gen + New Ent ({t})")
                     res = label_mapping(get_gen_images, active_datasets, clients_dict, label_space_meta, t, True, logger, args=args, gen_dict=gens_new)
                     metrics = evaluate_mapping_results(active_datasets, label_space_meta, res)
                     save_mapping_results_to_csv(save_dir, method_name, "syn_newGen_newEnt.csv", metrics, ["thresh"], [t])
 
-            # # 1: Old Gen + Old Entropy 
-            # for t in dynamic_entropy_ratios:
-            #     logger.log(f"Exp: Old Gen + Old Ent ({t})")
-            #     res = label_mapping(get_gen_images, active_datasets, clients_dict, label_space_meta, t, False, logger, args=args, gen_dict=gens_old)
-            #     metrics = evaluate_mapping_results(active_datasets, label_space_meta, res)
-            #     save_mapping_results_to_csv(save_dir, method_name, "syn_oldGen_oldEnt.csv", metrics, ["thresh"], [t])
+            elif method_name == 'GeFL':
+                logger.log(f"\n>>> Syn-{method_name} Training New Generators...")
 
-            # # 2: New Gen + Old Entropy
-            # for t in dynamic_entropy_ratios:
-            #     logger.log(f"Exp (Syn): New Gen + Old Ent ({t})")
-            #     res = label_mapping(get_gen_images, active_datasets, clients_dict, label_space_meta, t, False, logger, args=args, gen_dict=gens_new)
-            #     metrics = evaluate_mapping_results(active_datasets, label_space_meta, res)
-            #     save_mapping_results_to_csv(save_dir, method_name, "syn_newGen_oldEnt.csv", metrics, ["thresh"], [t])
+                from utils.nets import DCGANGenerator
 
-            # # 3: Old Gen + New Entropy
-            # for t in dynamic_entropy_ratios:
-            #     logger.log(f"Exp: Old Gen + New Ent ({t})")
-            #     res = label_mapping(get_gen_images, active_datasets, clients_dict, label_space_meta, t, True, logger, args=args, gen_dict=gens_old)
-            #     metrics = evaluate_mapping_results(active_datasets, label_space_meta, res)
-            #     save_mapping_results_to_csv(save_dir, method_name, "syn_oldGen_newEnt.csv", metrics, ["thresh"], [t])
+                GeFL_gens = {}
+                gan_dir = os.path.join(args.gan_path, 'global_gans')
+                
+                for d_name in active_datasets:
+                    meta = DATASET_META[d_name]
+                    
+                    gen = DCGANGenerator(
+                        num_classes=meta['classes'], 
+                        noise_dim=128, 
+                        img_size=meta['size'], 
+                        channels=meta['in_ch']
+                    ).to(args.device)
+                    
+                    gan_save_path = os.path.join(gan_dir, f'{d_name}_GAN.pth')
+                    if os.path.exists(gan_save_path):
+                        checkpoint = torch.load(gan_save_path, map_location=args.device)
+                        gen.load_state_dict(checkpoint['generator'])
+                        gen.eval()
+                        GeFL_gens[d_name] = gen
+                        logger.log(f"-> [SUCCESS] Loaded GeFL GAN generator for {d_name} from {gan_save_path}")
+                    else:
+                        logger.log(f"-> [WARNING] GAN checkpoint not found for {d_name} at {gan_save_path}")
 
-            # # 4: New Gen + New Entropy
-            # for t in dynamic_entropy_ratios:
-            #     logger.log(f"Exp (Syn): New Gen + New Ent ({t})")
-            #     res = label_mapping(get_gen_images, active_datasets, clients_dict, label_space_meta, t, True, logger, args=args, gen_dict=gens_new)
-            #     metrics = evaluate_mapping_results(active_datasets, label_space_meta, res)
-            #     save_mapping_results_to_csv(save_dir, method_name, "syn_newGen_newEnt.csv", metrics, ["thresh"], [t])
+                # 2: New Gen + Old Entropy
+                for t in dynamic_entropy_ratios:
+                    logger.log(f"Exp (Syn): GeFL Gen + Old Ent ({t})")
+                    res = label_mapping(get_gen_images, active_datasets, clients_dict, label_space_meta, t, False, logger, args=args, gen_dict=GeFL_gens)
+                    metrics = evaluate_mapping_results(active_datasets, label_space_meta, res)
+                    save_mapping_results_to_csv(save_dir, method_name, "syn_GeFL_oldEnt.csv", metrics, ["thresh"], [t])
+
+                # 4: New Gen + New Entropy
+                for t in dynamic_entropy_ratios:
+                    logger.log(f"Exp (Syn): GeFL Gen + New Ent ({t})")
+                    res = label_mapping(get_gen_images, active_datasets, clients_dict, label_space_meta, t, True, logger, args=args, gen_dict=GeFL_gens)
+                    metrics = evaluate_mapping_results(active_datasets, label_space_meta, res)
+                    save_mapping_results_to_csv(save_dir, method_name, "syn_GeFL_newEnt.csv", metrics, ["thresh"], [t])
+
+            elif method_name == 'GeFL_DDPM':
+                logger.log(f"\n>>> Syn-{method_name} Training New Generators...")
+
+                from utils.nets import DDPM, ContextUnet
+
+                GeFL_DDPM_gens = {}
+                gan_dir = os.path.join(args.gan_path, 'global_gans')
+                
+                for d_name in active_datasets:
+                    meta = DATASET_META[d_name]
+                    
+                    n_feat = 64
+                    unet = ContextUnet(in_channels=meta['in_ch'], n_feat=n_feat, n_classes=meta['classes'])
+                    
+                    ddpm = DDPM(
+                        nn_model=unet, 
+                        betas=(1e-4, 0.02), 
+                        n_T=400,
+                        device=args.device,
+                        drop_prob=0.1
+                    ).to(args.device)
+                    
+                    gan_save_path = os.path.join(gan_dir, f'{d_name}_DDPM.pth')
+                    if os.path.exists(gan_save_path):
+                        checkpoint = torch.load(gan_save_path, map_location=args.device)
+                        ddpm.load_state_dict(checkpoint['generator'])
+                        ddpm.eval()
+                        GeFL_DDPM_gens[d_name] = ddpm
+                        logger.log(f"-> [SUCCESS] Loaded GeFL DDPM generator for {d_name} from {gan_save_path}")
+                    else:
+                        logger.log(f"-> [WARNING] DDPM checkpoint not found for {d_name} at {gan_save_path}")
+
+                # Old Entropy
+                for t in dynamic_entropy_ratios:
+                    logger.log(f"Exp (Syn): GeFL Gen + Old Ent ({t})")
+                    res = label_mapping(get_gen_images, active_datasets, clients_dict, label_space_meta, t, False, logger, args=args, gen_dict=GeFL_DDPM_gens)
+                    metrics = evaluate_mapping_results(active_datasets, label_space_meta, res)
+                    save_mapping_results_to_csv(save_dir, method_name, "syn_GeFL_DDPM_oldEnt.csv", metrics, ["thresh"], [t])
+
+                # New Entropy
+                for t in dynamic_entropy_ratios:
+                    logger.log(f"Exp (Syn): GeFL Gen + New Ent ({t})")
+                    res = label_mapping(get_gen_images, active_datasets, clients_dict, label_space_meta, t, True, logger, args=args, gen_dict=GeFL_DDPM_gens)
+                    metrics = evaluate_mapping_results(active_datasets, label_space_meta, res)
+                    save_mapping_results_to_csv(save_dir, method_name, "syn_GeFL_DDPM_newEnt.csv", metrics, ["thresh"], [t])
+
+            elif method_name == 'GeFL_local':
+                logger.log(f"\n>>> Syn-{method_name} Loading Local Client Generators...")
+
+                from utils.nets import DCGANGenerator
+
+                gan_dir = os.path.join(args.gan_path, 'client_gans_20')
+                if not os.path.exists(gan_dir):
+                    logger.log(f"-> [ERROR] Local GAN directory not found at {gan_dir}")
+                    continue
+                
+                GeFL_local_gens = {}
+
+                local_clients_dict = {}
+                local_label_space_meta = {}
+                local_valid_labels_dict = {}
+                active_local_ids = []
+                
+                if not os.path.exists(gan_dir):
+                    logger.log(f"-> [ERROR] Local GAN directory not found at {gan_dir}")
+                    continue
+
+                for d_name in active_datasets:
+                    meta = DATASET_META[d_name]
+                    dataset_client_models = clients_dict.get(d_name, [])
+
+                    for model in dataset_client_models:
+                        c_id = model.client_id
+                        local_id = f"client_c{c_id}_{d_name}"
+
+                        if c_id in client_label_distributions:
+                            local_valid_labels_dict[local_id] = client_label_distributions[c_id]
+                        else:
+                            local_valid_labels_dict[local_id] = list(range(meta['classes'])) 
+
+                        gen = DCGANGenerator(
+                            num_classes=meta['classes'], 
+                            noise_dim=128, 
+                            img_size=meta['size'], 
+                            channels=meta['in_ch']
+                        ).to(args.device)
+
+                        gan_save_path = os.path.join(gan_dir, f'client_c{c_id}_{d_name}_GAN.pth')
+
+                        if os.path.exists(gan_save_path):
+                            checkpoint = torch.load(gan_save_path, map_location=args.device)
+                            gen.load_state_dict(checkpoint['generator'])
+                            gen.eval()
+                            
+                            GeFL_local_gens[local_id] = gen
+                            local_clients_dict[local_id] = [model] 
+                            local_label_space_meta[local_id] = label_space_meta[d_name] 
+                            active_local_ids.append(local_id)
+                            logger.log(f"-> [SUCCESS] Loaded GeFL_local GAN for {local_id}")
+                        else:
+                            logger.log(f"-> [WARNING] GAN checkpoint not found for {local_id} at {gan_save_path}")
+
+                if len(active_local_ids) < 2:
+                    logger.log("Not enough valid GeFL_local generators found. Skipping GeFL_local mapping...")
+                    continue
+
+                # Old Entropy 
+                for t in dynamic_entropy_ratios:
+                    logger.log(f"Exp (Syn): GeFL_local Gen + Old Ent ({t})")
+                    res = label_mapping(get_gen_images, active_local_ids, local_clients_dict, local_label_space_meta, t, False, logger, args=args, gen_dict=GeFL_local_gens, valid_labels_dict=local_valid_labels_dict)
+                    metrics = evaluate_mapping_results(active_local_ids, local_label_space_meta, res, local_valid_labels_dict)
+                    save_mapping_results_to_csv(save_dir, method_name, "syn_GeFL_local_oldEnt.csv", metrics, ["thresh"], [t])
+                    global_map = global_to_local_mapping(res, logger=logger, label_space_meta=local_label_space_meta)
+
+
+            elif method_name == 'GeFL_DDPM_single':
+                logger.log(f"\n>>> Syn-{method_name} Training New Generators...")
+
+                from utils.nets import DDPM, ContextUnet
+
+                GeFL_DDPM_gens = {}
+                gan_dir = os.path.join(args.gan_path, 'global_gans')
+                
+                for d_name in active_datasets:
+                    meta = DATASET_META[d_name]
+                    
+                    n_feat = 64
+                    unet = ContextUnet(in_channels=meta['in_ch'], n_feat=n_feat, n_classes=meta['classes'])
+                    
+                    ddpm = DDPM(
+                        nn_model=unet, 
+                        betas=(1e-4, 0.02), 
+                        n_T=1000,
+                        device=args.device,
+                        drop_prob=0.1
+                    ).to(args.device)
+                    
+                    gan_save_path = os.path.join(gan_dir, f'{d_name}_DDPM.pth')
+                    if os.path.exists(gan_save_path):
+                        checkpoint = torch.load(gan_save_path, map_location=args.device)
+                        ddpm.load_state_dict(checkpoint['generator'])
+                        ddpm.eval()
+                        GeFL_DDPM_gens[d_name] = ddpm
+                        logger.log(f"-> [SUCCESS] Loaded GeFL DDPM generator for {d_name} from {gan_save_path}")
+                    else:
+                        logger.log(f"-> [WARNING] DDPM checkpoint not found for {d_name} at {gan_save_path}")
+
+                for t in dynamic_entropy_ratios:
+                    logger.log(f"Exp (Single): GeFL DDPM ({t})")
+                    res = single_direction_label_mapping(get_gen_images, active_datasets, clients_dict, label_space_meta, t, False, logger, args=args, gen_dict=GeFL_DDPM_gens)
+                    metrics = evaluate_mapping_results(active_datasets, label_space_meta, res)
+                    save_mapping_results_to_csv(save_dir, method_name, "single_GeFL_DDPM.csv", metrics, ["thresh"], [t])
+                    global_map = global_to_local_mapping(res, logger=logger, label_space_meta=label_space_meta)
 
 
 if __name__ == "__main__":

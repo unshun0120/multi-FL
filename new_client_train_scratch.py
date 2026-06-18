@@ -16,7 +16,7 @@ class ScratchTrainer(BaseNewClientTrainer):
         acc = evaluate_client(client, self.args)
         acc_history = [acc]
         self.logger.log(f"    Epoch 0 (init) | Acc: {acc:.2f}%")
-        append_csv(self.csv_path, 'baseline', d_name, arch_name, 0, combined_acc=acc)
+        #append_csv(self.csv_path, 'baseline', d_name, arch_name, 0, combined_acc=acc)
 
         for epoch in range(self.args.new_client_epochs):
             client.model.train()
@@ -35,7 +35,7 @@ class ScratchTrainer(BaseNewClientTrainer):
             acc = evaluate_client(client, self.args)
             acc_history.append(acc)
             self.logger.log(f"    Epoch {epoch+1}/{self.args.new_client_epochs} | CE: {epoch_ce/max(num_batches, 1):.4f} | Acc: {acc:.2f}%")
-            append_csv(self.csv_path, 'baseline', d_name, arch_name, epoch + 1, combined_acc=acc)
+            #append_csv(self.csv_path, 'baseline', d_name, arch_name, epoch + 1, combined_acc=acc)
 
         return acc_history
 

@@ -63,21 +63,40 @@ def plot_metric_comparison(csv_files, metric, output_filename="comparison_plot.p
     plt.close()
 
 if __name__ == "__main__":
-    real_dir = "logs/2026-03-19_18-17-49/new_client_2026-03-24_19-43-22"
-    synthetic_dir = "logs/2026-03-19_18-17-49/new_client_2026-03-24_19-43-22"
+    print('1')
+    real_dir = "logs/2026-05-01_00-34-57/real_img"
+    di_synthetic_dir = "logs/Local_iid_het_gb40/di_oldGen"
+    fast_synthetic_dir = "logs/Local_iid_het_gb40/fast_oldGen"
+    nayer_synthetic_dir = "logs/Local_iid_het_gb40/nayer_oldGen"
+    fed_synthetic_dir = "logs/Local_iid_het_gb40/fed_oldGen"
+
+    gan_dir = "logs/2026-04-16_13-34-59/new_client_2026-04-23_10-31-47"
+    ddpm_synthetic_dir = "logs/2026-05-01_00-34-57/ddpm_img"
     
     files_to_compare = [
-        os.path.join(real_dir, "real_old_entropy.csv"),
-        #os.path.join(real_dir, "real_new_entropy.csv"),
-        #os.path.join(synthetic_dir, "syn_oldGen_oldEnt.csv"),
-        #os.path.join(synthetic_dir, "syn_oldGen_newEnt.csv"),
-        #os.path.join(synthetic_dir, "syn_newGen_oldEnt.csv"),
-        os.path.join(synthetic_dir, "syn_newGen_newEnt.csv")
+        # os.path.join(real_dir, "Real_real_old_entropy.csv"),
+        # os.path.join(real_dir, "Real_real_new_entropy.csv"),
+
+        # os.path.join(synthetic_dir, "syn_oldGen_oldEnt.csv"),
+        # os.path.join(synthetic_dir, "syn_oldGen_newEnt.csv"),
+        # os.path.join(synthetic_dir, "syn_newGen_oldEnt.csv"),
+        # os.path.join(synthetic_dir, "syn_newGen_newEnt.csv")
+
+        os.path.join(di_synthetic_dir, "DI_syn_oldGen_oldEnt.csv"),
+        os.path.join(fast_synthetic_dir, "FAST_syn_oldGen_oldEnt.csv"),
+        os.path.join(nayer_synthetic_dir, "NAYER_syn_oldGen_oldEnt.csv"),
+        os.path.join(fed_synthetic_dir, "Fed_syn_oldGen_oldEnt.csv"),
+
+        #os.path.join(gan_dir, "GeFL_syn_GeFL_oldEnt.csv"),
+        #os.path.join(gan_dir, "GeFL_syn_GeFL_newEnt.csv"),
+
+        #os.path.join(ddpm_synthetic_dir, "GeFL_DDPM_syn_GeFL_DDPM_oldEnt.csv"),
+        #os.path.join(ddpm_synthetic_dir, "GeFL_DDPM_syn_GeFL_DDPM_newEnt.csv"),
     ]
 
     # folder
     current_time = datetime.datetime.now().strftime("%Y-%m-%d_%H-%M-%S")
-    save_dir = os.path.join("label_mapping/res_img/non-iid", f"label_mapping_{current_time}")
+    save_dir = os.path.join("label_mapping/res_img/iid", f"label_mapping_{current_time}")
     os.makedirs(save_dir, exist_ok=True)
     print(f"\n Output directory: {save_dir}")
 

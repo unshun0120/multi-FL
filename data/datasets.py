@@ -1,8 +1,9 @@
 import os
 import json
+import random
 import torch
 import numpy as np
-from collections import Counter
+from collections import Counter, defaultdict
 from torchvision import datasets, transforms
 from torch.utils.data import Dataset, ConcatDataset, DataLoader, Subset
 from data.dirichlet_noniid import partition_data
@@ -20,11 +21,31 @@ class Global_Dataset(Dataset):
         global_label = self.mapping[int(local_label)]
         return img, global_label
 
+class LabelPermutedDataset(Dataset):
+    def __init__(self, original_dataset, mapping_dict):
+        self.dataset = original_dataset
+        self.mapping_dict = mapping_dict
+        
+        if hasattr(self.dataset, 'targets'):
+            self.targets = [self.mapping_dict[int(y)] for y in self.dataset.targets]
+        elif hasattr(self.dataset, 'labels'):
+            self.labels = [self.mapping_dict[int(y)] for y in self.dataset.labels]
+        else:
+            self.targets = [self.mapping_dict[int(y)] for _, y in self.dataset.samples]
+
+    def __len__(self):
+        return len(self.dataset)
+
+    def __getitem__(self, idx):
+        img, original_label = self.dataset[idx]
+        permuted_label = self.mapping_dict[int(original_label)]
+        return img, permuted_label
+
 def get_split_cache_path(DATA_ROOT, dataset_name, alpha, total_clients, num_new_clients, seed):
     cache_dir = os.path.join(DATA_ROOT, "splits")
     os.makedirs(cache_dir, exist_ok=True)
 
-    # 把alpha的.去掉改成p (e.g. 0.1 -> 0p1)
+    # 把dirichlet alpha的.去掉改成p (e.g. 0.1 -> 0p1)
     alpha_str = f"{alpha:.1f}".replace(".", "p")
 
     filename = f"{dataset_name}_C{total_clients}_New{num_new_clients}_alpha{alpha_str}_seed{seed}.json"
@@ -161,6 +182,7 @@ def load_partitioned_datasets(args, DATA_ROOT, **exp_conf):
     all_client_data_loaders = {}
     server_train_loaders = {}
     server_test_loaders = {}
+    usps_label_mapping = None
 
     for d_name, n_clients in dataset_configs.items():
         if n_clients == 0:
@@ -175,6 +197,17 @@ def load_partitioned_datasets(args, DATA_ROOT, **exp_conf):
         # Getting Datasets
         train_dataset = get_raw_dataset_transform(d_name, DATA_ROOT, train=True)
         test_dataset = get_raw_dataset_transform(d_name, DATA_ROOT, train=False)
+
+        if d_name == 'USPS':
+            if usps_label_mapping is None:
+                original_labels = list(range(10))
+                shuffled_labels = original_labels.copy()
+                random.shuffle(shuffled_labels)
+                usps_label_mapping = {ori: shf for ori, shf in zip(original_labels, shuffled_labels)}
+                print(f"[!] USPS Label Shuffled Mapping: {usps_label_mapping}")
+            
+            train_dataset = LabelPermutedDataset(train_dataset, usps_label_mapping)
+            test_dataset = LabelPermutedDataset(test_dataset, usps_label_mapping)
 
         # Getting Labels
         # 拿這個 dataset 底下每一筆資料的 label
@@ -269,18 +302,25 @@ def load_partitioned_datasets(args, DATA_ROOT, **exp_conf):
 
         all_client_data_loaders[d_name] = client_loaders
 
-        if public_ratio < 1.0:
-            total_len = len(train_dataset)
-            subset_len = int(total_len * public_ratio)
-            indices = torch.randperm(total_len)[:subset_len]
-            public_train_dataset = Subset(train_dataset, indices)
+        global_samples_per_class = exp_conf.get('global_samples_per_class', 1)
+
+        class_indices = defaultdict(list)
+        for idx in range(len(train_dataset)):
+            lbl = int(train_labels_for_split[idx])
+            class_indices[lbl].append(idx)
             
-            print(f"   [Data Subsampling] Using {subset_len}/{total_len} samples ({public_ratio*100}%) for {d_name}")
-        else:
-            public_train_dataset = train_dataset
+        selected_indices = []
+        for lbl, idcs in class_indices.items():
+            if len(idcs) >= global_samples_per_class:
+                selected_indices.extend(random.sample(idcs, global_samples_per_class))
+            else:
+                selected_indices.extend(random.choices(idcs, k=global_samples_per_class))
+                
+        public_train_dataset = Subset(train_dataset, selected_indices)
 
         server_train_loaders[d_name] = DataLoader(
-            public_train_dataset, 
+            #public_train_dataset, 
+            train_dataset, 
             batch_size=batch_size, 
             shuffle=True,  
             num_workers=0

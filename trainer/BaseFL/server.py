@@ -1,3 +1,5 @@
+import csv
+
 import torch
 from torch.nn import *
 from torch.optim import *
@@ -14,9 +16,16 @@ import math
 
 from .client import Node
 from utils.plotting import plot_accuracy_curves
-from utils.nets import ConditionalGenerator, ConditionalImageGenerator, Classifier
+from utils.nets import ConditionalGenerator, ConditionalImageGenerator, Classifier, DCGANGenerator, ContextUnet, DDPM
 from utils.loss import Gen_DiversityLoss, total_variation_loss, BNSM_Hook, get_bn_loss
 from utils.train_utils import evaluate_model
+from utils.pacfl_utils import calculating_adjacency, hierarchical_clustering
+from label_mapping.label_mapping_utils import (
+    label_mapping, 
+    global_to_local_mapping, 
+    get_gen_images, 
+    get_real_images
+)
 #from utils.plotting import plot_accuracy_curves
 
 class Server(Node):
@@ -31,12 +40,12 @@ class Server(Node):
         self.metric_type = exp_conf.get('metric_type', 'accuracy')
         self.global_feature_dim = exp_conf.get('global_feature_dim', 256)
         self.index_matching = exp_conf.get('index_matching', 'ours')
+        self.aggregate_method = exp_conf.get('aggregate_method', 'dataset_name')
 
-        self.global_model_epochs = exp_conf.get('global_full_model_epochs', 1) 
-        self.global_model_optim_name =  exp_conf.get('global_full_model_optim', 'Adam')
-        self.global_model_optim_lr = exp_conf.get('global_full_model_optim_lr', 1e-3)
-        self.global_model_optimizer = eval(self.global_model_optim_name)(self.model.parameters(), self.global_model_optim_lr)
-
+        self.global_model_epochs = exp_conf.get('global_model_epochs', 1) 
+        self.global_model_optim_name =  exp_conf.get('global_model_optim', 'Adam')
+        self.global_model_optim_lr = exp_conf.get('global_model_optim_lr', 1e-3)
+        self.global_samples_per_class = exp_conf.get('global_samples_per_class', 1)
 
         # initial variables
         self.clients = clients
@@ -46,10 +55,10 @@ class Server(Node):
 
         # Value: {'feature_extractor': state_dict, 'classifier': state_dict}
         self.global_models = {}
+        self.global_ddpm_states = {} 
 
         # accuracy
         self.dataset_acc_history = defaultdict(list)
-
 
     def run(self):
         self.logger.log("")
@@ -111,70 +120,133 @@ class Server(Node):
 
 
     def aggregate(self):
-        groups = defaultdict(list)
-        for client in self.selected_clients:
-            d_name = client.dataset_name  
-            groups[d_name].append(client)
+        if self.aggregate_method == 'pacfl':
+            self.logger.log("[Server] Aggregating by PACFL ...")
+            n_basis = 3
+            cluster_alpha = 15
+            
+            U_clients = []
+            for client in self.selected_clients:
+                local_images = []
+                count = 0
+                for imgs, _ in client.train_loader:
+                    local_images.append(imgs.detach().cpu().numpy())
+                    count += imgs.size(0)
+                    if count >= 500:
+                        break
+                
+                local_ds = np.concatenate(local_images, axis=0)[:500]
+                local_ds = local_ds.reshape(local_ds.shape[0], -1).T
 
-            if d_name not in self.label_space_meta:
-                self.label_space_meta[d_name] = client.class_name_set
+                local_ds = (local_ds * 0.5) + 0.5
+                
+                u_temp, _, _ = np.linalg.svd(local_ds, full_matrices=False)
+                u_temp = u_temp / np.linalg.norm(u_temp, ord=2, axis=0) # Normalize
+                U_clients.append(copy.deepcopy(u_temp[:, 0:n_basis]))
+
+            adj_mat = calculating_adjacency(list(range(len(self.selected_clients))), U_clients)
+            clusters_idx = hierarchical_clustering(copy.deepcopy(adj_mat), thresh=cluster_alpha, linkage='average')
+            
+            groups = defaultdict(list)
+            for cluster_id, client_indices in enumerate(clusters_idx):
+                cluster_name = f"Cluster_{cluster_id}"
+                
+                ds_in_cluster = set()
+                for idx in client_indices:
+                    client = self.selected_clients[idx]
+                    client.group_name = cluster_name
+                    groups[cluster_name].append(client)
+                    ds_in_cluster.add(client.dataset_name)
+                    
+                self.logger.log(f'   -> {cluster_name}: {len(client_indices)} Users | Datasets included: {ds_in_cluster}')
+
+                if cluster_name not in self.label_space_meta:
+                    c_set = set()
+                    for c in groups[cluster_name]:
+                        c_set.update(c.class_name_set)
+                    self.label_space_meta[cluster_name] = list(c_set)
+
+        elif self.aggregate_method == 'dataset_name':
+            self.logger.log("[Server] Aggregating by Dataset Name ...")
+            groups = defaultdict(list)
+            for client in self.selected_clients:
+                d_name = client.dataset_name  
+                client.group_name = d_name
+                groups[d_name].append(client)
+
+                if d_name not in self.label_space_meta:
+                    self.label_space_meta[d_name] = client.class_name_set
 
         print(f"[Server] Aggregating from {len(self.selected_clients)} clients (grouped by {len(groups)} datasets)...") 
         
-        for d_name, group_clients in groups.items():
-            if d_name not in self.global_models:
-                self.global_models[d_name] = {}
+        if self.index_matching == 'ddpm':
+            for d_name, group_clients in groups.items():
+                if hasattr(group_clients[0], 'ddpm') and group_clients[0].ddpm is not None:
+                    ddpm_msg_list = [
+                        (client.num_samples, client.ddpm.state_dict())
+                        for client in group_clients
+                    ]
+                    w_ddpm = self.avg_weights(ddpm_msg_list)
+                    self.global_ddpm_states[d_name] = w_ddpm
 
-            if self.heterogeneous:
-                # aggregate clients generic classifier
-                msg_list = [(client.num_samples, client.model.classifier.state_dict())
-                            for client in group_clients]
-                w_cls = self.avg_weights(msg_list)
+        # for d_name, group_clients in groups.items():
+        #     if d_name not in self.global_models:
+        #         self.global_models[d_name] = {}
 
-                num_classes = w_cls['weight'].shape[0]
-                input_dim = w_cls['weight'].shape[1]
+        #     if self.heterogeneous:
+        #         # aggregate clients generic classifier
+        #         msg_list = [(client.num_samples, client.model.classifier.state_dict())
+        #                     for client in group_clients]
+        #         w_cls = self.avg_weights(msg_list)
 
-                cls_model = Classifier(input_dim, num_classes).to(self.device)
-                cls_model.load_state_dict(w_cls)
-                cls_model.eval()
+        #         num_classes = w_cls['weight'].shape[0]
+        #         input_dim = w_cls['weight'].shape[1]
 
-                self.global_models[d_name]['classifier'] = cls_model
-            else:
-            # if not heterogeneous, aggregate feature_extractor of clients
-                msg_list = [(client.num_samples, client.model.state_dict())
-                            for client in group_clients]
-                w_global = self.avg_weights(msg_list)
+        #         cls_model = Classifier(input_dim, num_classes).to(self.device)
+        #         cls_model.load_state_dict(w_cls)
+        #         cls_model.eval()
 
-                full_model = copy.deepcopy(group_clients[0].model).to(self.device)
-                full_model.load_state_dict(w_global)
-                full_model.eval()
+        #         self.global_models[d_name]['classifier'] = cls_model
+        #     else:
+        #     # if not heterogeneous, aggregate feature_extractor of clients
+        #         msg_list = [(client.num_samples, client.model.state_dict())
+        #                     for client in group_clients]
+        #         w_global = self.avg_weights(msg_list)
+
+        #         full_model = copy.deepcopy(group_clients[0].model).to(self.device)
+        #         full_model.load_state_dict(w_global)
+        #         full_model.eval()
                 
-                self.global_models[d_name]['full_model'] = full_model
+        #         self.global_models[d_name]['full_model'] = full_model
                 
-                self.global_models[d_name]['classifier'] = full_model.classifier
-                self.global_models[d_name]['feature_extractor'] = full_model.feature_extractor
+        #         self.global_models[d_name]['classifier'] = full_model.classifier
+        #         self.global_models[d_name]['feature_extractor'] = full_model.feature_extractor
 
         if (self.glob_iter + 1) == self.start_mapping_epoch: 
             if self.index_matching == 'class_name':
-                self.perform_name_based_mapping()
-            else:
-                self.test_discover_mappings_with_real_images()
+                self.class_name_label_mapping()
+            elif self.index_matching == 'real_image':
+                self.real_img_label_mapping()
+            elif self.index_matching == 'gan':
+                self.gan_label_mapping()
+            elif self.index_matching == 'ddpm':
+                self.ddpm_label_mapping()
+            elif self.index_matching == 'independent':
+                self.independent_label_mapping()
+            elif self.index_matching == 'identical':
+                self.identical_label_mapping()
 
-
-    def perform_name_based_mapping(self):
+    def class_name_label_mapping(self):
         self.logger.log("[Server] Performing Name-Based Label Mapping...")
         
-        # 1. Collect all unique class names across all clients
         all_class_names = set()
         for d_name in self.label_space_meta:
              for name in self.label_space_meta[d_name]:
                  all_class_names.add(name)
         
-        # 2. Assign Global IDs
         sorted_names = sorted(list(all_class_names))
         name_to_gid = {name: idx for idx, name in enumerate(sorted_names)}
         
-        # 3. Build local_id_to_global_id
         self.local_id_to_global_id = {}
         
         for d_name in self.label_space_meta:
@@ -186,7 +258,6 @@ class Server(Node):
 
         self.logger.log(f"[Server] Name-based mapping completed. Found {len(sorted_names)} unique global classes.")
         
-        # Log details similar to the visual method format
         self.logger.log("\n=========================================================================================================")
         self.logger.log(f"{'Global ID':<10} | {'Class Name':<20} | {'Mapped Datasets (Local ID)'}")
         self.logger.log("---------------------------------------------------------------------------------------------------------")
@@ -203,354 +274,178 @@ class Server(Node):
         self.logger.log("=========================================================================================================\n")
         
 
-    def test_discover_mappings_with_real_images(self):
-        self.logger.log("[Server] Testing Cross-Dataset Label Mappings with REAL images ...")
+    def real_img_label_mapping(self):
+        self.logger.log("[Server] Performing Real Image Label Mapping (Client-Level)...")
 
-        dataset_clients_map = defaultdict(list)
+        dataset_clients_dict = defaultdict(list)
+        active_dataset_ids = []
+        dataset_test_loaders = {}
+
         for client in self.selected_clients:
-            dataset_clients_map[client.dataset_name].append(client)
+            d_name = client.dataset_name
+            #d_name = getattr(client, 'group_name', client.dataset_name) 
+            dataset_clients_dict[d_name].append(client.model.to(self.device).eval())
             
-        dataset_ids = list(dataset_clients_map.keys())
-        entropy_threshold = 2.0
+            if d_name not in active_dataset_ids:
+                active_dataset_ids.append(d_name)
+                dataset_test_loaders[d_name] = client.test_loader
 
-        def get_real_images(loader, target_label, num_samples=32):
-            images_collected = []
-            for imgs, labels in loader:
-                mask = (labels == target_label)
-                valid_imgs = imgs[mask]
-                images_collected.append(valid_imgs)
-                if sum(x.size(0) for x in images_collected) >= num_samples:
-                    break
-            
-            if len(images_collected) == 0:
-                return None
-            
-            images_cat = torch.cat(images_collected, dim=0)[:num_samples]
-            return images_cat.to(self.device)
+        dataset_label_space_meta = {d_name: self.label_space_meta[d_name] for d_name in active_dataset_ids}
 
-        for i, src_id in enumerate(dataset_ids):
-            for j, tgt_id in enumerate(dataset_ids):
-                if i == j: continue 
+        entropy_ratio = self.exp_conf.get('entropy_ratio', 1.0) 
+        use_new_entropy_method = self.exp_conf.get('use_new_entropy_method', False)
 
-                tgt_clients = [c for c in self.selected_clients if c.dataset_name == tgt_id]
-                src_clients = [c for c in self.selected_clients if c.dataset_name == src_id]
+        res_mapping = label_mapping(
+            get_images_func=get_real_images,
+            dataset_ids=active_dataset_ids,          
+            clients_dict=dataset_clients_dict,       
+            label_space_meta=dataset_label_space_meta,
+            entropy_ratio=entropy_ratio,
+            use_new_entropy_method=use_new_entropy_method,
+            logger=self.logger,
+            valid_labels_dict=None,                  
+            args=self.args,
+            test_loaders=dataset_test_loaders
+        )
 
-                src_names = self.label_space_meta[src_id]
-                tgt_names = self.label_space_meta[tgt_id]
-                
-                src_loader = self.test_loader[src_id] 
-                tgt_loader = self.test_loader[tgt_id]
+        self.local_id_to_global_id = res_mapping
+        global_to_local_mapping(self.local_id_to_global_id, logger=self.logger, label_space_meta=dataset_label_space_meta)
 
-                for label_idx, label_name in enumerate(src_names):
-                    img_src_real = get_real_images(src_loader, label_idx, num_samples=32)
-                    if img_src_real is None:
-                        continue
-
-                    with torch.no_grad():
-                        avg_probs_tgt = 0
-                        for c in tgt_clients:
-                            c.model.to(self.device)
-                            c.model.eval()
-                            _, logits = c.model(img_src_real)
-                            avg_probs_tgt += F.softmax(logits, dim=1).mean(dim=0)
-                        avg_probs_tgt /= len(tgt_clients)
-
-                        entropy_tgt = -torch.sum(avg_probs_tgt * torch.log(avg_probs_tgt + 1e-8)).item()
-                        pred_tgt_idx = torch.argmax(avg_probs_tgt).item()
-                        pred_tgt_name = tgt_names[pred_tgt_idx]
-                        tgt_conf = avg_probs_tgt[pred_tgt_idx].item()
-
-                        if entropy_tgt > entropy_threshold:
-                            self.logger.log(f"{src_id}:'{label_name}' -> {tgt_id} | predict:'{pred_tgt_name}' | Entropy:{entropy_tgt:.2f} ⚠️ [Filtered: High Uncertainty]")
-                            continue
-                        else: 
-                            self.logger.log(f"{src_id}:'{label_name}' -> {tgt_id} | predict:'{pred_tgt_name}' | Entropy:{entropy_tgt:.2f}")
-
-                        img_tgt_real = get_real_images(tgt_loader, pred_tgt_idx, num_samples=32)
-                        if img_tgt_real is None:
-                            continue
-
-                        avg_probs_src = 0
-                        for c in src_clients:
-                            c.model.to(self.device)
-                            c.model.eval()
-                            _, logits = c.model(img_tgt_real)
-                            avg_probs_src += F.softmax(logits, dim=1).mean(dim=0)
-                        avg_probs_src /= len(src_clients)
-
-                        entropy_src = -torch.sum(avg_probs_src * torch.log(avg_probs_src + 1e-8)).item()
-                        pred_src_cycle_idx = torch.argmax(avg_probs_src).item()
-                        pred_src_cycle_name = src_names[pred_src_cycle_idx]
-                        conf_src = avg_probs_src[pred_src_cycle_idx].item()
-
-                        if entropy_src > entropy_threshold:
-                            match_symbol = "❓" 
-                            self.logger.log(f"  -> Check -> {src_id} | Predict:'{pred_src_cycle_name}' | {match_symbol} | Entropy:{entropy_src:.2f} ⚠️ [Filtered: Weak Cycle-Back]")
-                        else:
-                            match_symbol = "✅" if pred_src_cycle_idx == label_idx else "❌"
-                            self.logger.log(f"  -> Check -> {src_id} | Predict:'{pred_src_cycle_name}' | {match_symbol} | Entropy:{entropy_src:.2f}")
-
-                        if pred_src_cycle_idx == label_idx:
-                            self.register_mapping(src_id, label_idx, tgt_id, pred_tgt_idx)
-
-        for d_id in self.label_space_meta.keys():
-             if d_id not in self.local_id_to_global_id:
-                 self.local_id_to_global_id[d_id] = {}
-             
-             class_names = self.label_space_meta[d_id]
-             
-             for l_id in range(len(class_names)):
-                 if l_id not in self.local_id_to_global_id[d_id]:
-                     current_max = -1
-                     for d in self.local_id_to_global_id:
-                         if self.local_id_to_global_id[d]:
-                             current_max = max(current_max, max(self.local_id_to_global_id[d].values()))
-                     new_gid = current_max + 1
-                     
-                     self.local_id_to_global_id[d_id][l_id] = new_gid
-                     
-                     l_name = class_names[l_id]                
-
-    def register_mapping(self, d1, l1, d2, l2):
-        gid = None
+    def gan_label_mapping(self):
+        self.logger.log("[Server] Performing GAN Generator Label Mapping (Client-Level)...")
         
-        if d1 in self.local_id_to_global_id and l1 in self.local_id_to_global_id[d1]:
-             gid = self.local_id_to_global_id[d1][l1]
+        gens_dict = {} 
+
+        dataset_clients_dict = defaultdict(list)
+        active_dataset_ids = []
         
-        if gid is None and d2 in self.local_id_to_global_id and l2 in self.local_id_to_global_id[d2]:
-             gid = self.local_id_to_global_id[d2][l2]
-             
-        if gid is None:
-             current_max = -1
-             for d in self.local_id_to_global_id:
-                 if self.local_id_to_global_id[d]:
-                     current_max = max(current_max, max(self.local_id_to_global_id[d].values()))
-             gid = current_max + 1
-             
-        if d1 not in self.local_id_to_global_id: self.local_id_to_global_id[d1] = {}
-        self.local_id_to_global_id[d1][l1] = gid
+        for client in self.selected_clients:
+            #d_name = client.dataset_name
+            d_name = getattr(client, 'group_name', client.dataset_name)
+            dataset_clients_dict[d_name].append(client.model.to(self.device).eval())
+            if d_name not in active_dataset_ids:
+                active_dataset_ids.append(d_name)
+
+        dataset_label_space_meta = {d_name: self.label_space_meta[d_name] for d_name in active_dataset_ids}
+
+        gens_dict = {} 
         
-        if d2 not in self.local_id_to_global_id: self.local_id_to_global_id[d2] = {}
-        self.local_id_to_global_id[d2][l2] = gid
-
-
-    def img_train_dataset_generators(self):
-        self.logger.log("[Server] Training Per-Dataset Generators ...")
-
-        feat_gen_noise_dim = 128
-        div_loss_fn = Gen_DiversityLoss(metric='l1').to(self.device)
-
-        gen_epochs = 1500
-        gen_lr = 2e-3
-        fedted_beta = 0.0
-        bn_weight = 0.05
-        tv_weight = 0.0
-        
-        for ls_id, model_dict in self.global_models.items():
-            dataset_clients = [c for c in self.selected_clients if c.dataset_name == ls_id]
-            if len(dataset_clients) == 0:
+        for d_name in active_dataset_ids:
+            if not hasattr(self, 'global_gen_states') or d_name not in self.global_gen_states:
+                self.logger.log(f"[Server] WARNING: global_gen_states for {d_name} not found! Skipping...")
                 continue
-
-            class_names = self.label_space_meta[ls_id]
-            num_local_classes = len(class_names)
-
-            if 'generator' not in model_dict:
-                gen = ConditionalImageGenerator(
-                    num_classes=num_local_classes, 
-                    noise_dim=feat_gen_noise_dim,
-                    img_channels=1,
-                    img_size=28   
-                ).to(self.device)
-                model_dict['generator'] = gen
-                model_dict['gen_optimizer'] = torch.optim.Adam(gen.parameters(), lr=gen_lr)
+                
+            num_classes = len(dataset_label_space_meta[d_name])
+            gen = DCGANGenerator(
+                num_classes=num_classes, 
+                noise_dim=self.exp_conf.get('gen_noise_dim', 128), 
+                img_size=self.exp_conf.get('img_size', 32), 
+                channels=self.exp_conf.get('channels', 3)
+            ).to(self.device)
             
-            generator = model_dict['generator']
-            optimizer = model_dict['gen_optimizer']
+            gen.load_state_dict(self.global_gen_states[d_name])
+            gen.eval()
+            gens_dict[d_name] = gen
 
-            for c in dataset_clients:
-                c.model.to(self.device)
-                c.model.eval() 
-                for param in c.model.parameters():      
-                    param.requires_grad = False
+        entropy_ratio = self.exp_conf.get('entropy_ratio', 1.0)
+        use_new_entropy_method = self.exp_conf.get('use_new_entropy_method', False)
 
-            generator.train()
+        res_mapping = label_mapping(
+            get_images_func=get_gen_images,
+            dataset_ids=active_dataset_ids,    
+            clients_dict=dataset_clients_dict,
+            label_space_meta=dataset_label_space_meta,
+            entropy_ratio=entropy_ratio,
+            use_new_entropy_method=use_new_entropy_method,
+            logger=self.logger,
+            valid_labels_dict=None,
+            args=self.args,
+            gen_dict=gens_dict
+        )
 
-            batch_size = 64
-            epoch_loss_tracker = []
+        self.local_id_to_global_id = res_mapping
+        global_to_local_mapping(self.local_id_to_global_id, logger=self.logger, label_space_meta=dataset_label_space_meta)
 
-            for epoch in tqdm(range(gen_epochs), colour='blue', ncols=100):
-                class_order = torch.randperm(num_local_classes).tolist()
-
-                #for c_idx in class_order:
-                for _ in range(10):
-                    batch_labels = torch.randint(0, num_local_classes, (batch_size,)).to(self.device)
-                    z_noise = torch.randn(batch_size, feat_gen_noise_dim).to(self.device)
-
-                    optimizer.zero_grad()
-                    
-                    gen_imgs = generator(z_noise, batch_labels)
-                    gen_imgs.retain_grad()
-                    
-                    div_loss = div_loss_fn(gen_imgs.view(batch_size, -1), z_noise)
-                    
-                    total_cls_loss = 0.0
-                    total_bn_loss = 0.0
-
-                    for client in dataset_clients:
-                        bn_hooks = []
-                        for module in client.model.modules():
-                            if isinstance(module, torch.nn.BatchNorm2d):
-                                bn_hooks.append(BNSM_Hook(module))
-                        
-                        _, logits = client.model(gen_imgs)
-                        
-                        total_cls_loss += F.cross_entropy(logits, batch_labels)
-                        
-                        total_bn_loss += get_bn_loss(bn_hooks)
-                        for hook in bn_hooks:
-                            hook.close()
-
-                    cls_loss = total_cls_loss / len(dataset_clients)
-                    bn_loss = total_bn_loss / len(dataset_clients)
-
-                    tv_loss = total_variation_loss(gen_imgs) 
-
-                    loss = cls_loss + (fedted_beta * div_loss) + (tv_weight * tv_loss) + (bn_weight * bn_loss)
-                    loss.backward()
-                    
-                    optimizer.step()
-                    
-                    epoch_loss_tracker.append(loss.item())
-
-            avg_loss = sum(epoch_loss_tracker) / len(epoch_loss_tracker)
-            self.logger.log(f"     Dataset [{ls_id}] Generator | Epochs: {gen_epochs} | Final Loss: {avg_loss:.4f}")
-
-            generator.eval()
-            with torch.no_grad():
-                save_dir = self.logger.log_dir
-
-                num_samples_per_class = 1 
-                #num_classes_to_plot = min(10, num_local_classes) # 畫 0~9
-                num_classes_to_plot = num_local_classes
-
-                sample_labels = torch.arange(num_classes_to_plot).repeat(num_samples_per_class).to(self.device)
-                sample_z = torch.randn(num_samples_per_class * num_classes_to_plot, feat_gen_noise_dim).to(self.device)
-                sample_imgs = generator(sample_z, sample_labels)
-                sample_imgs = (sample_imgs * 0.5 + 0.5).clamp(0, 1).cpu().numpy()
-
-                cols = min(10, num_classes_to_plot)
-                rows = math.ceil(num_classes_to_plot / cols)
-
-                fig, axes = plt.subplots(rows, cols, figsize=(cols * 1.5, rows * 1.5))
-                
-                if rows * cols == 1:
-                    axes_flat = [axes]
-                else:
-                    axes_flat = axes.flatten()
-                
-                for idx in range(num_classes_to_plot):
-                    ax = axes_flat[idx]
-                    
-                    img = sample_imgs[idx].squeeze() 
-                    ax.imshow(img, cmap='gray')
-                    
-                    label_name = str(class_names[idx])
-                    ax.set_title(label_name, fontsize=12)
-                    ax.axis('off') 
-
-                for idx in range(num_classes_to_plot, len(axes_flat)):
-                    axes_flat[idx].axis('off')
-
-                plt.tight_layout()
-                save_path = os.path.join(save_dir, f'{ls_id}_generated_samples.png')
-                plt.savefig(save_path)
-                plt.close() 
-                self.logger.log(f"     -> Sample images with labels saved to {save_path}")
-
-        self.logger.log("[Server] Per-Dataset Generators trained.")
-
-        for ls_id, model_dict in self.global_models.items():
-            dataset_clients = [c for c in self.selected_clients if c.dataset_name == ls_id]
-            for c in dataset_clients:
-                for param in c.model.parameters():
-                    param.requires_grad = True
+    
+    def ddpm_label_mapping(self):
+        self.logger.log("[Server] Performing DDPM Label Mapping...")
         
-        self.img_discover_label_mappings()
+        gens_dict = {} 
+
+        dataset_clients_dict = defaultdict(list)
+        active_dataset_ids = []
+        
+        for client in self.selected_clients:
+            d_name = client.dataset_name
+            #d_name = getattr(client, 'group_name', client.dataset_name)
+            dataset_clients_dict[d_name].append(client.model.to(self.device).eval())
+            if d_name not in active_dataset_ids:
+                active_dataset_ids.append(d_name)
+
+        dataset_label_space_meta = {d_name: self.label_space_meta[d_name] for d_name in active_dataset_ids}
+
+        ddpm_dict = {}
+        for d_name in active_dataset_ids:
+            if d_name in self.global_ddpm_states:
+                nn_model = ContextUnet(
+                    in_channels=self.exp_conf.get('channels', 3), 
+                    n_feat=self.exp_conf.get('n_feat', 64), 
+                    n_classes=len(self.label_space_meta[d_name])
+                ).to(self.device)
+                
+                ddpm = DDPM(
+                    nn_model=nn_model, 
+                    betas=(1e-4, 0.02), 
+                    n_T=1000, 
+                    device=self.device, 
+                    drop_prob=0.1
+                ).to(self.device)
+
+                ddpm.load_state_dict(self.global_ddpm_states[d_name])
+                ddpm.eval()
+                ddpm_dict[d_name] = ddpm
+
+        entropy_ratio = self.exp_conf.get('entropy_ratio', 1.0)
+        use_new_entropy_method = self.exp_conf.get('use_new_entropy_method', False)
+
+        res_mapping = label_mapping(
+            get_images_func=get_gen_images,
+            dataset_ids=active_dataset_ids,    
+            clients_dict=dataset_clients_dict,
+            label_space_meta=dataset_label_space_meta,
+            entropy_ratio=entropy_ratio,
+            use_new_entropy_method=use_new_entropy_method,
+            logger=self.logger,
+            valid_labels_dict=None,
+            args=self.args,
+            gen_dict=ddpm_dict
+        )
+
+        self.local_id_to_global_id = res_mapping
+        global_to_local_mapping(self.local_id_to_global_id, logger=self.logger, label_space_meta=dataset_label_space_meta)
+    
+    def independent_label_mapping(self):
+        self.logger.log("[Server] Performing Independent Label Mapping (All Different)...")
+        self.local_id_to_global_id = {}
+        current_gid = 0
+        for d_name, class_names in self.label_space_meta.items():
+            self.local_id_to_global_id[d_name] = {}
+            for l_id in range(len(class_names)):
+                self.local_id_to_global_id[d_name][l_id] = current_gid
+                current_gid += 1
+
+        global_to_local_mapping(self.local_id_to_global_id, logger=self.logger, label_space_meta=self.label_space_meta)
 
 
-    def img_discover_label_mappings(self):
-        self.logger.log("[Server] Discovering Cross-Dataset Label Mappings ...")
-
-        dataset_ids = list(self.global_models.keys())
-        feat_gen_noise_dim = 128
-
-        for i, src_id in enumerate(dataset_ids):
-            for j, tgt_id in enumerate(dataset_ids):
-                if i == j: continue 
-
-                tgt_clients = [c for c in self.selected_clients if c.dataset_name == tgt_id]
-                src_clients = [c for c in self.selected_clients if c.dataset_name == src_id]
-
-                src_group = self.global_models[src_id]
-                tgt_group = self.global_models[tgt_id]
-
-                src_gen = src_group['generator']; src_model = src_group['full_model']
-                tgt_gen = tgt_group['generator']; tgt_model = tgt_group['full_model']
-
-                src_names = self.label_space_meta[src_id]
-                tgt_names = self.label_space_meta[tgt_id]
-
-                src_gen.eval(); src_model.eval()
-                tgt_gen.eval(); tgt_model.eval()
-
-                for label_idx, label_name in enumerate(src_names):
-                    num_samples = 32
-                    z = torch.randn(num_samples, feat_gen_noise_dim).to(self.device)
-                    label_tensor = torch.tensor([label_idx] * num_samples).to(self.device)
-
-                    with torch.no_grad():
-                        img_src = src_gen(z, label_tensor)
-
-                        avg_probs_tgt = 0
-                        for c in tgt_clients:
-                            c.model.eval()
-                            _, logits = c.model(img_src)
-                            avg_probs_tgt += F.softmax(logits, dim=1).mean(dim=0)
-                        avg_probs_tgt /= len(tgt_clients)
-
-                        entropy_tgt = -torch.sum(avg_probs_tgt * torch.log(avg_probs_tgt + 1e-8)).item()
-
-                        pred_tgt_idx = torch.argmax(avg_probs_tgt).item()
-
-                        pred_tgt_name = tgt_names[pred_tgt_idx]
-
-                        tgt_conf = avg_probs_tgt[pred_tgt_idx].item()
-
-                        self.logger.log(f"\n{src_id}:'{label_name}' -> {tgt_id} | Predict:'{pred_tgt_name}'| Entropy:{entropy_tgt:.2f}")
-
-                        z_cycle = torch.randn(num_samples, feat_gen_noise_dim).to(self.device)
-                        label_tensor_tgt = torch.tensor([pred_tgt_idx] * num_samples).to(self.device)
-                        
-                        img_tgt = tgt_gen(z_cycle, label_tensor_tgt)
-
-                        avg_probs_src = 0
-                        for c in src_clients:
-                            c.model.eval()
-                            _, logits = c.model(img_tgt)
-                            avg_probs_src += F.softmax(logits, dim=1).mean(dim=0)
-                        avg_probs_src /= len(src_clients)
-
-                        entropy_src = -torch.sum(avg_probs_src * torch.log(avg_probs_src + 1e-8)).item()
-
-                        pred_src_cycle_idx = torch.argmax(avg_probs_src).item()
-
-                        pred_src_cycle_name = src_names[pred_src_cycle_idx]
-
-                        conf_src = avg_probs_src[pred_src_cycle_idx].item()
-
-                        match_symbol = "✅" if pred_src_cycle_idx == label_idx else "❌"
-
-                        self.logger.log(f"  -> Check -> {src_id} | Predict:'{pred_src_cycle_name}' | {match_symbol} | Entropy:{entropy_src:.2f}")
+    def identical_label_mapping(self):
+        self.logger.log("[Server] Performing Identical Label Mapping (All Same by Local ID)...")
+        self.local_id_to_global_id = {}
+        for d_name, class_names in self.label_space_meta.items():
+            self.local_id_to_global_id[d_name] = {}
+            for l_id in range(len(class_names)):
+                self.local_id_to_global_id[d_name][l_id] = l_id
+                
+        global_to_local_mapping(self.local_id_to_global_id, logger=self.logger, label_space_meta=self.label_space_meta)
 
 
     @staticmethod
@@ -588,14 +483,111 @@ class Server(Node):
         for d_name, accs in dataset_accs.items():
             self.dataset_acc_history[d_name].append(np.mean(accs) * 100.0)
     
+    def test_global_inference_model(self):
+        if self.model is None:
+            return
+        
+        self.model.eval()
+        self.model.to(self.device)
+        
+        dataset_correct = defaultdict(int)
+        dataset_total = defaultdict(int)
+
+        class_correct = defaultdict(lambda: defaultdict(int))
+        class_total = defaultdict(lambda: defaultdict(int))
+
+        with torch.no_grad():
+            for client in self.clients:
+                #d_name = client.dataset_name
+                d_name = getattr(client, 'group_name', client.dataset_name)
+                if d_name not in self.local_id_to_global_id:
+                    continue
+                    
+                local_to_global_map = self.local_id_to_global_id[d_name]
+
+                for x, y in client.test_loader:
+                    x = x.to(self.device)
+                    y = y.to(self.device)
+
+                    _, logits = self.model(x)
+                    preds = torch.argmax(logits, dim=1)
+
+                    y_np = y.cpu().numpy()
+                    y_global = []
+                    valid_indices = []
+
+                    for i, label in enumerate(y_np):
+                        if label in local_to_global_map:
+                            y_global.append(local_to_global_map[label])
+                            valid_indices.append(i)
+
+                    if len(valid_indices) > 0:
+                        y_global_tensor = torch.tensor(y_global, dtype=torch.long, device=self.device)
+                        valid_preds = preds[valid_indices]
+
+                        correct_mask = (valid_preds == y_global_tensor)
+                        dataset_correct[d_name] += (valid_preds == y_global_tensor).sum().item()
+                        dataset_total[d_name] += len(valid_indices)
+
+                        for valid_idx, original_idx in enumerate(valid_indices):
+                            local_label = y_np[original_idx]
+                            is_correct = correct_mask[valid_idx].item()
+                            
+                            class_total[d_name][local_label] += 1
+                            if is_correct:
+                                class_correct[d_name][local_label] += 1
+
+        total_correct = 0
+        total_samples = 0
+
+        for d_name in dataset_total.keys():
+            correct = dataset_correct[d_name]
+            total = dataset_total[d_name]
+            total_correct += correct
+            total_samples += total
+            
+            acc = (correct / total) * 100.0 if total > 0 else 0.0
+            self.logger.log(f"[Server] Global Inference Model Acc ({d_name}) (Round {self.glob_iter + 1}): {acc:.2f}% (Tested on {total} samples)")
+            
+            csv_path = os.path.join(self.logger.log_dir, f"global_model_acc_{d_name}.csv")
+            file_exists = os.path.isfile(csv_path)
+            
+            with open(csv_path, mode='a', newline='') as f:
+                writer = csv.writer(f)
+                if not file_exists:
+                    writer.writerow(["Round", "Accuracy"])
+                writer.writerow([self.glob_iter + 1, round(acc, 2)])
+
+        mix_acc = (total_correct / total_samples) * 100.0 if total_samples > 0 else 0.0
+        self.logger.log(f"[Server] Global Inference Model Acc (Mix) (Round {self.glob_iter + 1}): {mix_acc:.2f}% (Tested on {total_samples} samples)")
+        
+        csv_path_mix = os.path.join(self.logger.log_dir, "global_model_acc_mix.csv")
+        file_exists_mix = os.path.isfile(csv_path_mix)
+        
+        with open(csv_path_mix, mode='a', newline='') as f:
+            writer = csv.writer(f)
+            if not file_exists_mix:
+                writer.writerow(["Round", "Accuracy"])
+            writer.writerow([self.glob_iter + 1, round(mix_acc, 2)])
+
+
+        csv_path_class = os.path.join(self.logger.log_dir, "global_model_class_acc.csv")
+        file_exists_class = os.path.isfile(csv_path_class)
+        with open(csv_path_class, mode='a', newline='') as f:
+            writer = csv.writer(f)
+            if not file_exists_class:
+                writer.writerow(["Round", "Dataset", "Local_Class", "Accuracy"])
+            
+            for d_name in class_total.keys():
+                for local_lbl in sorted(class_total[d_name].keys()):
+                    tot = class_total[d_name][local_lbl]
+                    cor = class_correct[d_name][local_lbl]
+                    cls_acc = (cor / tot) * 100.0 if tot > 0 else 0.0
+                    writer.writerow([self.glob_iter + 1, d_name, local_lbl, round(cls_acc, 2)])
+
 
     def save_model(self, fname='checkpoints.pth'):
         self.logger.log("Saving checkpoints ...")
-
-        dataset_classifiers = {}
-        for ls_id, model_dict in self.global_models.items():
-            if 'classifier' in model_dict:
-                dataset_classifiers[ls_id] = model_dict['classifier'].state_dict()
 
         client_label_distributions = {}
         for client in self.clients:
@@ -624,7 +616,7 @@ class Server(Node):
             },
         }
 
-        server_save_path = os.path.join(self.logger.log_dir, 'server_'+fname)
+        server_save_path = os.path.join(self.logger.log_dir, 'config_'+fname)
         torch.save(checkpoint, server_save_path)
         self.logger.log(f"[Server] Checkpoint saved to {server_save_path}")
 

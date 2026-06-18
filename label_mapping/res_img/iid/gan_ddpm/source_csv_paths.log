@@ -1,0 +1,8 @@
+=== Plotting Source Information ===
+Generated at: 2026-05-01_18-01-14
+
+Input CSV Files:
+[Found] logs/2026-04-16_13-34-59/new_client_2026-04-23_10-31-47/GeFL_syn_GeFL_oldEnt.csv
+[Found] logs/2026-04-16_13-34-59/new_client_2026-04-23_10-31-47/GeFL_syn_GeFL_newEnt.csv
+[Found] logs/2026-05-01_00-34-57/ddpm_img/GeFL_DDPM_syn_GeFL_DDPM_oldEnt.csv
+[Found] logs/2026-05-01_00-34-57/ddpm_img/GeFL_DDPM_syn_GeFL_DDPM_newEnt.csv

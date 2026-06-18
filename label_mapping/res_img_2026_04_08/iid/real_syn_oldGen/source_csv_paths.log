@@ -1,0 +1,9 @@
+=== Plotting Source Information ===
+Generated at: 2026-04-08_10-33-20
+
+Input CSV Files:
+[Found] logs/Local_iid_het_gb40/real_img/Real_real_old_entropy.csv
+[Found] logs/Local_iid_het_gb40/real_img/Real_real_new_entropy.csv
+[Found] logs/Local_iid_het_gb40/di_oldGen/DI_syn_oldGen_oldEnt.csv
+[Found] logs/Local_iid_het_gb40/fast_oldGen/FAST_syn_oldGen_oldEnt.csv
+[Found] logs/Local_iid_het_gb40/nayer_oldGen/NAYER_syn_oldGen_oldEnt.csv

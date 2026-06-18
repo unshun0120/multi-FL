@@ -1,4 +1,8 @@
+"""
+FedTED Server
+"""
 import copy
+import csv
 import numpy as np
 import torch
 from torch.optim import *
@@ -10,12 +14,11 @@ import torch.nn as nn
 
 from utils.train_utils import evaluate_model
 from trainer.BaseFL.server import Server as Base_Server
-from utils.nets import TwinBranchNets
-from utils.nets import ConditionalGenerator, Classifier
+from utils.nets import TwinBranchNets, ConditionalGenerator, Classifier, ResNet, BasicBlock 
 from utils.loss import Gen_DiversityLoss
 
 class Server(Base_Server):
-    def __init__(self, fine_tune=True, rebuild_loader=None, **kwargs):
+    def __init__(self, **kwargs):
         super(Server, self).__init__(**kwargs)
 
         self.feat_gen_noise_dim = kwargs.get('feat_gen_noise_dim', 128) 
@@ -26,17 +29,11 @@ class Server(Base_Server):
         self.feat_gen_optimizer = None
         self.feat_gen_div_beta =  kwargs.get('feat_gen_div_beta', 1.0)
 
-        self.feature_extractor = self.model.feature_extractor
+        self.feature_extractor = None
         self.optim_name =  kwargs.get('optim', 'Adam')
         self.optim_lr = kwargs.get('optim_lr', 1e-3)
-        self.optimizer_fe = eval(self.optim_name)(
-            filter(lambda p: p.requires_grad, self.model.feature_extractor.parameters()),
-            self.optim_lr)
+        self.optimizer_fe = None
         
-        self.rebuild_generic_model_epochs = kwargs.get('rebuild_generic_model_epochs', 15)
-
-        self.rebuild_loader = self.train_loader
-
         self.diversity_loss = Gen_DiversityLoss(metric='l1')
 
     def aggregate(self):
@@ -45,12 +42,24 @@ class Server(Base_Server):
         if (self.glob_iter + 1) >= self.start_mapping_epoch:
             self.train_generator()
             self.train_global_inference_model()
+            self.test_global_inference_model()
 
 
     def distribute_model(self):
         gen_state_dict = None
+        prox_z = None
+        
         if self.global_feat_gen is not None:
             gen_state_dict = self.global_feat_gen.state_dict()
+            
+            all_global_ids = set()
+            for mapping in self.local_id_to_global_id.values():
+                for g_id in mapping.values():
+                    all_global_ids.add(g_id)
+            if len(all_global_ids) > 0:
+                num_global_classes = max(all_global_ids) + 1
+                prox_z_tensor, _ = self.gen_prox_data(num_global_classes)
+                prox_z = prox_z_tensor.detach().clone().cpu()
 
         for client in self.selected_clients:
             if client.dataset_name in self.local_id_to_global_id:
@@ -61,7 +70,9 @@ class Server(Base_Server):
                     client.global_feat_gen = copy.deepcopy(self.global_feat_gen)
                 else:
                     client.global_feat_gen.load_state_dict(gen_state_dict)
-
+                
+                if prox_z is not None:
+                    client.prox_z = prox_z
 
             ls_id = str(client.class_name_set)
             
@@ -79,6 +90,14 @@ class Server(Base_Server):
         for d_name, mapping in self.local_id_to_global_id.items():
             for l_id, g_id in mapping.items():
                 all_global_ids.add(g_id)
+
+        if len(all_global_ids) == 0:
+            self.logger.log("Warning: No mappings found. Applying identical label mapping for single dataset...")
+            self.identical_label_mapping()
+            for d_name, mapping in self.local_id_to_global_id.items():
+                for l_id, g_id in mapping.items():
+                    all_global_ids.add(g_id)
+
         all_global_ids = list(all_global_ids)
 
         global_num_classes = max(all_global_ids) + 1
@@ -106,7 +125,6 @@ class Server(Base_Server):
         self.logger.log("[Server] Training Feature-Based Global Generator...")
         for epoch in tqdm(range(self.global_feat_gen_epochs), colour="blue"):
             epoch_loss = 0
-            random.shuffle(all_global_ids)
 
             batch_ids = np.random.choice(all_global_ids, self.batch_size)  
             labels_input = torch.tensor(batch_ids, dtype=torch.int64).to(self.device)
@@ -158,61 +176,112 @@ class Server(Base_Server):
 
     def train_global_inference_model(self):
         """reconstruct feature extractor to get a generic model"""
-        self.model.feature_extractor.train()
-        self.model.adapter.train() 
-        self.model.to(self.device)
 
         if not hasattr(self, 'mse_loss_fn'):
             self.mse_loss_fn = nn.MSELoss()
 
-        if not hasattr(self, 'num_classes'):
-            all_global_ids = set()
-            for d_name, mapping in self.local_id_to_global_id.items():
-                for l_id, g_id in mapping.items():
-                    all_global_ids.add(g_id)
-            self.num_classes = max(all_global_ids) + 1 if all_global_ids else 100
+        all_global_ids = set()
+        for d_name, mapping in self.local_id_to_global_id.items():
+            for l_id, g_id in mapping.items():
+                all_global_ids.add(g_id)
+        all_global_ids = list(all_global_ids)
+        num_global_classes = len(all_global_ids)
 
-        # z, _ = self.generator(y)
-        prox_z, prox_y = self.gen_prox_data()
+        if num_global_classes == 0:
+            self.logger.log("Warning: No mappings found via local_id_to_global_id. Skipping global model training.")
+            return
+
+        prox_z, prox_y = self.gen_prox_data(num_global_classes)
         prox_z = prox_z.to(self.device).detach()
 
-        params = list(self.model.feature_extractor.parameters()) + list(self.model.adapter.parameters())
-        optimizer = torch.optim.Adam(params, lr=self.optim_lr)
+        if self.model is None:
+            self.logger.log(f"Initializing Global Inference Model with {num_global_classes} classes...")
+            self.model = ResNet(BasicBlock, [2, 2, 2, 2], in_channels=3, num_classes=num_global_classes, global_dim=256)
+            params = list(self.model.feature_extractor.parameters()) + \
+                     list(self.model.adapter.parameters()) + \
+                     list(self.model.classifier.parameters())
+            self.global_model_optimizer = eval(self.global_model_optim_name)(params, self.global_model_optim_lr)
 
-        for epoch in tqdm(range(self.rebuild_generic_model_epochs), colour="green"):
-            for d_name, loader in self.rebuild_loader.items():
-                mapping = self.local_id_to_global_id.get(d_name, None)
+            self.feature_extractor = self.model.feature_extractor
+            self.optimizer_fe = eval(self.optim_name)(
+                filter(lambda p: p.requires_grad, self.model.feature_extractor.parameters()),
+                self.optim_lr)
 
+        self.model.train()
+        self.model.to(self.device)
+
+        # mixed_batches = []
+        # for d_name, loader in self.train_loader.items():
+        #     mapping = self.local_id_to_global_id.get(d_name, {})
+        #     for x, y in loader:
+        #         y_global = torch.tensor([mapping[int(lbl)] for lbl in y], dtype=torch.long)
+        #         mixed_batches.append((x.cpu(), y_global.cpu()))
+
+        # self.logger.log(f"Mixed total {len(mixed_batches)} batches across all datasets.")
+
+        criterion = nn.CrossEntropyLoss()
+        samples_per_class = self.exp_conf.get('global_samples_per_class', 64)
+        batch_size = self.exp_conf.get('batch_size', 64)
+
+        for epoch in tqdm(range(self.global_model_epochs), colour="green"):
+            all_images = []
+            all_labels = []
+            
+            for d_name, loader in self.train_loader.items():
+                mapping = self.local_id_to_global_id.get(d_name, {})
+                label_count = defaultdict(int)
+                
                 for x, y in loader:
-                    x = x.to(self.device)
+                    for i in range(len(y)):
+                        lbl = int(y[i])
+                        if lbl in mapping and label_count[lbl] < samples_per_class:
+                            label_count[lbl] += 1
+                            all_images.append(x[i])
+                            all_labels.append(mapping[lbl])
                     
-                    y_global = torch.tensor([mapping[int(lbl)] for lbl in y], device=self.device)
+                    if all(label_count[l] >= samples_per_class for l in mapping.keys()):
+                        break
 
-                    target_z = prox_z[y_global]
+            combined = list(zip(all_images, all_labels))
+            random.shuffle(combined)
+            all_images_shuffled, all_labels_shuffled = zip(*combined)
 
-                    feat = self.model.feature_extractor(x)
-                    feat = torch.flatten(feat, 1)
-                    z_ = self.model.adapter(feat)
-                    loss = self.mse_loss_fn(z_, target_z)
+            for i in range(0, len(combined), batch_size):
+                batch_x = torch.stack(all_images_shuffled[i:i+batch_size]).to(self.device)
+                batch_y_global = torch.tensor(all_labels_shuffled[i:i+batch_size], dtype=torch.long).to(self.device)
 
-                    optimizer.zero_grad()
-                    loss.backward()
-                    optimizer.step()
+                target_z = prox_z[batch_y_global]
 
-    def gen_prox_data(self):
-        prox_z = [0.] * self.num_classes
-        prox_y = list(range(self.num_classes))
+                feat = self.model.feature_extractor(batch_x)
+                feat = torch.flatten(feat, 1)
+                z_ = self.model.adapter(feat)
+                logits = self.model.classifier(z_)
 
-        batch_labels = np.random.choice(self.num_classes, self.batch_size * 100)
-        y = torch.tensor(batch_labels, dtype=torch.int64).to(self.device)
-        
-        z_noise = torch.randn(y.size(0), self.feat_gen_noise_dim).to(self.device)
-        z = self.global_feat_gen(z_noise, y)
+                loss_mse = self.mse_loss_fn(z_, target_z)
+                loss_ce = criterion(logits, batch_y_global)
+                loss = loss_mse + loss_ce
 
-        for i in range(self.num_classes):
-            idx = torch.nonzero(y == i).view(-1)
-            if len(idx) > 0:
-                prox_z[i] += (z[idx].sum(dim=0) / len(idx))
+                self.global_model_optimizer.zero_grad()
+                loss.backward()
+                self.global_model_optimizer.step()
+
+    def gen_prox_data(self, num_global_classes):
+        prox_z = []
+        prox_y = list(range(num_global_classes))
+
+        samples_per_class = 100
+
+        self.global_feat_gen.eval()
+
+        for i in range(num_global_classes):
+            y = torch.full((samples_per_class,), i, dtype=torch.long).to(self.device)
+            z_noise = torch.randn(samples_per_class, self.feat_gen_noise_dim).to(self.device)
+            
+            with torch.no_grad():
+                z = self.global_feat_gen(z_noise, y)
+                
+            class_prototype = z.mean(dim=0).detach().clone()
+            prox_z.append(class_prototype)
 
         return torch.stack(prox_z, dim=0), torch.tensor(prox_y)
 
@@ -243,22 +312,21 @@ class Server(Base_Server):
 
 
     def save_model(self, fname='checkpoints.pth'):
-        dataset_classifiers = {}
-        for ls_id, model_dict in self.global_models.items():
-            if 'classifier' in model_dict:
-                dataset_classifiers[ls_id] = model_dict['classifier'].state_dict()
+        self.logger.log("Saving UDON Server Checkpoints ...")
 
-        clients_state = {}
+        client_label_distributions = {}
         for client in self.clients:
-            clients_state[client.id] = client.model.state_dict()
+            unique_labels = set()
+            for _, labels in client.train_loader:
+                unique_labels.update(labels.tolist())
+            client_label_distributions[client.id] = list(unique_labels)
 
         checkpoint = {
-            'generator': self.global_feat_gen.state_dict(),
-            'clients': clients_state,
+            'generator': self.global_feat_gen.state_dict() if hasattr(self, 'global_feat_gen') else None,
+            'client_label_distributions': client_label_distributions,
             'global_registry': self.local_id_to_global_id,
             'label_space_meta': self.label_space_meta,
             'global_feature_dim': self.global_feature_dim,
-            'gen_noise_dim': self.feat_gen_noise_dim,
             'exp_conf': self.exp_conf,
             'args': {
                 'num_train_mnist': self.args.num_train_mnist,
@@ -272,20 +340,19 @@ class Server(Base_Server):
                 'algorithm': self.args.algorithm,
             },
         }
-        server_save_path = os.path.join(self.logger.log_dir, 'server'+fname)
-        torch.save(checkpoint, server_save_path)
-        self.logger.log(f"[Server] Checkpoint saved to {server_save_path}")
 
-        global_model_save_path = os.path.join(self.logger.log_dir, 'global_inference_model.pth')
-        torch.save(self.model.state_dict(), global_model_save_path)
-        self.logger.log(f"[Server] Global Inference Model saved to {global_model_save_path}")
+        config_path = os.path.join(self.logger.log_dir, 'config_' + fname)
+        torch.save(checkpoint, config_path)
 
-        clients_dir = os.path.join(self.logger.log_dir, 'clients_last_round_checkpoints')
+        if self.model is not None:
+            global_model_path = os.path.join(self.logger.log_dir, 'server_global_model.pth')
+            torch.save(self.model.state_dict(), global_model_path)
+
+        clients_dir = os.path.join(self.logger.log_dir, f'clients_last_round_checkpoints')
         os.makedirs(clients_dir, exist_ok=True)
-
         for client in self.clients:
             arch_name = getattr(client, 'model_name', 'Unknown')
             client_path = os.path.join(clients_dir, f'client_model_{client.dataset_name}_c{client.id}_{arch_name}.pth')
             torch.save(client.model.state_dict(), client_path)
             
-        self.logger.log(f"[Server] All {len(self.clients)} clients saved in {clients_dir}/")
+        self.logger.log(f"[Server] All clients saved in {clients_dir}/")

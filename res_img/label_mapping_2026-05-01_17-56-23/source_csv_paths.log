@@ -1,0 +1,8 @@
+=== Plotting Source Information ===
+Generated at: 2026-05-01_17-56-23
+
+Input CSV Files:
+[Missing] logs/2026-03-19_18-17-49/new_client_2026-03-20_10-02-34/fixed_entropy_mapping_real_img.csv
+[Missing] logs/2026-03-19_18-17-49/new_client_2026-03-20_10-02-34/dynamic_entropy_mapping_real_img.csv
+[Missing] logs/2026-03-19_18-17-49/new_client_2026-03-20_16-24-14/fixed_entropy_mapping_synthetic.csv
+[Missing] logs/2026-03-19_18-17-49/new_client_2026-03-20_16-24-14/dynamic_entropy_mapping_synthetic.csv

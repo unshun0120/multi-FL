@@ -18,15 +18,25 @@ DATA_ROOT = './data/raw'
 
 IMPLEMENTED_ALGORITHMS = ["Local", # FL with local only
                           "FedTED", # FL with data free knowledge distillation 
-                          "PACFL", # FL with mix-dataset
+                          "FedTED_DDPM",
+                          "FedTED_DDPM_2",
+                          "FedTED_dir", # FL with data free knowledge distillation (dirichlet soft labels)
                           "GeFL", # FL with generative model 
+                          "GeFL_local", # no aggregate generative model
                           "UDON", # Only KD not FL
-                          "GLFC", # FL with incremental learning
-                          "", # FL with foudation model
-                          "Ours" # Ours
+                          "Ours", # Ours
+                          "Ours_GeFL", # Ours with generative model
+                          "GeFL_DDPM",
+                          "GeFL_GAN_DDPM",
+                          'GeFL_DDPM_baseline', 
+                          'GeFL_DDPM_baseline_total',
+                          'GeFL_DDPM_baseline_total_gan',
+                          'GeFL_DDPM_baseline_total_public',
+                          'GeFL_DDIM_baseline_total',
+                          "BaseFL_public",
                           ]
 
-MODEL_HET_ALGORITHMS = ["Local", "FedTED", "GeFL", "UDON", "Ours"]
+IMPLEMENTED_LM = ["image-bi", "image-single", "feature-bi", "image-cs", "class_name", "independent", "identical"]   
 
 DATASET_META = { 
     'MNIST':        {'in_ch': 3, 'classes': 10,  'size': 32},  
@@ -35,7 +45,7 @@ DATASET_META = {
     'EMNIST':       {'in_ch': 3, 'classes': 62,  'size': 32},
     'CIFAR10':      {'in_ch': 3, 'classes': 10,  'size': 32},
     'CIFAR100':     {'in_ch': 3, 'classes': 100, 'size': 32},
-    #'USPS':        {'in_ch': 3, 'classes': 10,  'size': 32}, 
+    'USPS':        {'in_ch': 3, 'classes': 10,  'size': 32}, 
     # 'MNIST':        {'in_ch': 1, 'classes': 10,  'size': 28}, 
     # 'USPS':        {'in_ch': 1, 'classes': 10,  'size': 28}
 }
@@ -77,6 +87,10 @@ def parser_args():
                         help="number of training clients for cifar100")
     parser.add_argument("--num_train_usps", type=int, default=10, 
                         help="number of training clients for USPS")
+    
+    # --- Config ---
+    parser.add_argument("--label_mapping", type=str, default="image-bi", choices=IMPLEMENTED_LM,
+                        help="label mapping method")
 
     return parser.parse_args()
 
@@ -96,7 +110,7 @@ def exp_run(args, logger, **exp_conf):
 
     # 4. create server
     Server = getattr(import_module("trainer.%s.server" % args.algorithm), 'Server')
-    server_model = ResNet(BasicBlock, [2, 2, 2, 2], in_channels=3, num_classes=100, global_dim=256)
+    # server_model = ResNet(BasicBlock, [2, 2, 2, 2], in_channels=3, num_classes=100, global_dim=256)
     server = Server(
         node_id=-1,
         args=args, 
@@ -104,7 +118,7 @@ def exp_run(args, logger, **exp_conf):
         dataset_name = None, 
         train_loader=public_train_loaders, 
         test_loader=public_test_loaders,
-        model=server_model,
+        model=None,
         class_name_set=None,
         model_name="ServerResNet18",
         device=args.device,

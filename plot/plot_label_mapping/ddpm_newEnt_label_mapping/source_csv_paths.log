@@ -1,0 +1,6 @@
+=== Plotting Source Information ===
+Generated at: 2026-05-18_12-09-55
+
+Input CSV Files:
+[Found] logs/2026-05-12_17-40-17/gan_ddpm_newEnt/GeFL_GAN_DDPM_DDPM_mapping_acc_per_round.csv
+[Missing] logs/2026-05-15_23-34-40/gan_ddpm_newEnt/GeFL_GAN_DDPM_DDPM_mapping_acc_per_round.csv

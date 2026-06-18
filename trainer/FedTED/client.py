@@ -1,3 +1,6 @@
+"""
+FedTED Client
+"""
 import copy
 import numpy as np
 import torch
@@ -8,6 +11,7 @@ import torch.nn.functional as F
 from utils.train_utils import train_model, freeze, unfreeze
 from utils.nets import TwinBranchNets, ConditionalGenerator
 from trainer.BaseFL.client import Client as BaseClient
+from utils.loss import VanillaKDLoss
 
 class Client(BaseClient):
     def __init__(self, fedted_lambda1=1.0, fedted_lambda2=1.0, **kwargs):
@@ -25,7 +29,8 @@ class Client(BaseClient):
 
         # optimizer for feature_extractor
         self.optimizer_fe = eval(self.optim_name)(
-            filter(lambda p: p.requires_grad, self.model.feature_extractor.parameters()),
+            list(filter(lambda p: p.requires_grad, self.model.feature_extractor.parameters())) +
+            list(filter(lambda p: p.requires_grad, self.model.adapter.parameters())),
             self.optim_lr)
         
         # optimizer for classifiers
@@ -40,7 +45,9 @@ class Client(BaseClient):
         self.feat_gen_noise_dim = kwargs.get('feat_gen_noise_dim', 128) 
 
         self.distill_epochs = kwargs.get('distill_epochs', 1) 
-        self.kd_loss_fn = nn.MSELoss() 
+        self.distill_temperature = kwargs.get('distill_temperature', 20.0)
+        self.kd_loss_fn = VanillaKDLoss(temperature=self.distill_temperature)
+        #self.kd_loss_fn = nn.MSELoss() 
 
         self.prox_z = None
         self.prox_y = None
@@ -82,11 +89,15 @@ class Client(BaseClient):
                 x, y = x.to(self.device), y.to(self.device)
 
                 global_y_list = [self.local_id_to_global_id[label.item()] for label in y]
-                global_y = torch.tensor(global_y_list, dtype=torch.long).to(self.device)
 
-                with torch.no_grad():
-                    z_noise = torch.randn(y.size(0), self.feat_gen_noise_dim).to(self.device)
-                    z_teacher = self.global_feat_gen(z_noise, global_y)
+                if hasattr(self, 'prox_z') and self.prox_z is not None:
+                    batch_z = [self.prox_z[g_id] for g_id in global_y_list]
+                    z_teacher = torch.stack(batch_z, dim=0).to(self.device)
+                else:
+                    global_y = torch.tensor(global_y_list, dtype=torch.long).to(self.device)
+                    with torch.no_grad():
+                        z_noise = torch.randn(y.size(0), self.feat_gen_noise_dim).to(self.device)
+                        z_teacher = self.global_feat_gen(z_noise, global_y)
 
                 native_feat = feature_extractor(x)           
                 native_feat = torch.flatten(native_feat, 1)  
@@ -131,7 +142,8 @@ class Client(BaseClient):
                 native_feat = feature_extractor(x)
                 native_feat = torch.flatten(native_feat, 1)  # (B, 64)
                 z = adapter(native_feat)
-                y_g = classifier_g(z) * label_prob
+                #y_g = classifier_g(z) * label_prob
+                y_g = classifier_g(z)
                 y_p = classifier_p(z)
 
                 # c. calculate loss
@@ -164,7 +176,8 @@ class Client(BaseClient):
                     z = adapter(native_feat)
 
                 #z = feature_extractor(x)
-                y_g = classifier_g(z) * label_prob
+                # y_g = classifier_g(z) * label_prob
+                y_g = classifier_g(z)
                 y_p = classifier_p(z)
 
                 # c. calculate loss
