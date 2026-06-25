@@ -800,7 +800,7 @@ class DDPM(nn.Module):
         return x_i, x_i_store
 
 class DDIM(nn.Module):
-    def __init__(self, nn_model, betas, n_T, device, drop_prob=0.1):
+    def __init__(self, nn_model, betas, n_T, device, drop_prob=0.1, n_steps=50):
         super(DDIM, self).__init__()
         self.nn_model = nn_model.to(device)
 
@@ -811,20 +811,26 @@ class DDIM(nn.Module):
         self.device = device
         self.drop_prob = drop_prob
         self.loss_mse = nn.MSELoss()
+        self.n_steps = n_steps
 
     def forward(self, x, c):
-        _ts = torch.randint(1, self.n_T+1, (x.shape[0],)).to(self.device)
-        noise = torch.randn_like(x)
+        _ts = torch.randint(1, self.n_T + 1, (x.shape[0],)).to(self.device)
 
+        noise = torch.randn_like(x)
         x_t = (
             self.sqrtab[_ts, None, None, None] * x
             + self.sqrtmab[_ts, None, None, None] * noise
         )
-        context_mask = torch.bernoulli(torch.zeros_like(c, dtype=torch.float)+self.drop_prob).to(self.device)
-        
+        context_mask = torch.bernoulli(
+            torch.zeros_like(c, dtype=torch.float) + self.drop_prob
+        ).to(self.device)
+
         return self.loss_mse(noise, self.nn_model(x_t, c, _ts / self.n_T, context_mask))
 
-    def sample(self, n_sample, size, device, guide_w=0.0, label=None, n_steps=20):
+    def sample(self, n_sample, size, device, guide_w=0.0, label=None, n_steps=None):
+        if n_steps is None:
+            n_steps = self.n_steps
+
         x_i = torch.randn(n_sample, *size).to(device)
 
         if label is not None:
@@ -854,13 +860,13 @@ class DDIM(nn.Module):
             eps_double = self.nn_model(x_i_double, c_i, t_is_double, context_mask)
             eps1 = eps_double[:n_sample]
             eps2 = eps_double[n_sample:]
-            eps = (1 + guide_w) * eps1 - guide_w * eps2 
+            eps = (1 + guide_w) * eps1 - guide_w * eps2
 
-            alpha_bar_t    = self.alphabar_t[t]
+            alpha_bar_t = self.alphabar_t[t]
             alpha_bar_prev = self.alphabar_t[t_prev] if t_prev > 0 else torch.tensor(1.0).to(device)
 
             x0_pred = (x_i - torch.sqrt(1 - alpha_bar_t) * eps) / torch.sqrt(alpha_bar_t)
-            x0_pred = torch.clamp(x0_pred, -1.0, 1.0)  
+            x0_pred = torch.clamp(x0_pred, -1.0, 1.0)
 
             x_i = torch.sqrt(alpha_bar_prev) * x0_pred + torch.sqrt(1 - alpha_bar_prev) * eps
 

@@ -1,5 +1,5 @@
 """
-Client for GeFL DDPM baseline
+Client for GeFL GAN baseline
 """
 
 import torch
@@ -21,7 +21,6 @@ class Client(BaseClient):
         self.noise_dim = exp_conf.get('gen_noise_dim', 128)
 
         self.gen_local_epochs = exp_conf.get('gen_local_epochs', 5)
-        self.aid_by_gen = exp_conf.get('aid_by_gen', False)
         self.gen_sample_ratio = exp_conf.get('gen_sample_ratio', 1.0)
         self.gan_lr = exp_conf.get('gen_lr', 2e-4)
         self.gan_beta1 = exp_conf.get('gan_beta1', 0.5)
@@ -54,10 +53,7 @@ class Client(BaseClient):
         2) Train target model aided by G
         """
         gan_stat = self.train_generator()
-        if (self.glob_iter + 1) > self.start_mapping_epoch:
-            self.round_train_loss = 0.0 
-        else:
-            self.round_train_loss = self.train_target_model()
+        self.round_train_loss = self.train_target_model()
 
         self.logger.log(
             f"Client {self.id} ({self.dataset_name}) | Target Loss: {self.round_train_loss:.4f} | "
@@ -75,7 +71,6 @@ class Client(BaseClient):
         """Train local heterogeneous target model using real + generated data."""
         self.model.train()
         self.model.to(self.device)
-        self.generator.eval()
 
         epoch_losses = []
 
@@ -90,15 +85,6 @@ class Client(BaseClient):
                 if isinstance(pred_real, tuple):
                     pred_real = pred_real[1]
                 loss = self.local_loss_fn(pred_real, y)
-
-                if self.aid_by_gen:
-                    n_gen = max(1, int(x.size(0) * self.gen_sample_ratio))
-                    x_gen, y_gen = self.sample_generated(n_gen)
-
-                    pred_gen = self.model(x_gen)
-                    if isinstance(pred_gen, tuple):
-                        pred_gen = pred_gen[1]
-                    loss = loss + self.local_loss_fn(pred_gen, y_gen)
 
                 loss.backward()
                 self.local_optimizer.step()
@@ -157,19 +143,6 @@ class Client(BaseClient):
             "g_loss": g_loss_total / max(1, n_steps),
             "d_loss": d_loss_total / max(1, n_steps),
         }
-    
-
-    def sample_generated(self, n):
-        y_gen = torch.randint(0, self.local_num_classes, (n,), device=self.device)
-        z = torch.randn(n, self.noise_dim, device=self.device)
-        with torch.no_grad():
-            x_gen = self.generator(z, y_gen)
-        return x_gen, y_gen
-    
-
-    def set_gan(self, gen_state_dict, dis_state_dict):
-        self.generator.load_state_dict(gen_state_dict)
-        self.discriminator.load_state_dict(dis_state_dict)
     
 
     def get_avg_features(self):

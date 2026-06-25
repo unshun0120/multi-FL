@@ -1,5 +1,5 @@
 """
-Server for GeFL DDPM baseline
+Server for GeFL GAN baseline
 """
 
 import torch
@@ -16,8 +16,7 @@ from torch.utils.data import TensorDataset, DataLoader
 
 from trainer.BaseFL.server import Server as BaseServer
 from utils.plotting import plot_accuracy_curves
-from utils.nets import ResNet, BasicBlock, DCGANGenerator
-
+from utils.nets import DCGANGenerator, DCGANDiscriminator
 from label_mapping.label_mapping_utils import (
     label_mapping, evaluate_mapping_results, 
     feature_bi_direction_label_mapping, single_direction_label_mapping,
@@ -48,15 +47,14 @@ class Server(BaseServer):
 
             # if (r + 1) % self.test_interval == 0:
             #     self.evaluate_private()
+                #self.record_metric()
 
             self.aggregate()
 
-            # if r+1 == 40:
-            #     self.save_model() 
+        # self.save_metric()
 
-        self.save_model()
+        # self.save_model()
         # plot_accuracy_curves(self.dataset_acc_history, self.logger.log_dir, self.args, self.global_rounds, self.dirichlet_alpha)
-
 
     def get_all_clients_averaged_features(self):
         dataset_features = {}
@@ -76,7 +74,6 @@ class Server(BaseServer):
                 dataset_features[d_id][lbl] = torch.cat(dataset_features[d_id][lbl], dim=0)
                 
         return dataset_features
-    
 
     def aggregate(self):
         groups = defaultdict(list)
@@ -104,8 +101,8 @@ class Server(BaseServer):
             w_dis = self.aggregate_weights(dis_msg_list)
             self.global_dis_states[d_name] = w_dis
 
-        if (self.glob_iter + 1) == self.start_mapping_epoch: 
-
+        if (self.glob_iter + 1) % 5 == 0:
+            print(f"\nMapping Baselines at Round {self.glob_iter + 1} ...")
             clear_image_caches()
             dataset_clients_dict = {}   
             active_datasets = []
@@ -122,7 +119,14 @@ class Server(BaseServer):
                 dataset_clients_dict[d_name].append(client.model.to(self.device))
             
             active_datasets = list(dataset_clients_dict.keys())
+            dynamic_entropy_ratios = [round(x, 2) for x in np.arange(0.10, 1.05, 0.05)]
+            dynamic_cs_thresholds = [round(x, 2) for x in np.arange(-1.0, 1.05, 0.10)]
 
+            class DummyLogger:
+                def log(self, msg): pass
+            
+            dataset_feats = self.get_all_clients_averaged_features()
+            
             generators = {}
             for d_name, state_dict in self.global_gen_states.items():
                 num_local_classes = len(self.label_space_meta.get(d_name, []))
@@ -142,174 +146,93 @@ class Server(BaseServer):
                 return 
             
             use_new_ent = self.exp_conf.get('use_new_entropy_method', False)
-            entropy_ratio = self.exp_conf.get('entropy_ratio', 1.0) 
-            cs_threshold = self.exp_conf.get('cs_threshold', 1.0) 
 
-            mapping = None
+            for thresh in dynamic_entropy_ratios:
+                print(thresh)
 
-            if self.args.label_mapping == 'image-bi':
-                mapping = label_mapping(
-                    get_images_func=get_gen_images, 
-                    dataset_ids=active_datasets,    
-                    clients_dict=dataset_clients_dict,
-                    label_space_meta=dataset_label_space_meta,
-                    entropy_ratio=entropy_ratio,
-                    use_new_entropy_method=use_new_ent, 
-                    logger=self.logger, 
-                    args=self.args,
-                    gen_dict=generators
-                )
-                global_map = global_to_local_mapping(mapping, logger=self.logger, label_space_meta=dataset_label_space_meta)
-                self.local_id_to_global_id = mapping
-
-            elif self.args.label_mapping == 'image-single':
-                mapping = single_direction_label_mapping(
+                unidir_map = single_direction_label_mapping(
                     get_images_func=get_gen_images,  
                     dataset_ids=active_datasets,
                     clients_dict=dataset_clients_dict,
                     label_space_meta=dataset_label_space_meta,
-                    entropy_ratio=entropy_ratio, 
+                    entropy_ratio=thresh, 
                     use_new_entropy_method=use_new_ent,
-                    logger=self.logger,
+                    logger=DummyLogger(),
                     args=self.args,
                     gen_dict=generators 
                 )
-                global_map = global_to_local_mapping(mapping, logger=self.logger, label_space_meta=dataset_label_space_meta)
-                self.local_id_to_global_id = mapping
-
-            elif self.args.label_mapping == 'feature-bi':
-                dataset_feats = self.get_all_clients_averaged_features()
-                mapping = feature_bi_direction_label_mapping(
+                global_to_local_mapping(self.local_id_to_global_id, logger=self.logger, label_space_meta=self.label_space_meta)
+                self.evaluate_and_save_baseline('Single_Direction', unidir_map, self.glob_iter + 1, thresh, dataset_clients_dict, dataset_label_space_meta)
+                
+                feature_bi_map = feature_bi_direction_label_mapping(
                     dataset_features_dict=dataset_feats,
                     dataset_ids=active_datasets,
                     clients_dict=dataset_clients_dict,
                     label_space_meta=dataset_label_space_meta,
-                    entropy_ratio=entropy_ratio, 
+                    entropy_ratio=thresh, 
                     use_new_entropy_method=use_new_ent,
-                    logger=self.logger,
+                    logger=DummyLogger(),
                 )
-                global_map = global_to_local_mapping(mapping, logger=self.logger, label_space_meta=dataset_label_space_meta)
-                self.local_id_to_global_id = mapping
+                self.evaluate_and_save_baseline('Feature_Bi_Direction', feature_bi_map, self.glob_iter + 1, thresh, dataset_clients_dict, dataset_label_space_meta)
 
-            elif self.args.label_mapping == 'image-cs':
-                mapping = image_cosine_similarity_mapping(
-                    get_images_func=get_gen_images,
-                    dataset_ids=active_datasets,
+                ours_map = label_mapping(
+                    get_images_func=get_gen_images, 
+                    dataset_ids=active_datasets,    
+                    clients_dict=dataset_clients_dict,
                     label_space_meta=dataset_label_space_meta,
-                    cs_threshold=cs_threshold,
-                    logger=self.logger,
+                    entropy_ratio=thresh,
+                    use_new_entropy_method=use_new_ent, 
+                    logger=DummyLogger(), 
                     args=self.args,
                     gen_dict=generators
                 )
-                global_map = global_to_local_mapping(mapping, logger=self.logger, label_space_meta=dataset_label_space_meta)
-                self.local_id_to_global_id = mapping
+                self.evaluate_and_save_baseline('Ours', ours_map, self.glob_iter + 1, thresh, dataset_clients_dict, dataset_label_space_meta)
 
-            elif self.args.label_mapping == 'class_name':
-                self.class_name_label_mapping()
-            elif self.args.label_mapping == 'independent':
-                self.independent_label_mapping()
-            elif self.args.label_mapping == 'identical':
-                self.identical_label_mapping()
+            for cs_thresh in dynamic_cs_thresholds:
+                cs_map = image_cosine_similarity_mapping(
+                    get_images_func=get_gen_images,
+                    dataset_ids=active_datasets,
+                    label_space_meta=dataset_label_space_meta,
+                    cs_threshold=cs_thresh,
+                    logger=DummyLogger(),
+                    args=self.args,
+                    gen_dict=generators
+                )
+                self.evaluate_and_save_baseline('Cosine_Similarity', cs_map, self.glob_iter + 1, cs_thresh, dataset_clients_dict, dataset_label_space_meta)
 
-        if (self.glob_iter + 1) >= self.start_mapping_epoch: 
-            self.train_global_inference_model()
-            self.test_global_inference_model()
-    
-    def train_global_inference_model(self):
-        all_global_ids = set()
-        for d_name, mapping in self.local_id_to_global_id.items():
-            for l_id, g_id in mapping.items():
-                all_global_ids.add(g_id)
-        all_global_ids = list(all_global_ids)
-        num_global_classes = len(all_global_ids)
+
+    def evaluate_and_save_baseline(self, baseline_name, mapping_dict, current_round, thresh, dataset_clients_dict, dataset_label_space_meta):
+        if mapping_dict is None: return
         
-        if num_global_classes == 0:
-            self.logger.log("Warning: No mappings found via local_id_to_global_id. Skipping global model training.")
-            return
-
-        if self.model is None:
-            self.logger.log(f"Initializing Global Inference Model with {num_global_classes} classes...")
-            self.model = ResNet(BasicBlock, [2, 2, 2, 2], in_channels=3, num_classes=num_global_classes, global_dim=256)
-            
-            optim_name = self.exp_conf.get('global_model_optim', 'Adam')
-            optim_lr = self.exp_conf.get('global_model_optim_lr', 1e-3)
-            self.global_model_optimizer = eval(optim_name)(self.model.parameters(), optim_lr)
-
-        self.model.to(self.device)
-        self.model.train()
-
-        generators = {}
-        for d_name, state_dict in self.global_gen_states.items():
-            num_local_classes = len(self.label_space_meta.get(d_name, []))
-            if num_local_classes == 0: continue
-            
-            gen = DCGANGenerator(
-                num_classes=num_local_classes,
-                noise_dim=self.exp_conf.get('gen_noise_dim', 128),
-                img_size=self.exp_conf.get('img_size', 32),
-                channels=self.exp_conf.get('channels', 3)
-            ).to(self.device)
-            gen.load_state_dict(state_dict)
-            gen.eval()
-            generators[d_name] = gen
-
-        criterion = nn.CrossEntropyLoss()
+        metrics = evaluate_mapping_results(
+            list(dataset_clients_dict.keys()), 
+            dataset_label_space_meta, 
+            mapping_dict
+        )
         
-        img_size = (self.exp_conf.get('channels', 3), self.exp_conf.get('img_size', 32), self.exp_conf.get('img_size', 32))
+        csv_dir = os.path.join(self.logger.log_dir, "mapping_results")
+        os.makedirs(csv_dir, exist_ok=True)
+        csv_filename = os.path.join(csv_dir, f"{self.algorithm}_{baseline_name}_mapping_acc.csv")
+        file_exists = os.path.isfile(csv_filename)
         
-        dataset_x = []
-        dataset_y = []
-        noise_dim = self.exp_conf.get('gen_noise_dim', 128)
-        
-        for d_name, mapping in self.local_id_to_global_id.items():
-            if d_name not in generators:
-                continue
-            gen = generators[d_name]
-            gen.eval()
+        with open(csv_filename, mode='a', newline='', encoding='utf-8') as f:
+            writer = csv.writer(f)
+            if not file_exists:
+                writer.writerow(['global_round', 'entropy_ratio', 'recall', 'specificity', 'precision', 'average_accuracy', 'f1_score', 'mcc', 'TP', 'FP', 'TN', 'FN'])
+            writer.writerow([
+                current_round, thresh, 
+                metrics['Recall'], metrics['Specificity'], metrics['Precision'], 
+                metrics['AvgAccuracy'], metrics['F1-Score'], metrics['MCC'],
+                metrics['TP'], metrics['FP'], metrics['TN'], metrics['FN']
+            ])
 
-            for local_id, global_id in mapping.items():
-                z = torch.randn(self.global_samples_per_class, noise_dim).to(self.device)
-                y_local = torch.full((self.global_samples_per_class,), local_id, dtype=torch.long).to(self.device)
-                with torch.no_grad():
-                    x_gen = gen(z, y_local)
-
-                for i in range(self.global_samples_per_class):
-                    dataset_x.append(x_gen[i].cpu())
-                    dataset_y.append(global_id)
-
-        if not dataset_x:
-            self.logger.log("Warning: No synthetic data generated.")
-            return
-
-        dataset_x = torch.stack(dataset_x)
-        dataset_y = torch.tensor(dataset_y, dtype=torch.long)
-        
-        train_dataset = TensorDataset(dataset_x, dataset_y)
-        train_loader = DataLoader(train_dataset, batch_size=self.batch_size, shuffle=True)
-
-        for epoch in tqdm(range(self.global_model_epochs), colour="green", ncols=100):
-            epoch_loss = 0
-            for gen_imgs, y_batch in train_loader:
-                gen_imgs, y_batch = gen_imgs.to(self.device), y_batch.to(self.device)
-                
-                self.global_model_optimizer.zero_grad()
-                _, logits = self.model(gen_imgs)
-                loss = criterion(logits, y_batch)
-                loss.backward()
-                self.global_model_optimizer.step()
-                
-                epoch_loss += loss.item()
-            
-            self.logger.log(f"Epoch {epoch} Loss: {epoch_loss / len(train_loader):.4f}")
         
     def distribute_model(self):
         for client in self.selected_clients:
             d_name = client.dataset_name
-            #d_name = getattr(client, 'group_name', client.dataset_name)
             if d_name in self.global_gen_states and d_name in self.global_dis_states:
                 client.generator.load_state_dict(self.global_gen_states[d_name])
                 client.discriminator.load_state_dict(self.global_dis_states[d_name])
-
 
     def aggregate_weights(self, weights_list):
         """
@@ -368,13 +291,13 @@ class Server(BaseServer):
         gen_dir = os.path.join(self.logger.log_dir, 'global_gans')
         os.makedirs(gen_dir, exist_ok=True)
         
-        for d_name in self.global_gen_states.keys():
+        for d_name in self.global_ddpm_states.keys():
             gan_checkpoint = {
-                'generator': self.global_gen_states[d_name]
+                'generator': self.global_ddpm_states[d_name]
             }
-            gan_save_path = os.path.join(gen_dir, f'{d_name}_GAN.pth')
+            gan_save_path = os.path.join(gen_dir, f'{d_name}_DDPM.pth')
             torch.save(gan_checkpoint, gan_save_path)
-            self.logger.log(f"[Server] Global GAN for {d_name} saved to {gan_save_path}")
+            self.logger.log(f"[Server] Global DDPM for {d_name} saved to {gan_save_path}")
 
         clients_dir = os.path.join(self.logger.log_dir, f'clients_last_round_checkpoints')
         os.makedirs(clients_dir, exist_ok=True)

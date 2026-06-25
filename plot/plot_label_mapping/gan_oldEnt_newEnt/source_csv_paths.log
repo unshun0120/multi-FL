@@ -1,0 +1,6 @@
+=== Plotting Source Information ===
+Generated at: 2026-06-24_15-39-39
+
+Input CSV Files:
+[Found] [oldEnt] logs/2026-06-24_10-35-49/GeFL_GAN_baseline/mapping_results/GeFL_GAN_baseline_Ours_mapping_acc.csv
+[Found] [newEnt] logs/2026-06-19_21-08-41/GeFL_GAN_baseline/mapping_results/GeFL_GAN_baseline_Ours_mapping_acc.csv

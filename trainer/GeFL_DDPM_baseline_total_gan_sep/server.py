@@ -1,7 +1,3 @@
-"""
-Server for GeFL DDPM baseline
-"""
-
 import torch
 import copy
 from collections import OrderedDict, defaultdict
@@ -46,16 +42,16 @@ class Server(BaseServer):
             self.distribute_model()
             self.local_update()
 
-            # if (r + 1) % self.test_interval == 0:
-            #     self.evaluate_private()
+            if (r + 1) % self.test_interval == 0:
+                self.evaluate_private()
 
             self.aggregate()
 
-            # if r+1 == 40:
-            #     self.save_model() 
+            if r+1 == 40:
+                self.save_model() 
 
         self.save_model()
-        # plot_accuracy_curves(self.dataset_acc_history, self.logger.log_dir, self.args, self.global_rounds, self.dirichlet_alpha)
+        plot_accuracy_curves(self.dataset_acc_history, self.logger.log_dir, self.args, self.global_rounds, self.dirichlet_alpha)
 
 
     def get_all_clients_averaged_features(self):
@@ -238,20 +234,9 @@ class Server(BaseServer):
         self.model.to(self.device)
         self.model.train()
 
-        generators = {}
-        for d_name, state_dict in self.global_gen_states.items():
-            num_local_classes = len(self.label_space_meta.get(d_name, []))
-            if num_local_classes == 0: continue
-            
-            gen = DCGANGenerator(
-                num_classes=num_local_classes,
-                noise_dim=self.exp_conf.get('gen_noise_dim', 128),
-                img_size=self.exp_conf.get('img_size', 32),
-                channels=self.exp_conf.get('channels', 3)
-            ).to(self.device)
-            gen.load_state_dict(state_dict)
-            gen.eval()
-            generators[d_name] = gen
+        dataset_clients = defaultdict(list)
+        for client in self.clients:
+            dataset_clients[client.dataset_name].append(client)
 
         criterion = nn.CrossEntropyLoss()
         
@@ -262,20 +247,28 @@ class Server(BaseServer):
         noise_dim = self.exp_conf.get('gen_noise_dim', 128)
         
         for d_name, mapping in self.local_id_to_global_id.items():
-            if d_name not in generators:
+            if d_name not in dataset_clients:
                 continue
-            gen = generators[d_name]
-            gen.eval()
 
-            for local_id, global_id in mapping.items():
-                z = torch.randn(self.global_samples_per_class, noise_dim).to(self.device)
-                y_local = torch.full((self.global_samples_per_class,), local_id, dtype=torch.long).to(self.device)
-                with torch.no_grad():
-                    x_gen = gen(z, y_local)
+            clients_in_dataset = dataset_clients[d_name]
+            n_clients = len(clients_in_dataset)
+            n_per_client = max(1, self.global_samples_per_class // n_clients)
 
-                for i in range(self.global_samples_per_class):
-                    dataset_x.append(x_gen[i].cpu())
-                    dataset_y.append(global_id)
+            for client in clients_in_dataset:
+                client.generator.to(self.device)
+                client.generator.eval()
+
+                for local_id, global_id in mapping.items():
+                    z = torch.randn(self.global_samples_per_class, noise_dim).to(self.device)
+                    y_local = torch.full((self.global_samples_per_class,), local_id, dtype=torch.long).to(self.device)
+                    with torch.no_grad():
+                        x_gen = client.generator(z, y_local)
+
+                    for i in range(self.global_samples_per_class):
+                        dataset_x.append(x_gen[i].cpu())
+                        dataset_y.append(global_id)
+
+                client.generator.to('cpu')
 
         if not dataset_x:
             self.logger.log("Warning: No synthetic data generated.")
@@ -368,13 +361,13 @@ class Server(BaseServer):
         gen_dir = os.path.join(self.logger.log_dir, 'global_gans')
         os.makedirs(gen_dir, exist_ok=True)
         
-        for d_name in self.global_gen_states.keys():
+        for d_name in self.global_ddpm_states.keys():
             gan_checkpoint = {
-                'generator': self.global_gen_states[d_name]
+                'generator': self.global_ddpm_states[d_name]
             }
-            gan_save_path = os.path.join(gen_dir, f'{d_name}_GAN.pth')
+            gan_save_path = os.path.join(gen_dir, f'{d_name}_DDPM.pth')
             torch.save(gan_checkpoint, gan_save_path)
-            self.logger.log(f"[Server] Global GAN for {d_name} saved to {gan_save_path}")
+            self.logger.log(f"[Server] Global DDPM for {d_name} saved to {gan_save_path}")
 
         clients_dir = os.path.join(self.logger.log_dir, f'clients_last_round_checkpoints')
         os.makedirs(clients_dir, exist_ok=True)

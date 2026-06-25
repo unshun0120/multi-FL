@@ -9,6 +9,8 @@ from tqdm import tqdm
 
 from trainer.BaseFL.client import Client as BaseClient
 from utils.nets import ContextUnet, DDPM
+# from utils.ddpm_nets import ContextUnet, DDPM
+
 
 class Client(BaseClient):
     def __init__(self, **exp_conf):
@@ -44,7 +46,10 @@ class Client(BaseClient):
         2) Train target model aided by G
         """
         gen_loss = self.train_generator()
-        self.round_train_loss = self.train_target_model()
+        if (self.glob_iter + 1) > self.start_mapping_epoch:
+            self.round_train_loss = 0.0 
+        else:
+            self.round_train_loss = self.train_target_model()
 
         self.logger.log(
             f"Client {self.id} ({self.dataset_name}) | Target Loss: {self.round_train_loss:.4f} | "
@@ -99,6 +104,8 @@ class Client(BaseClient):
         self.ddpm.train()
         g_loss_total, n_steps = 0.0, 0
 
+        scaler = torch.amp.GradScaler("cuda")
+
         for _ in range(self.gen_local_epochs):
             for x, y in self.train_loader:
                 x, y = x.to(self.device), y.to(self.device)
@@ -112,6 +119,19 @@ class Client(BaseClient):
 
                 g_loss_total += loss.item()
                 n_steps += 1
+
+                # self.gen_optimizer.zero_grad()
+                                
+                # with torch.amp.autocast("cuda"):
+                #     loss = self.ddpm(x, y)
+                
+                # scaler.scale(loss).backward()
+                # scaler.step(self.gen_optimizer)
+                # scaler.update()
+
+                # g_loss_total += loss.item()
+                # n_steps += 1
+                
 
         return g_loss_total / max(1, n_steps)
     

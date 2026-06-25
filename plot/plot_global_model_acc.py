@@ -1,6 +1,7 @@
 import os
 import pandas as pd
 import matplotlib.pyplot as plt
+from matplotlib.ticker import MultipleLocator
 
 def plot_global_accuracy():
     methods_dirs = {
@@ -17,22 +18,28 @@ def plot_global_accuracy():
         # "FedFTG": "logs/2026-06-02_11-45-44/Ours",
         # "DDPM": "logs/2026-05-30_19-36-14/GeFL_DDPM",
 
-        'Independent':'logs/2026-06-17_13-55-17/GeFL_DDPM_baseline_total_public',
+        'Independent':'logs/2026-06-24_17-15-29/GeFL_DDPM_baseline_total',
         # 'Identical':'logs/2026-06-16_00-35-08/BaseFL_public',
-        'Class Name':'logs/2026-06-17_13-34-19/GeFL_DDPM_baseline_total_public',
+        #'Class Name':'logs/2026-06-17_13-34-19/GeFL_DDPM_baseline_total_public',
 
-        #"bi-direct": "logs/2026-06-16_01-09-42/GeFL_DDPM_baseline_total",
-        #"single-direct": "logs/2026-06-10_21-42-19/GeFL_DDPM_baseline_total", 
-        #"feature-bi": "logs/2026-06-16_01-09-51/GeFL_DDPM_baseline_total",
-        #"image-cs": "logs/2026-06-12_16-50-43/GeFL_DDPM_baseline_total",
-        #"FedTED": "logs/2026-06-12_12-25-32/FedTED",
+        # "bi-direct": "logs/2026-06-19_12-23-21/GeFL_DDPM_baseline_total_gan",
+        # "single-direct": "logs/2026-06-19_17-55-44/GeFL_DDPM_baseline_total_gan", 
+        # "feature-bi": "logs/2026-06-19_12-23-24/GeFL_DDPM_baseline_total_gan",
+        # "image-cs": "logs/2026-06-19_23-40-42/GeFL_DDPM_baseline_total_gan",
+
+        # "bi-direct (MCC=0.9126)": "logs/2026-06-23_15-41-16/GeFL_DDPM_baseline_total_gan",
+        # "single-direct (MCC=0.6350)": "logs/2026-06-23_15-42-03/GeFL_DDPM_baseline_total_gan", 
+        # "feature-bi (MCC=0.0)": "logs/2026-06-23_15-43-33/GeFL_DDPM_baseline_total_gan",
+        # "image-cs (MCC=0.3982)": "logs/2026-06-23_15-42-48/GeFL_DDPM_baseline_total_gan",
+
+        # "FedTED (MCC=1.0)": "logs/2026-06-12_12-25-32/FedTED",
         #"FedTED_DDPM": "logs/2026-06-14_12-29-20/FedTED_DDPM_2",
     }
     
     #datasets = ["MNIST", "EMNIST", "FashionMNIST", "mix"]
     datasets = ["MNIST", "EMNIST", "CIFAR10", "mix"]
     
-    output_dir = "./plot/global_accuracy_plots/baseline_new_2"
+    output_dir = "./plot/global_accuracy_plots/ddpm_test"
     os.makedirs(output_dir, exist_ok=True)
     
     for dataset in datasets:
@@ -66,9 +73,11 @@ def plot_global_accuracy():
             plt.xlabel("Global Round", fontsize=12)
             plt.ylabel("Accuracy (%)", fontsize=12)
             plt.ylim(0, 105)
-            plt.xlim(19, 51)
+            plt.xlim(24, 51)
+            plt.gca().xaxis.set_major_locator(MultipleLocator(1))
             plt.grid(True, linestyle='--', alpha=0.7)
-            plt.legend(loc='lower right', fontsize=12)
+            plt.legend(loc='lower right', fontsize=10)
+            # plt.legend(loc='upper right', fontsize=10)
             
             save_path = os.path.join(output_dir, f"Global_Acc_{dataset}.pdf")
             plt.savefig(save_path, bbox_inches='tight')

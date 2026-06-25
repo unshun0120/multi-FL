@@ -5,7 +5,7 @@ heterogeneous: True # whether to use heterogeneous model architecture
 
 # 2. Basic args for Federated Learning
 dirichlet_alpha: 100
-global_rounds: 30 # communication rounds
+global_rounds: 50 # communication rounds
 local_epochs: 1 # epochs of local update
 local_loss_fn: 'CrossEntropyLoss' # loss fn name in torch.nn.*
 local_optim: 'Adam'  # optimizer name in torch.optim.*, e.g. Adam, SGD
@@ -25,6 +25,10 @@ gen_noise_dim: 128
 gen_optim: 'Adam' # optimizer name for image-generator in torch.optim.*, e.g. Adam, SGD
 gen_optim_lr: 1e-3 # learning rate of image-generator optimizer
 
+# DDPM
+n_feat: 32
+ddpm_guide_w: 1.0
+
 # args for feature generator training
 global_feat_gen_epochs : 10
 feat_gen_noise_dim: 128
@@ -39,8 +43,8 @@ start_mapping_epoch: 20 # epoch to start learning local-to-global mapping
 gen_observer_weight: 0.0 # weight for feature-generator observer loss
 index_matching: 'ddpm' # method for index matching, 'class_name', 'real_image', 'gan', 'ddpm', 'independent', 'identical'
 aggregate_method: 'dataset_name' # 'ours', 'pacfl', 'dataset_name'
-use_new_entropy_method: True
-entropy_ratio: 0.7
+use_new_entropy_method: False
+entropy_ratio: 0.75
 cs_threshold: 0.9
 
 # global model

@@ -3,17 +3,17 @@ import pandas as pd
 import matplotlib.pyplot as plt
 
 def plot_mapping_results():
-    results_dir = "logs/2026-05-23_12-08-23/GeFL_DDPM_baseline/mapping_results" 
+    results_dir = "logs/2026-06-19_21-08-41/GeFL_GAN_baseline/mapping_results" 
     
-    output_base_dir = "./plot/label_mapping_baseline/new_ent_cs"
+    output_base_dir = "./plot/label_mapping_baseline/new_ent_gan"
     
     methods = {
         # "Identical": "GeFL_DDPM_baseline_Identical_mapping_acc.csv",
         # "Independent": "GeFL_DDPM_baseline_Independent_mapping_acc.csv",
-        # "Feature_biDirection": "GeFL_DDPM_baseline_Feature_Bi_Direction_mapping_acc.csv",
-        # "Image_singleDirection": "GeFL_DDPM_baseline_Single_Direction_mapping_acc.csv",
-        "Image_biDirection (Ours)": "GeFL_DDPM_baseline_Ours_mapping_acc.csv",
-        "Cosine_Similarity": "GeFL_DDPM_baseline_Cosine_Similarity_mapping_acc.csv" 
+        "Feature_biDirection": "GeFL_GAN_baseline_Feature_Bi_Direction_mapping_acc.csv",
+        "Image_singleDirection": "GeFL_GAN_baseline_Single_Direction_mapping_acc.csv",
+        "Image_biDirection (Ours)": "GeFL_GAN_baseline_Ours_mapping_acc.csv",
+        "Cosine_Similarity": "GeFL_GAN_baseline_Cosine_Similarity_mapping_acc.csv" 
     }
 
     # results_dir = "" 
@@ -112,7 +112,7 @@ def plot_mapping_results():
             else:
                 ax1.legend(fontsize=11, loc='best')
 
-            save_path = os.path.join(metric_dir, f"{metric_name}_Round_{rnd}.png")
+            save_path = os.path.join(metric_dir, f"{metric_name}_Round_{rnd}.pdf")
             plt.savefig(save_path, bbox_inches='tight')
             plt.close()
             

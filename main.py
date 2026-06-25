@@ -29,11 +29,15 @@ IMPLEMENTED_ALGORITHMS = ["Local", # FL with local only
                           "GeFL_DDPM",
                           "GeFL_GAN_DDPM",
                           'GeFL_DDPM_baseline', 
+                          'GeFL_GAN_baseline', 
                           'GeFL_DDPM_baseline_total',
                           'GeFL_DDPM_baseline_total_gan',
+                          'GeFL_DDPM_baseline_total_gan_sep',
                           'GeFL_DDPM_baseline_total_public',
                           'GeFL_DDIM_baseline_total',
+                          'GeFL_DDPM_baseline_total_sep',
                           "BaseFL_public",
+                          "BaseFL_DDPM",
                           ]
 
 IMPLEMENTED_LM = ["image-bi", "image-single", "feature-bi", "image-cs", "class_name", "independent", "identical"]   

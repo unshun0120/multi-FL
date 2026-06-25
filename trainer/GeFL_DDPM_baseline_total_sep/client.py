@@ -1,3 +1,5 @@
+"""
+GeFL_DDPM_baseline_total Client"""
 import torch
 import torch.nn as nn
 import torch.nn.functional as F
@@ -6,7 +8,7 @@ import copy
 from tqdm import tqdm
 
 from trainer.BaseFL.client import Client as BaseClient
-from utils.nets import ContextUnet, DDIM
+from utils.nets import ContextUnet, DDPM
 
 class Client(BaseClient):
     def __init__(self, **exp_conf):
@@ -20,16 +22,15 @@ class Client(BaseClient):
         self.gen_sample_ratio = exp_conf.get('gen_sample_ratio', 1.0)
         self.gen_lr = exp_conf.get('gen_lr', 2e-4)
 
-        n_feat = exp_conf.get('n_feat', 128) 
+        n_feat = exp_conf.get('n_feat', 64) 
         unet = ContextUnet(in_channels=self.channels, n_feat=n_feat, n_classes=self.local_num_classes)
         
-        self.ddpm = DDIM(
+        self.ddpm = DDPM(
             nn_model=unet, 
             betas=(1e-4, 0.02), 
             n_T=1000,
             device=self.device,
-            drop_prob=0.1,
-            n_steps=50
+            drop_prob=0.1
         ).to(self.device)
 
         self.gen_optimizer = torch.optim.Adam(self.ddpm.parameters(), lr=self.gen_lr)
@@ -50,7 +51,7 @@ class Client(BaseClient):
 
         self.logger.log(
             f"Client {self.id} ({self.dataset_name}) | Target Loss: {self.round_train_loss:.4f} | "
-            f"DDIM Loss: {gen_loss:.4f}"
+            f"DDPM Loss: {gen_loss:.4f}"
         )
 
         return {
@@ -98,6 +99,7 @@ class Client(BaseClient):
     
 
     def train_generator(self):
+        self.ddpm.to(self.device)
         self.ddpm.train()
         g_loss_total, n_steps = 0.0, 0
 
@@ -107,27 +109,28 @@ class Client(BaseClient):
             for x, y in self.train_loader:
                 x, y = x.to(self.device), y.to(self.device)
 
-                self.gen_optimizer.zero_grad()
-                
-                loss = self.ddpm(x, y)
-                
-                loss.backward()
-                self.gen_optimizer.step()
-
-                g_loss_total += loss.item()
-                n_steps += 1
-
                 # self.gen_optimizer.zero_grad()
                 
-                # with torch.amp.autocast("cuda"):
-                #     loss = self.ddpm(x, y)
+                # loss = self.ddpm(x, y)
                 
-                # scaler.scale(loss).backward()
-                # scaler.step(self.gen_optimizer)
-                # scaler.update()
+                # loss.backward()
+                # self.gen_optimizer.step()
 
                 # g_loss_total += loss.item()
                 # n_steps += 1
+
+                self.gen_optimizer.zero_grad()
+                                
+                with torch.amp.autocast("cuda"):
+                    loss = self.ddpm(x, y)
+                
+                scaler.scale(loss).backward()
+                scaler.step(self.gen_optimizer)
+                scaler.update()
+
+                g_loss_total += loss.item()
+                n_steps += 1
+                
 
         return g_loss_total / max(1, n_steps)
     
@@ -135,7 +138,7 @@ class Client(BaseClient):
     def sample_generated(self, n):
         y_gen = torch.randint(0, self.local_num_classes, (n,), device=self.device)
         with torch.no_grad():
-            x_gen, _ = self.ddpm.sample(n_sample=n, size=(self.channels, self.img_size, self.img_size), device=self.device, guide_w=1.0,)
+            x_gen, _ = self.ddpm.sample(n_sample=n, size=(self.channels, self.img_size, self.img_size), device=self.device, guide_w=3.0,)
         return x_gen, y_gen
     
 

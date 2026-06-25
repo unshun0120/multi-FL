@@ -14,12 +14,12 @@ def main():
     
     base_weight_dir = os.path.join(parent_dir, "logs/2026-06-09_10-34-22/GeFL_DDPM_baseline_total/global_gans")
     
-    output_dir = "./plot/Gen_img"
+    output_dir = "./plot/Gen_img/DDPM"
     os.makedirs(output_dir, exist_ok=True)
 
-    samples_per_class = 2
+    samples_per_class = 10
     
-    max_classes_to_draw = 62
+    max_classes_to_draw = 10
 
     dataset_specs = {
         'MNIST':   {'channels': 3, 'size': 32, 'classes': 10},

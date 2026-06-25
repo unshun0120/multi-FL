@@ -7,54 +7,76 @@ import numpy as np
 import torch
 from torch.optim import *
 import os
-from collections import defaultdict
+from collections import OrderedDict, defaultdict
 import random
 from tqdm import tqdm
 import torch.nn as nn
+from torch.utils.data import TensorDataset, DataLoader
 
-from utils.train_utils import evaluate_model
+from utils.plotting import plot_accuracy_curves
 from trainer.BaseFL.server import Server as Base_Server
-from utils.nets import TwinBranchNets, ConditionalGenerator, Classifier, ResNet, BasicBlock 
-from utils.loss import Gen_DiversityLoss
+from utils.nets import ContextUnet, DDPM
+from utils.nets import ResNet, BasicBlock
 
 class Server(Base_Server):
     def __init__(self, **kwargs):
         super(Server, self).__init__(**kwargs)
 
-        self.feat_gen_noise_dim = kwargs.get('feat_gen_noise_dim', 128) 
-        self.global_feat_gen_epochs = kwargs.get('global_feat_gen_epochs', 10) 
-        self.feat_gen_optim_lr = kwargs.get('feat_gen_optim_lr', 1e-3)
-        self.feat_gen_optim_name =  kwargs.get('feat_gen_optim', 'Adam')
-        self.global_feat_gen = None
-        self.feat_gen_optimizer = None
-        self.feat_gen_div_beta =  kwargs.get('feat_gen_div_beta', 1.0)
+        self.global_ddpm_states = {}
 
-        self.feature_extractor = None
-        self.optim_name =  kwargs.get('optim', 'Adam')
-        self.optim_lr = kwargs.get('optim_lr', 1e-3)
-        self.optimizer_fe = None
-        
-        self.diversity_loss = Gen_DiversityLoss(metric='l1')
+    def run(self):
+        self.logger.log("")
+        self.logger.log("=" * 50)
+        self.logger.log(f"Start {self.global_rounds} rounds training by {self.algorithm}")
+
+        for r in range(self.global_rounds):
+            self.glob_iter = r
+
+            self.sample_clients()
+            self.distribute_model()
+            self.local_update()
+
+            self.aggregate()
 
     def distribute_model(self):
-        pass
+        for client in self.selected_clients:
+            d_name = client.dataset_name
+            if d_name in self.global_ddpm_states:
+                client.ddpm.load_state_dict(self.global_ddpm_states[d_name])
 
     def evaluate_private(self):
         pass
     
     def aggregate(self):
-        super().aggregate()
+        groups = defaultdict(list)
+        for client in self.selected_clients:
+            d_name = client.dataset_name  
+            groups[d_name].append(client)
+
+            if d_name not in self.label_space_meta:
+                self.label_space_meta[d_name] = client.class_name_set
+
+        print(f"[Server] Aggregating from {len(self.selected_clients)} clients (grouped by {len(groups)} datasets)...")
+
+        for d_name, group_clients in groups.items():
+            ddpm_msg_list = [
+                (client.num_samples, client.ddpm.state_dict())
+                for client in group_clients
+            ]
+            w_ddpm = self.aggregate_weights(ddpm_msg_list)
+            self.global_ddpm_states[d_name] = w_ddpm
+
+        if (self.glob_iter + 1) == self.start_mapping_epoch:
+            if self.args.label_mapping == 'class_name':
+                self.class_name_label_mapping()
+            elif self.args.label_mapping == 'independent':
+                self.independent_label_mapping()
 
         if (self.glob_iter + 1) >= self.start_mapping_epoch:
             self.train_global_inference_model()
             self.test_global_inference_model()
 
     def train_global_inference_model(self):
-        """reconstruct feature extractor to get a generic model"""
-
-        if not hasattr(self, 'mse_loss_fn'):
-            self.mse_loss_fn = nn.MSELoss()
-
         all_global_ids = set()
         for d_name, mapping in self.local_id_to_global_id.items():
             for l_id, g_id in mapping.items():
@@ -77,38 +99,61 @@ class Server(Base_Server):
         self.model.train()
         self.model.to(self.device)
 
-        criterion = nn.CrossEntropyLoss()
-        samples_per_class = self.exp_conf.get('global_samples_per_class', 64)
-        batch_size = self.exp_conf.get('batch_size', 64)
-
-        all_images = []
-        all_labels = []
-        samples_per_class = self.exp_conf.get('global_samples_per_class', 64)
-        batch_size = self.exp_conf.get('batch_size', 64)
-
-        for d_name, loader in self.train_loader.items():
-            mapping = self.local_id_to_global_id.get(d_name, {})
-            label_count = defaultdict(int)
+        generators = {}
+        for d_name, state_dict in self.global_ddpm_states.items():
+            num_local_classes = len(self.label_space_meta.get(d_name, []))
+            if num_local_classes == 0: continue
             
-            for x, y in loader:
-                for i in range(len(y)):
-                    lbl = int(y[i])
-                    if lbl in mapping and label_count[lbl] < samples_per_class:
-                        label_count[lbl] += 1
-                        all_images.append(x[i])
-                        all_labels.append(mapping[lbl])
-                if all(label_count[l] >= samples_per_class for l in mapping.keys()):
-                    break
+            nn_model = ContextUnet(
+                in_channels=self.exp_conf.get('channels', 3), 
+                n_feat=self.exp_conf.get('n_feat', 64), 
+                n_classes=num_local_classes
+            ).to(self.device)
+            gen = DDPM(
+                nn_model=nn_model, betas=(1e-4, 0.02), n_T=1000, device=self.device, drop_prob=0.1
+            ).to(self.device)
+            gen.load_state_dict(state_dict)
+            gen.eval()
+            generators[d_name] = gen
 
-        dataset_x = torch.stack(all_images)
-        dataset_y = torch.tensor(all_labels, dtype=torch.long)
+        criterion = nn.CrossEntropyLoss()
         
-        from torch.utils.data import TensorDataset, DataLoader
+        img_size = (self.exp_conf.get('channels', 3), self.exp_conf.get('img_size', 32), self.exp_conf.get('img_size', 32))
+        
+        dataset_x = []
+        dataset_y = []
+
+        global_samples_per_class = 32
+        
+        for d_name, mapping in self.local_id_to_global_id.items():
+            if d_name not in generators:
+                continue
+            gen = generators[d_name]
+
+            for local_id, global_id in mapping.items():
+                with torch.no_grad():
+                    x_gen, _ = gen.sample(n_sample=global_samples_per_class, 
+                                            size=img_size, 
+                                            device=self.device, 
+                                            guide_w=1.5,
+                                            label=local_id)
+                    x_gen = torch.clamp(x_gen, -1.0, 1.0)
+
+                for i in range(global_samples_per_class):
+                    dataset_x.append(x_gen[i].cpu())
+                    dataset_y.append(global_id)
+
+        if not dataset_x:
+            self.logger.log("Warning: No synthetic data generated.")
+            return
+
+        dataset_x = torch.stack(dataset_x)
+        dataset_y = torch.tensor(dataset_y, dtype=torch.long)
+        
         train_dataset = TensorDataset(dataset_x, dataset_y)
-        train_loader = DataLoader(train_dataset, batch_size=batch_size, shuffle=True)
+        train_loader = DataLoader(train_dataset, batch_size=self.batch_size, shuffle=True)
 
         for epoch in tqdm(range(self.global_model_epochs), colour="green"):
-
             epoch_loss = 0.0
             
             for batch_x, batch_y_global in train_loader:
@@ -128,8 +173,22 @@ class Server(Base_Server):
                 
                 epoch_loss += loss_ce.item()
                 
-            #self.logger.log(f"Epoch {epoch} Loss: {epoch_loss / len(train_loader):.4f}")
-   
+    def aggregate_weights(self, weights_list):
+        """
+        FedAvg aggregation for Generator
+        """
+        total_samples = sum([w[0] for w in weights_list])
+        avg_params = OrderedDict()
+        
+        for name in weights_list[0][1].keys():
+            avg_params[name] = torch.zeros_like(weights_list[0][1][name], dtype=torch.float32)
+            
+            for num_samples, params in weights_list:
+                avg_params[name] += params[name] * (num_samples / total_samples)
+                
+        return avg_params
+
+
     def save_model(self, fname='checkpoints.pth'):
         self.logger.log("Saving BaseFL Public Dataset Server Checkpoints ...")
 

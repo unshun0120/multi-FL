@@ -7,6 +7,7 @@ import csv
 img_num_samples = 8
 feat_gen_noise_dim = 128
 
+gan_image_cache = {}
 ddpm_image_cache = {}
 real_image_cache = {}
 
@@ -14,6 +15,7 @@ def clear_image_caches():
     global ddpm_image_cache
     ddpm_image_cache.clear()
     real_image_cache.clear()
+    gan_image_cache.clear()
 
 def get_gen_images(dataset_id, label_idx, args=None, gen_dict=None):
     global ddpm_image_cache
@@ -31,6 +33,8 @@ def get_gen_images(dataset_id, label_idx, args=None, gen_dict=None):
     is_ddpm = type(gen).__name__ == 'DDPM'
     if is_ddpm and (dataset_id, label_idx) in ddpm_image_cache:
         return ddpm_image_cache[(dataset_id, label_idx)]
+    elif not is_ddpm and (dataset_id, label_idx) in gan_image_cache:
+        return gan_image_cache[(dataset_id, label_idx)]
     
     gen.eval()
 
@@ -44,9 +48,13 @@ def get_gen_images(dataset_id, label_idx, args=None, gen_dict=None):
         elif type(gen).__name__ == 'DDPM':
             imgs, _ = gen.sample(img_num_samples, size=(3, 32, 32), device=args.device, guide_w=1.5, label=label_idx)
             ddpm_image_cache[(dataset_id, label_idx)] = imgs
+        elif type(gen).__name__ == 'DDIM' :
+            imgs, _ = gen.sample(img_num_samples, size=(3, 32, 32), device=args.device, guide_w=3.0, label=label_idx)
+            ddpm_image_cache[(dataset_id, label_idx)] = imgs
         else:
             z = torch.randn(img_num_samples, feat_gen_noise_dim).to(args.device)
             imgs = gen(z, y)
+            gan_image_cache[(dataset_id, label_idx)] = imgs
 
     return imgs
 

@@ -15,7 +15,8 @@ from torch.utils.data import TensorDataset, DataLoader
 
 from trainer.BaseFL.server import Server as BaseServer
 from utils.plotting import plot_accuracy_curves
-from utils.nets import ContextUnet, DDIM
+from utils.nets import ContextUnet, DDPM
+# from utils.ddpm_nets import ContextUnet, DDPM
 from label_mapping.label_mapping_utils import (
     label_mapping, evaluate_mapping_results, 
     feature_bi_direction_label_mapping, single_direction_label_mapping,
@@ -42,16 +43,16 @@ class Server(BaseServer):
             self.distribute_model()
             self.local_update()
 
-            if (r + 1) % self.test_interval == 0:
-                self.evaluate_private()
+            # if (r + 1) % self.test_interval == 0:
+            #     self.evaluate_private()
 
             self.aggregate()
 
-            if r+1 == 40:
-                self.save_model() 
+            # if r+1 == 40:
+            #     self.save_model() 
 
-        self.save_model()
-        plot_accuracy_curves(self.dataset_acc_history, self.logger.log_dir, self.args, self.global_rounds, self.dirichlet_alpha)
+        # self.save_model()
+        # plot_accuracy_curves(self.dataset_acc_history, self.logger.log_dir, self.args, self.global_rounds, self.dirichlet_alpha)
 
 
     def get_all_clients_averaged_features(self):
@@ -121,7 +122,7 @@ class Server(BaseServer):
                         n_classes=len(self.label_space_meta[d_name])
                     ).to(self.device)
                     
-                    ddpm = DDIM(
+                    ddpm = DDPM(
                         nn_model=nn_model, 
                         betas=(1e-4, 0.02), 
                         n_T=1000, 
@@ -243,7 +244,7 @@ class Server(BaseServer):
                 n_feat=self.exp_conf.get('n_feat', 64), 
                 n_classes=num_local_classes
             ).to(self.device)
-            gen = DDIM(
+            gen = DDPM(
                 nn_model=nn_model, betas=(1e-4, 0.02), n_T=1000, device=self.device, drop_prob=0.1
             ).to(self.device)
             gen.load_state_dict(state_dict)
@@ -267,7 +268,7 @@ class Server(BaseServer):
                     x_gen, _ = gen.sample(n_sample=self.global_samples_per_class, 
                                           size=img_size, 
                                           device=self.device, 
-                                          guide_w=1.5,
+                                          guide_w=self.exp_conf.get("ddpm_guide_w", 0.0),
                                           label=local_id)
                     x_gen = torch.clamp(x_gen, -1.0, 1.0)
 
