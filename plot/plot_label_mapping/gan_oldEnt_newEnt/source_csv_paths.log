@@ -1,6 +1,8 @@
 === Plotting Source Information ===
-Generated at: 2026-06-24_15-39-39
+Generated at: 2026-06-29_15-39-33
 
 Input CSV Files:
-[Found] [oldEnt] logs/2026-06-24_10-35-49/GeFL_GAN_baseline/mapping_results/GeFL_GAN_baseline_Ours_mapping_acc.csv
-[Found] [newEnt] logs/2026-06-19_21-08-41/GeFL_GAN_baseline/mapping_results/GeFL_GAN_baseline_Ours_mapping_acc.csv
+[Found] [Raw Data] logs/2026-05-12_17-40-17/gan_ddpm_newEnt/GeFL_GAN_DDPM_Real_mapping_acc_per_round.csv
+[Found] [DeepInversion] logs/2026-05-12_17-40-17/new_client_2026-05-12_18-47-52/DI_syn_oldGen_newEnt.csv
+[Found] [FedFTG] logs/2026-05-12_17-40-17/new_client_2026-05-13_14-32-41/Fed_syn_oldGen_newEnt.csv
+[Found] [GAN] logs/2026-06-19_21-08-41/GeFL_GAN_baseline/GeFL_GAN_DDPM_GAN_mapping_acc_per_round.csv

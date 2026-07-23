@@ -1,0 +1,2263 @@
+Time: 2026-04-24 15:51:57
+Log Dir: logs/2026-04-24_15-51-57/GeFL_local
+================================================================================
+
+==============================        Args        ==============================
+  exp_timestamp: None
+  exp_conf: ./configs/het-iid-exp.yaml
+  device: cuda:1
+  seed: 15698
+  algorithm: GeFL_local
+  num_new_clients: 1
+  num_train_mnist: 5
+  num_train_emnist: 5
+  num_train_fashionmnist: 0
+  num_train_cifar10: 0
+  num_train_cifar100: 0
+  num_train_usps: 0
+================================================================================
+==============================    Exp Configs     ==============================
+exp_name: model-heterogeneity
+heterogeneous: true
+dirichlet_alpha: 100
+global_rounds: 100
+local_epochs: 1
+local_loss_fn: CrossEntropyLoss
+local_optim: Adam
+local_lr: 0.001
+batch_size: 64
+sample_frac: 1.0
+test_interval: 1
+metric_type: accuracy
+global_feature_dim: 256
+optim: Adam
+optim_lr: 0.001
+global_gen_epochs: 10
+gen_noise_dim: 128
+gen_optim: Adam
+gen_optim_lr: 0.001
+global_feat_gen_epochs: 10
+feat_gen_noise_dim: 128
+feat_gen_optim: Adam
+feat_gen_optim_lr: 0.001
+feat_gen_div_beta: 1.0
+public_data_ratio: 0.05
+start_mapping_epoch: 40
+gen_observer_weight: 1.0
+index_matching: real_image
+aggregate_method: dataset_name
+use_new_entropy_method: true
+entropy_ratio: 0.7
+global_model_epochs: 15
+global_model_optim: Adam
+global_model_optim_lr: 0.001
+global_samples_per_class: 64
+
+================================================================================
+
+==================================================
+Start 100 rounds training by GeFL_local
+Selected client ids: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]
+--- Round 1 ---
+Client 0 (MNIST) | Target Loss: 0.7424 | G Loss: 2.0543 | D Loss: 0.3573
+Client 1 (MNIST) | Target Loss: 1.0869 | G Loss: 2.2908 | D Loss: 0.3265
+Client 2 (MNIST) | Target Loss: 0.4867 | G Loss: 2.2833 | D Loss: 0.3307
+Client 3 (MNIST) | Target Loss: 0.3797 | G Loss: 2.3991 | D Loss: 0.3314
+Client 4 (MNIST) | Target Loss: 1.2200 | G Loss: 2.2286 | D Loss: 0.3428
+Client 6 (EMNIST) | Target Loss: 1.0369 | G Loss: 2.6465 | D Loss: 0.2469
+Client 7 (EMNIST) | Target Loss: 1.0142 | G Loss: 2.6538 | D Loss: 0.2554
+Client 8 (EMNIST) | Target Loss: 0.7511 | G Loss: 2.6327 | D Loss: 0.2500
+Client 9 (EMNIST) | Target Loss: 0.6348 | G Loss: 2.6968 | D Loss: 0.2422
+Client 10 (EMNIST) | Target Loss: 1.1266 | G Loss: 2.7212 | D Loss: 0.2454
+Round 1 | Client 0 | Model: (MLP) | Acc: 86.53%
+Round 1 | Client 1 | Model: (CNN) | Acc: 79.97%
+Round 1 | Client 2 | Model: (ResNet8) | Acc: 46.18%
+Round 1 | Client 3 | Model: (ResNet18) | Acc: 93.58%
+Round 1 | Client 4 | Model: (MobileNetV2) | Acc: 86.15%
+Round 1 | Client 6 | Model: (MLP) | Acc: 77.29%
+Round 1 | Client 7 | Model: (CNN) | Acc: 71.80%
+Round 1 | Client 8 | Model: (ResNet8) | Acc: 81.81%
+Round 1 | Client 9 | Model: (ResNet18) | Acc: 83.33%
+Round 1 | Client 10 | Model: (MobileNetV2) | Acc: 79.25%
+Selected client ids: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]
+--- Round 2 ---
+Client 0 (MNIST) | Target Loss: 0.3238 | G Loss: 1.5502 | D Loss: 0.4453
+Client 1 (MNIST) | Target Loss: 0.2540 | G Loss: 1.6168 | D Loss: 0.4284
+Client 2 (MNIST) | Target Loss: 0.1186 | G Loss: 1.5927 | D Loss: 0.4348
+Client 3 (MNIST) | Target Loss: 0.1107 | G Loss: 1.4922 | D Loss: 0.4606
+Client 4 (MNIST) | Target Loss: 0.3833 | G Loss: 1.4683 | D Loss: 0.4615
+Client 6 (EMNIST) | Target Loss: 0.6687 | G Loss: 4.4503 | D Loss: 0.1073
+Client 7 (EMNIST) | Target Loss: 0.5641 | G Loss: 4.4644 | D Loss: 0.1052
+Client 8 (EMNIST) | Target Loss: 0.4581 | G Loss: 4.5617 | D Loss: 0.1013
+Client 9 (EMNIST) | Target Loss: 0.4329 | G Loss: 5.1475 | D Loss: 0.0781
+Client 10 (EMNIST) | Target Loss: 0.6214 | G Loss: 4.7153 | D Loss: 0.0984
+Round 2 | Client 0 | Model: (MLP) | Acc: 89.98%
+Round 2 | Client 1 | Model: (CNN) | Acc: 86.20%
+Round 2 | Client 2 | Model: (ResNet8) | Acc: 82.18%
+Round 2 | Client 3 | Model: (ResNet18) | Acc: 98.11%
+Round 2 | Client 4 | Model: (MobileNetV2) | Acc: 92.06%
+Round 2 | Client 6 | Model: (MLP) | Acc: 78.19%
+Round 2 | Client 7 | Model: (CNN) | Acc: 82.11%
+Round 2 | Client 8 | Model: (ResNet8) | Acc: 84.68%
+Round 2 | Client 9 | Model: (ResNet18) | Acc: 84.50%
+Round 2 | Client 10 | Model: (MobileNetV2) | Acc: 78.90%
+Selected client ids: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]
+--- Round 3 ---
+Client 0 (MNIST) | Target Loss: 0.2552 | G Loss: 1.6936 | D Loss: 0.3977
+Client 1 (MNIST) | Target Loss: 0.1495 | G Loss: 1.7585 | D Loss: 0.3898
+Client 2 (MNIST) | Target Loss: 0.0861 | G Loss: 1.9881 | D Loss: 0.3388
+Client 3 (MNIST) | Target Loss: 0.0842 | G Loss: 1.6454 | D Loss: 0.4179
+Client 4 (MNIST) | Target Loss: 0.2568 | G Loss: 1.5291 | D Loss: 0.4334
+Client 6 (EMNIST) | Target Loss: 0.6011 | G Loss: 5.5514 | D Loss: 0.0658
+Client 7 (EMNIST) | Target Loss: 0.5015 | G Loss: 5.3557 | D Loss: 0.0749
+Client 8 (EMNIST) | Target Loss: 0.4191 | G Loss: 5.9081 | D Loss: 0.0599
+Client 9 (EMNIST) | Target Loss: 0.3990 | G Loss: 5.7253 | D Loss: 0.0614
+Client 10 (EMNIST) | Target Loss: 0.5531 | G Loss: 5.6112 | D Loss: 0.0709
+Round 3 | Client 0 | Model: (MLP) | Acc: 91.21%
+Round 3 | Client 1 | Model: (CNN) | Acc: 81.71%
+Round 3 | Client 2 | Model: (ResNet8) | Acc: 94.25%
+Round 3 | Client 3 | Model: (ResNet18) | Acc: 97.74%
+Round 3 | Client 4 | Model: (MobileNetV2) | Acc: 93.68%
+Round 3 | Client 6 | Model: (MLP) | Acc: 80.35%
+Round 3 | Client 7 | Model: (CNN) | Acc: 79.85%
+Round 3 | Client 8 | Model: (ResNet8) | Acc: 84.60%
+Round 3 | Client 9 | Model: (ResNet18) | Acc: 85.07%
+Round 3 | Client 10 | Model: (MobileNetV2) | Acc: 81.98%
+Selected client ids: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]
+--- Round 4 ---
+Client 0 (MNIST) | Target Loss: 0.2083 | G Loss: 2.5267 | D Loss: 0.2338
+Client 1 (MNIST) | Target Loss: 0.1223 | G Loss: 2.8446 | D Loss: 0.1947
+Client 2 (MNIST) | Target Loss: 0.0694 | G Loss: 2.9359 | D Loss: 0.1958
+Client 3 (MNIST) | Target Loss: 0.0655 | G Loss: 2.5506 | D Loss: 0.2282
+Client 4 (MNIST) | Target Loss: 0.2065 | G Loss: 2.4545 | D Loss: 0.2376
+Client 6 (EMNIST) | Target Loss: 0.5610 | G Loss: 5.8641 | D Loss: 0.0569
+Client 7 (EMNIST) | Target Loss: 0.4705 | G Loss: 6.0003 | D Loss: 0.0564
+Client 8 (EMNIST) | Target Loss: 0.3944 | G Loss: 6.5318 | D Loss: 0.0379
+Client 9 (EMNIST) | Target Loss: 0.3731 | G Loss: 6.4362 | D Loss: 0.0397
+Client 10 (EMNIST) | Target Loss: 0.5110 | G Loss: 6.0471 | D Loss: 0.0544
+Round 4 | Client 0 | Model: (MLP) | Acc: 92.15%
+Round 4 | Client 1 | Model: (CNN) | Acc: 91.46%
+Round 4 | Client 2 | Model: (ResNet8) | Acc: 92.60%
+Round 4 | Client 3 | Model: (ResNet18) | Acc: 98.62%
+Round 4 | Client 4 | Model: (MobileNetV2) | Acc: 95.54%
+Round 4 | Client 6 | Model: (MLP) | Acc: 80.19%
+Round 4 | Client 7 | Model: (CNN) | Acc: 81.48%
+Round 4 | Client 8 | Model: (ResNet8) | Acc: 85.70%
+Round 4 | Client 9 | Model: (ResNet18) | Acc: 85.91%
+Round 4 | Client 10 | Model: (MobileNetV2) | Acc: 83.07%
+Selected client ids: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]
+--- Round 5 ---
+Client 0 (MNIST) | Target Loss: 0.1830 | G Loss: 3.3946 | D Loss: 0.1377
+Client 1 (MNIST) | Target Loss: 0.0917 | G Loss: 3.2822 | D Loss: 0.1775
+Client 2 (MNIST) | Target Loss: 0.0435 | G Loss: 3.7036 | D Loss: 0.1146
+Client 3 (MNIST) | Target Loss: 0.0405 | G Loss: 3.1997 | D Loss: 0.1720
+Client 4 (MNIST) | Target Loss: 0.1451 | G Loss: 3.2017 | D Loss: 0.1648
+Client 6 (EMNIST) | Target Loss: 0.5328 | G Loss: 6.0886 | D Loss: 0.0510
+Client 7 (EMNIST) | Target Loss: 0.4471 | G Loss: 6.2836 | D Loss: 0.0464
+Client 8 (EMNIST) | Target Loss: 0.3770 | G Loss: 6.6005 | D Loss: 0.0465
+Client 9 (EMNIST) | Target Loss: 0.3568 | G Loss: 6.3316 | D Loss: 0.0423
+Client 10 (EMNIST) | Target Loss: 0.4795 | G Loss: 6.3225 | D Loss: 0.0454
+Round 5 | Client 0 | Model: (MLP) | Acc: 93.50%
+Round 5 | Client 1 | Model: (CNN) | Acc: 84.02%
+Round 5 | Client 2 | Model: (ResNet8) | Acc: 97.32%
+Round 5 | Client 3 | Model: (ResNet18) | Acc: 97.74%
+Round 5 | Client 4 | Model: (MobileNetV2) | Acc: 96.23%
+Round 5 | Client 6 | Model: (MLP) | Acc: 81.02%
+Round 5 | Client 7 | Model: (CNN) | Acc: 83.83%
+Round 5 | Client 8 | Model: (ResNet8) | Acc: 85.70%
+Round 5 | Client 9 | Model: (ResNet18) | Acc: 85.86%
+Round 5 | Client 10 | Model: (MobileNetV2) | Acc: 84.01%
+Selected client ids: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]
+--- Round 6 ---
+Client 0 (MNIST) | Target Loss: 0.1525 | G Loss: 3.6639 | D Loss: 0.1295
+Client 1 (MNIST) | Target Loss: 0.0820 | G Loss: 3.2837 | D Loss: 0.1968
+Client 2 (MNIST) | Target Loss: 0.0501 | G Loss: 3.6419 | D Loss: 0.1622
+Client 3 (MNIST) | Target Loss: 0.0555 | G Loss: 3.5127 | D Loss: 0.1515
+Client 4 (MNIST) | Target Loss: 0.1211 | G Loss: 3.9611 | D Loss: 0.1054
+Client 6 (EMNIST) | Target Loss: 0.5136 | G Loss: 6.3235 | D Loss: 0.0361
+Client 7 (EMNIST) | Target Loss: 0.4313 | G Loss: 6.1636 | D Loss: 0.0493
+Client 8 (EMNIST) | Target Loss: 0.3603 | G Loss: 6.5062 | D Loss: 0.0348
+Client 9 (EMNIST) | Target Loss: 0.3396 | G Loss: 6.5706 | D Loss: 0.0281
+Client 10 (EMNIST) | Target Loss: 0.4597 | G Loss: 6.5607 | D Loss: 0.0353
+Round 6 | Client 0 | Model: (MLP) | Acc: 93.97%
+Round 6 | Client 1 | Model: (CNN) | Acc: 87.29%
+Round 6 | Client 2 | Model: (ResNet8) | Acc: 97.78%
+Round 6 | Client 3 | Model: (ResNet18) | Acc: 98.68%
+Round 6 | Client 4 | Model: (MobileNetV2) | Acc: 96.06%
+Round 6 | Client 6 | Model: (MLP) | Acc: 81.63%
+Round 6 | Client 7 | Model: (CNN) | Acc: 84.13%
+Round 6 | Client 8 | Model: (ResNet8) | Acc: 86.19%
+Round 6 | Client 9 | Model: (ResNet18) | Acc: 86.16%
+Round 6 | Client 10 | Model: (MobileNetV2) | Acc: 83.97%
+Selected client ids: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]
+--- Round 7 ---
+Client 0 (MNIST) | Target Loss: 0.1507 | G Loss: 3.9561 | D Loss: 0.1602
+Client 1 (MNIST) | Target Loss: 0.0666 | G Loss: 4.7196 | D Loss: 0.0209
+Client 2 (MNIST) | Target Loss: 0.0324 | G Loss: 5.0193 | D Loss: 0.0538
+Client 3 (MNIST) | Target Loss: 0.0398 | G Loss: 3.7934 | D Loss: 0.1323
+Client 4 (MNIST) | Target Loss: 0.1206 | G Loss: 3.7730 | D Loss: 0.1307
+Client 6 (EMNIST) | Target Loss: 0.4958 | G Loss: 6.3101 | D Loss: 0.0343
+Client 7 (EMNIST) | Target Loss: 0.4165 | G Loss: 6.7399 | D Loss: 0.0336
+Client 8 (EMNIST) | Target Loss: 0.3476 | G Loss: 6.9285 | D Loss: 0.0285
+Client 9 (EMNIST) | Target Loss: 0.3271 | G Loss: 6.8589 | D Loss: 0.0270
+Client 10 (EMNIST) | Target Loss: 0.4466 | G Loss: 6.8573 | D Loss: 0.0295
+Round 7 | Client 0 | Model: (MLP) | Acc: 93.56%
+Round 7 | Client 1 | Model: (CNN) | Acc: 84.08%
+Round 7 | Client 2 | Model: (ResNet8) | Acc: 90.72%
+Round 7 | Client 3 | Model: (ResNet18) | Acc: 98.24%
+Round 7 | Client 4 | Model: (MobileNetV2) | Acc: 96.18%
+Round 7 | Client 6 | Model: (MLP) | Acc: 80.44%
+Round 7 | Client 7 | Model: (CNN) | Acc: 84.45%
+Round 7 | Client 8 | Model: (ResNet8) | Acc: 85.85%
+Round 7 | Client 9 | Model: (ResNet18) | Acc: 85.51%
+Round 7 | Client 10 | Model: (MobileNetV2) | Acc: 84.26%
+Selected client ids: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]
+--- Round 8 ---
+Client 0 (MNIST) | Target Loss: 0.1367 | G Loss: 4.5158 | D Loss: 0.0549
+Client 1 (MNIST) | Target Loss: 0.0557 | G Loss: 3.8068 | D Loss: 0.1707
+Client 2 (MNIST) | Target Loss: 0.0257 | G Loss: 4.0958 | D Loss: 0.1230
+Client 3 (MNIST) | Target Loss: 0.0263 | G Loss: 5.1777 | D Loss: 0.0121
+Client 4 (MNIST) | Target Loss: 0.1123 | G Loss: 5.4369 | D Loss: 0.0094
+Client 6 (EMNIST) | Target Loss: 0.4837 | G Loss: 6.3257 | D Loss: 0.0411
+Client 7 (EMNIST) | Target Loss: 0.4062 | G Loss: 6.4423 | D Loss: 0.0357
+Client 8 (EMNIST) | Target Loss: 0.3337 | G Loss: 7.1454 | D Loss: 0.0213
+Client 9 (EMNIST) | Target Loss: 0.3110 | G Loss: 6.9338 | D Loss: 0.0241
+Client 10 (EMNIST) | Target Loss: 0.4301 | G Loss: 6.6099 | D Loss: 0.0352
+Round 8 | Client 0 | Model: (MLP) | Acc: 94.73%
+Round 8 | Client 1 | Model: (CNN) | Acc: 95.64%
+Round 8 | Client 2 | Model: (ResNet8) | Acc: 97.78%
+Round 8 | Client 3 | Model: (ResNet18) | Acc: 98.30%
+Round 8 | Client 4 | Model: (MobileNetV2) | Acc: 95.94%
+Round 8 | Client 6 | Model: (MLP) | Acc: 81.23%
+Round 8 | Client 7 | Model: (CNN) | Acc: 83.78%
+Round 8 | Client 8 | Model: (ResNet8) | Acc: 86.09%
+Round 8 | Client 9 | Model: (ResNet18) | Acc: 86.33%
+Round 8 | Client 10 | Model: (MobileNetV2) | Acc: 84.64%
+Selected client ids: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]
+--- Round 9 ---
+Client 0 (MNIST) | Target Loss: 0.1110 | G Loss: 3.7602 | D Loss: 0.1589
+Client 1 (MNIST) | Target Loss: 0.0497 | G Loss: 3.9595 | D Loss: 0.1324
+Client 2 (MNIST) | Target Loss: 0.0199 | G Loss: 4.2638 | D Loss: 0.1327
+Client 3 (MNIST) | Target Loss: 0.0290 | G Loss: 3.9300 | D Loss: 0.1578
+Client 4 (MNIST) | Target Loss: 0.0912 | G Loss: 4.1725 | D Loss: 0.1743
+Client 6 (EMNIST) | Target Loss: 0.4775 | G Loss: 6.9019 | D Loss: 0.0287
+Client 7 (EMNIST) | Target Loss: 0.3974 | G Loss: 6.8778 | D Loss: 0.0302
+Client 8 (EMNIST) | Target Loss: 0.3203 | G Loss: 6.5148 | D Loss: 0.0348
+Client 9 (EMNIST) | Target Loss: 0.2971 | G Loss: 7.1922 | D Loss: 0.0232
+Client 10 (EMNIST) | Target Loss: 0.4181 | G Loss: 6.5869 | D Loss: 0.0373
+Round 9 | Client 0 | Model: (MLP) | Acc: 93.15%
+Round 9 | Client 1 | Model: (CNN) | Acc: 53.59%
+Round 9 | Client 2 | Model: (ResNet8) | Acc: 97.55%
+Round 9 | Client 3 | Model: (ResNet18) | Acc: 98.36%
+Round 9 | Client 4 | Model: (MobileNetV2) | Acc: 96.35%
+Round 9 | Client 6 | Model: (MLP) | Acc: 81.23%
+Round 9 | Client 7 | Model: (CNN) | Acc: 84.19%
+Round 9 | Client 8 | Model: (ResNet8) | Acc: 85.76%
+Round 9 | Client 9 | Model: (ResNet18) | Acc: 86.18%
+Round 9 | Client 10 | Model: (MobileNetV2) | Acc: 85.13%
+Selected client ids: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]
+--- Round 10 ---
+Client 0 (MNIST) | Target Loss: 0.1085 | G Loss: 4.3880 | D Loss: 0.1113
+Client 1 (MNIST) | Target Loss: 0.0482 | G Loss: 5.3136 | D Loss: 0.0269
+Client 2 (MNIST) | Target Loss: 0.0157 | G Loss: 5.2490 | D Loss: 0.0320
+Client 3 (MNIST) | Target Loss: 0.0280 | G Loss: 4.5995 | D Loss: 0.0903
+Client 4 (MNIST) | Target Loss: 0.0884 | G Loss: 4.7168 | D Loss: 0.0893
+Client 6 (EMNIST) | Target Loss: 0.4673 | G Loss: 6.6675 | D Loss: 0.0291
+Client 7 (EMNIST) | Target Loss: 0.3871 | G Loss: 6.8204 | D Loss: 0.0316
+Client 8 (EMNIST) | Target Loss: 0.3089 | G Loss: 6.8930 | D Loss: 0.0275
+Client 9 (EMNIST) | Target Loss: 0.2841 | G Loss: 7.1171 | D Loss: 0.0240
+Client 10 (EMNIST) | Target Loss: 0.4058 | G Loss: 6.9869 | D Loss: 0.0256
+Round 10 | Client 0 | Model: (MLP) | Acc: 94.79%
+Round 10 | Client 1 | Model: (CNN) | Acc: 80.62%
+Round 10 | Client 2 | Model: (ResNet8) | Acc: 97.04%
+Round 10 | Client 3 | Model: (ResNet18) | Acc: 98.49%
+Round 10 | Client 4 | Model: (MobileNetV2) | Acc: 97.10%
+Round 10 | Client 6 | Model: (MLP) | Acc: 81.28%
+Round 10 | Client 7 | Model: (CNN) | Acc: 85.07%
+Round 10 | Client 8 | Model: (ResNet8) | Acc: 86.19%
+Round 10 | Client 9 | Model: (ResNet18) | Acc: 86.05%
+Round 10 | Client 10 | Model: (MobileNetV2) | Acc: 85.27%
+Selected client ids: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]
+--- Round 11 ---
+Client 0 (MNIST) | Target Loss: 0.0896 | G Loss: 5.8774 | D Loss: 0.0071
+Client 1 (MNIST) | Target Loss: 0.0403 | G Loss: 5.6124 | D Loss: 0.0550
+Client 2 (MNIST) | Target Loss: 0.0154 | G Loss: 6.4809 | D Loss: 0.0040
+Client 3 (MNIST) | Target Loss: 0.0206 | G Loss: 5.3591 | D Loss: 0.0300
+Client 4 (MNIST) | Target Loss: 0.0790 | G Loss: 5.0740 | D Loss: 0.0583
+Client 6 (EMNIST) | Target Loss: 0.4604 | G Loss: 6.9222 | D Loss: 0.0332
+Client 7 (EMNIST) | Target Loss: 0.3808 | G Loss: 6.9840 | D Loss: 0.0294
+Client 8 (EMNIST) | Target Loss: 0.2959 | G Loss: 7.2320 | D Loss: 0.0261
+Client 9 (EMNIST) | Target Loss: 0.2715 | G Loss: 6.8649 | D Loss: 0.0215
+Client 10 (EMNIST) | Target Loss: 0.3965 | G Loss: 6.9685 | D Loss: 0.0332
+Round 11 | Client 0 | Model: (MLP) | Acc: 94.61%
+Round 11 | Client 1 | Model: (CNN) | Acc: 84.27%
+Round 11 | Client 2 | Model: (ResNet8) | Acc: 97.44%
+Round 11 | Client 3 | Model: (ResNet18) | Acc: 99.31%
+Round 11 | Client 4 | Model: (MobileNetV2) | Acc: 96.99%
+Round 11 | Client 6 | Model: (MLP) | Acc: 81.65%
+Round 11 | Client 7 | Model: (CNN) | Acc: 84.48%
+Round 11 | Client 8 | Model: (ResNet8) | Acc: 85.99%
+Round 11 | Client 9 | Model: (ResNet18) | Acc: 85.88%
+Round 11 | Client 10 | Model: (MobileNetV2) | Acc: 85.72%
+Selected client ids: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]
+--- Round 12 ---
+Client 0 (MNIST) | Target Loss: 0.0915 | G Loss: 6.5794 | D Loss: 0.0052
+Client 1 (MNIST) | Target Loss: 0.0274 | G Loss: 3.6694 | D Loss: 0.1864
+Client 2 (MNIST) | Target Loss: 0.0290 | G Loss: 3.0447 | D Loss: 0.2256
+Client 3 (MNIST) | Target Loss: 0.0192 | G Loss: 4.3463 | D Loss: 0.1314
+Client 4 (MNIST) | Target Loss: 0.0682 | G Loss: 5.1418 | D Loss: 0.0804
+Client 6 (EMNIST) | Target Loss: 0.4512 | G Loss: 7.3181 | D Loss: 0.0211
+Client 7 (EMNIST) | Target Loss: 0.3758 | G Loss: 7.0045 | D Loss: 0.0246
+Client 8 (EMNIST) | Target Loss: 0.2832 | G Loss: 7.3464 | D Loss: 0.0184
+Client 9 (EMNIST) | Target Loss: 0.2578 | G Loss: 7.0632 | D Loss: 0.0152
+Client 10 (EMNIST) | Target Loss: 0.3885 | G Loss: 6.9531 | D Loss: 0.0234
+Round 12 | Client 0 | Model: (MLP) | Acc: 92.91%
+Round 12 | Client 1 | Model: (CNN) | Acc: 95.38%
+Round 12 | Client 2 | Model: (ResNet8) | Acc: 97.55%
+Round 12 | Client 3 | Model: (ResNet18) | Acc: 98.68%
+Round 12 | Client 4 | Model: (MobileNetV2) | Acc: 96.76%
+Round 12 | Client 6 | Model: (MLP) | Acc: 81.89%
+Round 12 | Client 7 | Model: (CNN) | Acc: 84.03%
+Round 12 | Client 8 | Model: (ResNet8) | Acc: 86.14%
+Round 12 | Client 9 | Model: (ResNet18) | Acc: 86.15%
+Round 12 | Client 10 | Model: (MobileNetV2) | Acc: 85.57%
+Selected client ids: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]
+--- Round 13 ---
+Client 0 (MNIST) | Target Loss: 0.0816 | G Loss: 2.9660 | D Loss: 0.2280
+Client 1 (MNIST) | Target Loss: 0.0257 | G Loss: 5.1262 | D Loss: 0.0508
+Client 2 (MNIST) | Target Loss: 0.0263 | G Loss: 4.1058 | D Loss: 0.0934
+Client 3 (MNIST) | Target Loss: 0.0184 | G Loss: 5.4993 | D Loss: 0.0283
+Client 4 (MNIST) | Target Loss: 0.0651 | G Loss: 5.0971 | D Loss: 0.0752
+Client 6 (EMNIST) | Target Loss: 0.4439 | G Loss: 7.1218 | D Loss: 0.0258
+Client 7 (EMNIST) | Target Loss: 0.3683 | G Loss: 7.3119 | D Loss: 0.0245
+Client 8 (EMNIST) | Target Loss: 0.2706 | G Loss: 7.5599 | D Loss: 0.0221
+Client 9 (EMNIST) | Target Loss: 0.2430 | G Loss: 6.7753 | D Loss: 0.0151
+Client 10 (EMNIST) | Target Loss: 0.3796 | G Loss: 7.2063 | D Loss: 0.0269
+Round 13 | Client 0 | Model: (MLP) | Acc: 94.14%
+Round 13 | Client 1 | Model: (CNN) | Acc: 97.69%
+Round 13 | Client 2 | Model: (ResNet8) | Acc: 97.55%
+Round 13 | Client 3 | Model: (ResNet18) | Acc: 98.81%
+Round 13 | Client 4 | Model: (MobileNetV2) | Acc: 93.51%
+Round 13 | Client 6 | Model: (MLP) | Acc: 81.02%
+Round 13 | Client 7 | Model: (CNN) | Acc: 84.80%
+Round 13 | Client 8 | Model: (ResNet8) | Acc: 85.89%
+Round 13 | Client 9 | Model: (ResNet18) | Acc: 85.85%
+Round 13 | Client 10 | Model: (MobileNetV2) | Acc: 85.40%
+Selected client ids: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]
+--- Round 14 ---
+Client 0 (MNIST) | Target Loss: 0.0733 | G Loss: 4.2526 | D Loss: 0.1084
+Client 1 (MNIST) | Target Loss: 0.0249 | G Loss: 6.5952 | D Loss: 0.0033
+Client 2 (MNIST) | Target Loss: 0.0113 | G Loss: 4.3122 | D Loss: 0.1106
+Client 3 (MNIST) | Target Loss: 0.0213 | G Loss: 5.8854 | D Loss: 0.0464
+Client 4 (MNIST) | Target Loss: 0.0731 | G Loss: 5.7477 | D Loss: 0.0712
+Client 6 (EMNIST) | Target Loss: 0.4420 | G Loss: 7.4259 | D Loss: 0.0219
+Client 7 (EMNIST) | Target Loss: 0.3630 | G Loss: 7.7015 | D Loss: 0.0157
+Client 8 (EMNIST) | Target Loss: 0.2565 | G Loss: 7.8551 | D Loss: 0.0162
+Client 9 (EMNIST) | Target Loss: 0.2287 | G Loss: 6.9577 | D Loss: 0.0133
+Client 10 (EMNIST) | Target Loss: 0.3758 | G Loss: 7.8521 | D Loss: 0.0203
+Round 14 | Client 0 | Model: (MLP) | Acc: 94.79%
+Round 14 | Client 1 | Model: (CNN) | Acc: 95.44%
+Round 14 | Client 2 | Model: (ResNet8) | Acc: 98.06%
+Round 14 | Client 3 | Model: (ResNet18) | Acc: 98.81%
+Round 14 | Client 4 | Model: (MobileNetV2) | Acc: 96.00%
+Round 14 | Client 6 | Model: (MLP) | Acc: 81.23%
+Round 14 | Client 7 | Model: (CNN) | Acc: 85.22%
+Round 14 | Client 8 | Model: (ResNet8) | Acc: 85.56%
+Round 14 | Client 9 | Model: (ResNet18) | Acc: 85.51%
+Round 14 | Client 10 | Model: (MobileNetV2) | Acc: 85.71%
+Selected client ids: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]
+--- Round 15 ---
+Client 0 (MNIST) | Target Loss: 0.0903 | G Loss: 5.0615 | D Loss: 0.0529
+Client 1 (MNIST) | Target Loss: 0.0253 | G Loss: 4.2742 | D Loss: 0.1593
+Client 2 (MNIST) | Target Loss: 0.0101 | G Loss: 4.7929 | D Loss: 0.0488
+Client 3 (MNIST) | Target Loss: 0.0189 | G Loss: 4.3832 | D Loss: 0.0923
+Client 4 (MNIST) | Target Loss: 0.0757 | G Loss: 4.4508 | D Loss: 0.1004
+Client 6 (EMNIST) | Target Loss: 0.4379 | G Loss: 7.2061 | D Loss: 0.0259
+Client 7 (EMNIST) | Target Loss: 0.3585 | G Loss: 7.5880 | D Loss: 0.0218
+Client 8 (EMNIST) | Target Loss: 0.2418 | G Loss: 7.9160 | D Loss: 0.0181
+Client 9 (EMNIST) | Target Loss: 0.2133 | G Loss: 6.9566 | D Loss: 0.0143
+Client 10 (EMNIST) | Target Loss: 0.3687 | G Loss: 7.7355 | D Loss: 0.0176
+Round 15 | Client 0 | Model: (MLP) | Acc: 94.73%
+Round 15 | Client 1 | Model: (CNN) | Acc: 95.12%
+Round 15 | Client 2 | Model: (ResNet8) | Acc: 98.80%
+Round 15 | Client 3 | Model: (ResNet18) | Acc: 97.30%
+Round 15 | Client 4 | Model: (MobileNetV2) | Acc: 96.64%
+Round 15 | Client 6 | Model: (MLP) | Acc: 81.37%
+Round 15 | Client 7 | Model: (CNN) | Acc: 84.62%
+Round 15 | Client 8 | Model: (ResNet8) | Acc: 85.42%
+Round 15 | Client 9 | Model: (ResNet18) | Acc: 85.99%
+Round 15 | Client 10 | Model: (MobileNetV2) | Acc: 85.59%
+Selected client ids: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]
+--- Round 16 ---
+Client 0 (MNIST) | Target Loss: 0.0697 | G Loss: 6.4269 | D Loss: 0.0040
+Client 1 (MNIST) | Target Loss: 0.0253 | G Loss: 4.5482 | D Loss: 0.0923
+Client 2 (MNIST) | Target Loss: 0.0167 | G Loss: 5.7538 | D Loss: 0.0676
+Client 3 (MNIST) | Target Loss: 0.0231 | G Loss: 6.0165 | D Loss: 0.0430
+Client 4 (MNIST) | Target Loss: 0.0680 | G Loss: 4.7424 | D Loss: 0.0751
+Client 6 (EMNIST) | Target Loss: 0.4314 | G Loss: 7.7946 | D Loss: 0.0174
+Client 7 (EMNIST) | Target Loss: 0.3535 | G Loss: 7.5862 | D Loss: 0.0201
+Client 8 (EMNIST) | Target Loss: 0.2292 | G Loss: 7.8737 | D Loss: 0.0209
+Client 9 (EMNIST) | Target Loss: 0.1947 | G Loss: 6.9004 | D Loss: 0.0141
+Client 10 (EMNIST) | Target Loss: 0.3615 | G Loss: 7.7651 | D Loss: 0.0167
+Round 16 | Client 0 | Model: (MLP) | Acc: 95.37%
+Round 16 | Client 1 | Model: (CNN) | Acc: 76.83%
+Round 16 | Client 2 | Model: (ResNet8) | Acc: 92.14%
+Round 16 | Client 3 | Model: (ResNet18) | Acc: 98.68%
+Round 16 | Client 4 | Model: (MobileNetV2) | Acc: 97.22%
+Round 16 | Client 6 | Model: (MLP) | Acc: 81.74%
+Round 16 | Client 7 | Model: (CNN) | Acc: 85.08%
+Round 16 | Client 8 | Model: (ResNet8) | Acc: 85.36%
+Round 16 | Client 9 | Model: (ResNet18) | Acc: 85.22%
+Round 16 | Client 10 | Model: (MobileNetV2) | Acc: 85.62%
+Selected client ids: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]
+--- Round 17 ---
+Client 0 (MNIST) | Target Loss: 0.0603 | G Loss: 5.3088 | D Loss: 0.0990
+Client 1 (MNIST) | Target Loss: 0.0297 | G Loss: 6.2776 | D Loss: 0.0045
+Client 2 (MNIST) | Target Loss: 0.0163 | G Loss: 4.0146 | D Loss: 0.1282
+Client 3 (MNIST) | Target Loss: 0.0214 | G Loss: 5.8728 | D Loss: 0.0243
+Client 4 (MNIST) | Target Loss: 0.0608 | G Loss: 6.7575 | D Loss: 0.0028
+Client 6 (EMNIST) | Target Loss: 0.4320 | G Loss: 7.3908 | D Loss: 0.0223
+Client 7 (EMNIST) | Target Loss: 0.3484 | G Loss: 7.9508 | D Loss: 0.0144
+Client 8 (EMNIST) | Target Loss: 0.2131 | G Loss: 8.2924 | D Loss: 0.0133
+Client 9 (EMNIST) | Target Loss: 0.1771 | G Loss: 7.1522 | D Loss: 0.0111
+Client 10 (EMNIST) | Target Loss: 0.3566 | G Loss: 7.4567 | D Loss: 0.0219
+Round 17 | Client 0 | Model: (MLP) | Acc: 95.14%
+Round 17 | Client 1 | Model: (CNN) | Acc: 91.14%
+Round 17 | Client 2 | Model: (ResNet8) | Acc: 97.95%
+Round 17 | Client 3 | Model: (ResNet18) | Acc: 99.18%
+Round 17 | Client 4 | Model: (MobileNetV2) | Acc: 96.81%
+Round 17 | Client 6 | Model: (MLP) | Acc: 81.77%
+Round 17 | Client 7 | Model: (CNN) | Acc: 85.18%
+Round 17 | Client 8 | Model: (ResNet8) | Acc: 84.63%
+Round 17 | Client 9 | Model: (ResNet18) | Acc: 84.91%
+Round 17 | Client 10 | Model: (MobileNetV2) | Acc: 85.78%
+Selected client ids: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]
+--- Round 18 ---
+Client 0 (MNIST) | Target Loss: 0.0468 | G Loss: 4.7372 | D Loss: 0.0726
+Client 1 (MNIST) | Target Loss: 0.0210 | G Loss: 4.1826 | D Loss: 0.1581
+Client 2 (MNIST) | Target Loss: 0.0148 | G Loss: 6.0970 | D Loss: 0.0064
+Client 3 (MNIST) | Target Loss: 0.0094 | G Loss: 7.3299 | D Loss: 0.0306
+Client 4 (MNIST) | Target Loss: 0.0597 | G Loss: 4.6478 | D Loss: 0.0945
+Client 6 (EMNIST) | Target Loss: 0.4297 | G Loss: 7.6280 | D Loss: 0.0206
+Client 7 (EMNIST) | Target Loss: 0.3438 | G Loss: 7.7288 | D Loss: 0.0227
+Client 8 (EMNIST) | Target Loss: 0.2000 | G Loss: 7.7293 | D Loss: 0.0208
+Client 9 (EMNIST) | Target Loss: 0.1577 | G Loss: 7.3703 | D Loss: 0.0111
+Client 10 (EMNIST) | Target Loss: 0.3521 | G Loss: 7.8305 | D Loss: 0.0173
+Round 18 | Client 0 | Model: (MLP) | Acc: 95.61%
+Round 18 | Client 1 | Model: (CNN) | Acc: 95.51%
+Round 18 | Client 2 | Model: (ResNet8) | Acc: 98.46%
+Round 18 | Client 3 | Model: (ResNet18) | Acc: 96.92%
+Round 18 | Client 4 | Model: (MobileNetV2) | Acc: 96.64%
+Round 18 | Client 6 | Model: (MLP) | Acc: 81.42%
+Round 18 | Client 7 | Model: (CNN) | Acc: 85.48%
+Round 18 | Client 8 | Model: (ResNet8) | Acc: 85.32%
+Round 18 | Client 9 | Model: (ResNet18) | Acc: 84.85%
+Round 18 | Client 10 | Model: (MobileNetV2) | Acc: 86.29%
+Selected client ids: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]
+--- Round 19 ---
+Client 0 (MNIST) | Target Loss: 0.0712 | G Loss: 5.9767 | D Loss: 0.0530
+Client 1 (MNIST) | Target Loss: 0.0163 | G Loss: 5.2051 | D Loss: 0.0385
+Client 2 (MNIST) | Target Loss: 0.0044 | G Loss: 5.7744 | D Loss: 0.0607
+Client 3 (MNIST) | Target Loss: 0.0091 | G Loss: 4.0723 | D Loss: 0.1069
+Client 4 (MNIST) | Target Loss: 0.0967 | G Loss: 5.3327 | D Loss: 0.0799
+Client 6 (EMNIST) | Target Loss: 0.4274 | G Loss: 7.5491 | D Loss: 0.0213
+Client 7 (EMNIST) | Target Loss: 0.3406 | G Loss: 7.7515 | D Loss: 0.0162
+Client 8 (EMNIST) | Target Loss: 0.1818 | G Loss: 7.8165 | D Loss: 0.0174
+Client 9 (EMNIST) | Target Loss: 0.1369 | G Loss: 7.1953 | D Loss: 0.0135
+Client 10 (EMNIST) | Target Loss: 0.3480 | G Loss: 7.9635 | D Loss: 0.0171
+Round 19 | Client 0 | Model: (MLP) | Acc: 95.08%
+Round 19 | Client 1 | Model: (CNN) | Acc: 73.04%
+Round 19 | Client 2 | Model: (ResNet8) | Acc: 97.84%
+Round 19 | Client 3 | Model: (ResNet18) | Acc: 99.12%
+Round 19 | Client 4 | Model: (MobileNetV2) | Acc: 97.05%
+Round 19 | Client 6 | Model: (MLP) | Acc: 81.83%
+Round 19 | Client 7 | Model: (CNN) | Acc: 85.43%
+Round 19 | Client 8 | Model: (ResNet8) | Acc: 84.61%
+Round 19 | Client 9 | Model: (ResNet18) | Acc: 84.78%
+Round 19 | Client 10 | Model: (MobileNetV2) | Acc: 85.84%
+Selected client ids: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]
+--- Round 20 ---
+Client 0 (MNIST) | Target Loss: 0.0659 | G Loss: 4.0298 | D Loss: 0.1099
+Client 1 (MNIST) | Target Loss: 0.0099 | G Loss: 6.7143 | D Loss: 0.0300
+Client 2 (MNIST) | Target Loss: 0.0125 | G Loss: 4.4770 | D Loss: 0.1244
+Client 3 (MNIST) | Target Loss: 0.0091 | G Loss: 6.2269 | D Loss: 0.0068
+Client 4 (MNIST) | Target Loss: 0.0554 | G Loss: 5.0261 | D Loss: 0.0657
+Client 6 (EMNIST) | Target Loss: 0.4203 | G Loss: 8.1589 | D Loss: 0.0168
+Client 7 (EMNIST) | Target Loss: 0.3366 | G Loss: 8.2853 | D Loss: 0.0148
+Client 8 (EMNIST) | Target Loss: 0.1653 | G Loss: 8.1019 | D Loss: 0.0181
+Client 9 (EMNIST) | Target Loss: 0.1219 | G Loss: 7.4595 | D Loss: 0.0098
+Client 10 (EMNIST) | Target Loss: 0.3435 | G Loss: 8.4740 | D Loss: 0.0126
+Round 20 | Client 0 | Model: (MLP) | Acc: 95.90%
+Round 20 | Client 1 | Model: (CNN) | Acc: 96.92%
+Round 20 | Client 2 | Model: (ResNet8) | Acc: 98.52%
+Round 20 | Client 3 | Model: (ResNet18) | Acc: 94.59%
+Round 20 | Client 4 | Model: (MobileNetV2) | Acc: 95.65%
+Round 20 | Client 6 | Model: (MLP) | Acc: 80.94%
+Round 20 | Client 7 | Model: (CNN) | Acc: 85.58%
+Round 20 | Client 8 | Model: (ResNet8) | Acc: 84.49%
+Round 20 | Client 9 | Model: (ResNet18) | Acc: 84.64%
+Round 20 | Client 10 | Model: (MobileNetV2) | Acc: 86.20%
+Selected client ids: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]
+--- Round 21 ---
+Client 0 (MNIST) | Target Loss: 0.0395 | G Loss: 5.7417 | D Loss: 0.0085
+Client 1 (MNIST) | Target Loss: 0.0165 | G Loss: 4.1502 | D Loss: 0.1084
+Client 2 (MNIST) | Target Loss: 0.0106 | G Loss: 6.3822 | D Loss: 0.0045
+Client 3 (MNIST) | Target Loss: 0.0159 | G Loss: 7.5786 | D Loss: 0.0016
+Client 4 (MNIST) | Target Loss: 0.0477 | G Loss: 5.6949 | D Loss: 0.0652
+Client 6 (EMNIST) | Target Loss: 0.4213 | G Loss: 8.0895 | D Loss: 0.0138
+Client 7 (EMNIST) | Target Loss: 0.3332 | G Loss: 8.1584 | D Loss: 0.0154
+Client 8 (EMNIST) | Target Loss: 0.1487 | G Loss: 7.7900 | D Loss: 0.0191
+Client 9 (EMNIST) | Target Loss: 0.1055 | G Loss: 7.6875 | D Loss: 0.0112
+Client 10 (EMNIST) | Target Loss: 0.3380 | G Loss: 8.1544 | D Loss: 0.0155
+Round 21 | Client 0 | Model: (MLP) | Acc: 95.72%
+Round 21 | Client 1 | Model: (CNN) | Acc: 90.56%
+Round 21 | Client 2 | Model: (ResNet8) | Acc: 97.55%
+Round 21 | Client 3 | Model: (ResNet18) | Acc: 97.99%
+Round 21 | Client 4 | Model: (MobileNetV2) | Acc: 97.45%
+Round 21 | Client 6 | Model: (MLP) | Acc: 81.76%
+Round 21 | Client 7 | Model: (CNN) | Acc: 85.55%
+Round 21 | Client 8 | Model: (ResNet8) | Acc: 83.89%
+Round 21 | Client 9 | Model: (ResNet18) | Acc: 84.15%
+Round 21 | Client 10 | Model: (MobileNetV2) | Acc: 86.06%
+Selected client ids: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]
+--- Round 22 ---
+Client 0 (MNIST) | Target Loss: 0.0389 | G Loss: 4.7791 | D Loss: 0.1072
+Client 1 (MNIST) | Target Loss: 0.0156 | G Loss: 5.5412 | D Loss: 0.0477
+Client 2 (MNIST) | Target Loss: 0.0205 | G Loss: 5.6202 | D Loss: 0.0583
+Client 3 (MNIST) | Target Loss: 0.0102 | G Loss: 6.3143 | D Loss: 0.0769
+Client 4 (MNIST) | Target Loss: 0.0407 | G Loss: 5.0183 | D Loss: 0.0477
+Client 6 (EMNIST) | Target Loss: 0.4204 | G Loss: 8.0135 | D Loss: 0.0188
+Client 7 (EMNIST) | Target Loss: 0.3296 | G Loss: 7.9667 | D Loss: 0.0166
+Client 8 (EMNIST) | Target Loss: 0.1364 | G Loss: 7.8205 | D Loss: 0.0190
+Client 9 (EMNIST) | Target Loss: 0.0920 | G Loss: 7.5808 | D Loss: 0.0098
+Client 10 (EMNIST) | Target Loss: 0.3362 | G Loss: 8.2176 | D Loss: 0.0152
+Round 22 | Client 0 | Model: (MLP) | Acc: 95.31%
+Round 22 | Client 1 | Model: (CNN) | Acc: 95.83%
+Round 22 | Client 2 | Model: (ResNet8) | Acc: 98.41%
+Round 22 | Client 3 | Model: (ResNet18) | Acc: 98.55%
+Round 22 | Client 4 | Model: (MobileNetV2) | Acc: 97.57%
+Round 22 | Client 6 | Model: (MLP) | Acc: 81.18%
+Round 22 | Client 7 | Model: (CNN) | Acc: 85.01%
+Round 22 | Client 8 | Model: (ResNet8) | Acc: 85.15%
+Round 22 | Client 9 | Model: (ResNet18) | Acc: 84.51%
+Round 22 | Client 10 | Model: (MobileNetV2) | Acc: 86.06%
+Selected client ids: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]
+--- Round 23 ---
+Client 0 (MNIST) | Target Loss: 0.0432 | G Loss: 5.6996 | D Loss: 0.0457
+Client 1 (MNIST) | Target Loss: 0.0107 | G Loss: 5.6729 | D Loss: 0.0336
+Client 2 (MNIST) | Target Loss: 0.0049 | G Loss: 5.2224 | D Loss: 0.0691
+Client 3 (MNIST) | Target Loss: 0.0214 | G Loss: 4.6761 | D Loss: 0.0794
+Client 4 (MNIST) | Target Loss: 0.0777 | G Loss: 6.7530 | D Loss: 0.0032
+Client 6 (EMNIST) | Target Loss: 0.4077 | G Loss: 8.1762 | D Loss: 0.0192
+Client 7 (EMNIST) | Target Loss: 0.3245 | G Loss: 8.1673 | D Loss: 0.0132
+Client 8 (EMNIST) | Target Loss: 0.1226 | G Loss: 8.0408 | D Loss: 0.0164
+Client 9 (EMNIST) | Target Loss: 0.0796 | G Loss: 7.4858 | D Loss: 0.0107
+Client 10 (EMNIST) | Target Loss: 0.3306 | G Loss: 8.1598 | D Loss: 0.0130
+Round 23 | Client 0 | Model: (MLP) | Acc: 96.31%
+Round 23 | Client 1 | Model: (CNN) | Acc: 97.56%
+Round 23 | Client 2 | Model: (ResNet8) | Acc: 97.44%
+Round 23 | Client 3 | Model: (ResNet18) | Acc: 98.99%
+Round 23 | Client 4 | Model: (MobileNetV2) | Acc: 96.99%
+Round 23 | Client 6 | Model: (MLP) | Acc: 81.27%
+Round 23 | Client 7 | Model: (CNN) | Acc: 85.47%
+Round 23 | Client 8 | Model: (ResNet8) | Acc: 83.85%
+Round 23 | Client 9 | Model: (ResNet18) | Acc: 84.50%
+Round 23 | Client 10 | Model: (MobileNetV2) | Acc: 86.04%
+Selected client ids: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]
+--- Round 24 ---
+Client 0 (MNIST) | Target Loss: 0.0437 | G Loss: 6.9906 | D Loss: 0.0027
+Client 1 (MNIST) | Target Loss: 0.0082 | G Loss: 5.3466 | D Loss: 0.0917
+Client 2 (MNIST) | Target Loss: 0.0087 | G Loss: 6.0481 | D Loss: 0.0487
+Client 3 (MNIST) | Target Loss: 0.0092 | G Loss: 5.3355 | D Loss: 0.0650
+Client 4 (MNIST) | Target Loss: 0.0509 | G Loss: 5.9416 | D Loss: 0.0389
+Client 6 (EMNIST) | Target Loss: 0.4154 | G Loss: 7.9114 | D Loss: 0.0189
+Client 7 (EMNIST) | Target Loss: 0.3232 | G Loss: 8.4903 | D Loss: 0.0130
+Client 8 (EMNIST) | Target Loss: 0.1097 | G Loss: 8.0908 | D Loss: 0.0149
+Client 9 (EMNIST) | Target Loss: 0.0699 | G Loss: 8.1883 | D Loss: 0.0076
+Client 10 (EMNIST) | Target Loss: 0.3290 | G Loss: 8.4929 | D Loss: 0.0125
+Round 24 | Client 0 | Model: (MLP) | Acc: 95.84%
+Round 24 | Client 1 | Model: (CNN) | Acc: 95.76%
+Round 24 | Client 2 | Model: (ResNet8) | Acc: 98.58%
+Round 24 | Client 3 | Model: (ResNet18) | Acc: 98.68%
+Round 24 | Client 4 | Model: (MobileNetV2) | Acc: 97.68%
+Round 24 | Client 6 | Model: (MLP) | Acc: 82.06%
+Round 24 | Client 7 | Model: (CNN) | Acc: 85.45%
+Round 24 | Client 8 | Model: (ResNet8) | Acc: 83.55%
+Round 24 | Client 9 | Model: (ResNet18) | Acc: 84.20%
+Round 24 | Client 10 | Model: (MobileNetV2) | Acc: 85.93%
+Selected client ids: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]
+--- Round 25 ---
+Client 0 (MNIST) | Target Loss: 0.0392 | G Loss: 7.6214 | D Loss: 0.0015
+Client 1 (MNIST) | Target Loss: 0.0142 | G Loss: 5.1275 | D Loss: 0.0585
+Client 2 (MNIST) | Target Loss: 0.0039 | G Loss: 5.0317 | D Loss: 0.0841
+Client 3 (MNIST) | Target Loss: 0.0219 | G Loss: 4.5014 | D Loss: 0.1004
+Client 4 (MNIST) | Target Loss: 0.0705 | G Loss: 4.7520 | D Loss: 0.1059
+Client 6 (EMNIST) | Target Loss: 0.4164 | G Loss: 8.4205 | D Loss: 0.0107
+Client 7 (EMNIST) | Target Loss: 0.3194 | G Loss: 8.3331 | D Loss: 0.0136
+Client 8 (EMNIST) | Target Loss: 0.0992 | G Loss: 8.3263 | D Loss: 0.0120
+Client 9 (EMNIST) | Target Loss: 0.0612 | G Loss: 7.6780 | D Loss: 0.0103
+Client 10 (EMNIST) | Target Loss: 0.3240 | G Loss: 8.2441 | D Loss: 0.0145
+Round 25 | Client 0 | Model: (MLP) | Acc: 95.43%
+Round 25 | Client 1 | Model: (CNN) | Acc: 88.00%
+Round 25 | Client 2 | Model: (ResNet8) | Acc: 98.92%
+Round 25 | Client 3 | Model: (ResNet18) | Acc: 98.99%
+Round 25 | Client 4 | Model: (MobileNetV2) | Acc: 97.51%
+Round 25 | Client 6 | Model: (MLP) | Acc: 81.15%
+Round 25 | Client 7 | Model: (CNN) | Acc: 84.48%
+Round 25 | Client 8 | Model: (ResNet8) | Acc: 84.13%
+Round 25 | Client 9 | Model: (ResNet18) | Acc: 84.84%
+Round 25 | Client 10 | Model: (MobileNetV2) | Acc: 86.21%
+Selected client ids: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]
+--- Round 26 ---
+Client 0 (MNIST) | Target Loss: 0.0407 | G Loss: 5.5823 | D Loss: 0.0875
+Client 1 (MNIST) | Target Loss: 0.0134 | G Loss: 6.7068 | D Loss: 0.0290
+Client 2 (MNIST) | Target Loss: 0.0019 | G Loss: 6.8296 | D Loss: 0.0030
+Client 3 (MNIST) | Target Loss: 0.0068 | G Loss: 6.6102 | D Loss: 0.0043
+Client 4 (MNIST) | Target Loss: 0.0631 | G Loss: 6.5246 | D Loss: 0.0255
+Client 6 (EMNIST) | Target Loss: 0.4147 | G Loss: 8.4532 | D Loss: 0.0190
+Client 7 (EMNIST) | Target Loss: 0.3148 | G Loss: 8.2006 | D Loss: 0.0122
+Client 8 (EMNIST) | Target Loss: 0.0890 | G Loss: 8.5645 | D Loss: 0.0146
+Client 9 (EMNIST) | Target Loss: 0.0535 | G Loss: 8.0321 | D Loss: 0.0075
+Client 10 (EMNIST) | Target Loss: 0.3248 | G Loss: 8.5988 | D Loss: 0.0097
+Round 26 | Client 0 | Model: (MLP) | Acc: 94.02%
+Round 26 | Client 1 | Model: (CNN) | Acc: 71.18%
+Round 26 | Client 2 | Model: (ResNet8) | Acc: 98.58%
+Round 26 | Client 3 | Model: (ResNet18) | Acc: 98.87%
+Round 26 | Client 4 | Model: (MobileNetV2) | Acc: 96.12%
+Round 26 | Client 6 | Model: (MLP) | Acc: 81.67%
+Round 26 | Client 7 | Model: (CNN) | Acc: 84.65%
+Round 26 | Client 8 | Model: (ResNet8) | Acc: 83.93%
+Round 26 | Client 9 | Model: (ResNet18) | Acc: 84.34%
+Round 26 | Client 10 | Model: (MobileNetV2) | Acc: 86.28%
+Selected client ids: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]
+--- Round 27 ---
+Client 0 (MNIST) | Target Loss: 0.0522 | G Loss: 4.3689 | D Loss: 0.1005
+Client 1 (MNIST) | Target Loss: 0.0127 | G Loss: 4.5742 | D Loss: 0.0800
+Client 2 (MNIST) | Target Loss: 0.0028 | G Loss: 5.3591 | D Loss: 0.0645
+Client 3 (MNIST) | Target Loss: 0.0052 | G Loss: 7.3092 | D Loss: 0.0020
+Client 4 (MNIST) | Target Loss: 0.0429 | G Loss: 4.5159 | D Loss: 0.0594
+Client 6 (EMNIST) | Target Loss: 0.4050 | G Loss: 8.2669 | D Loss: 0.0141
+Client 7 (EMNIST) | Target Loss: 0.3116 | G Loss: 8.6655 | D Loss: 0.0120
+Client 8 (EMNIST) | Target Loss: 0.0842 | G Loss: 8.5204 | D Loss: 0.0124
+Client 9 (EMNIST) | Target Loss: 0.0454 | G Loss: 8.0760 | D Loss: 0.0094
+Client 10 (EMNIST) | Target Loss: 0.3195 | G Loss: 7.9448 | D Loss: 0.0145
+Round 27 | Client 0 | Model: (MLP) | Acc: 94.73%
+Round 27 | Client 1 | Model: (CNN) | Acc: 95.96%
+Round 27 | Client 2 | Model: (ResNet8) | Acc: 98.52%
+Round 27 | Client 3 | Model: (ResNet18) | Acc: 99.12%
+Round 27 | Client 4 | Model: (MobileNetV2) | Acc: 97.86%
+Round 27 | Client 6 | Model: (MLP) | Acc: 82.12%
+Round 27 | Client 7 | Model: (CNN) | Acc: 84.82%
+Round 27 | Client 8 | Model: (ResNet8) | Acc: 84.20%
+Round 27 | Client 9 | Model: (ResNet18) | Acc: 83.56%
+Round 27 | Client 10 | Model: (MobileNetV2) | Acc: 85.92%
+Selected client ids: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]
+--- Round 28 ---
+Client 0 (MNIST) | Target Loss: 0.0348 | G Loss: 5.2142 | D Loss: 0.0588
+Client 1 (MNIST) | Target Loss: 0.0205 | G Loss: 6.0084 | D Loss: 0.0370
+Client 2 (MNIST) | Target Loss: 0.0084 | G Loss: 5.2354 | D Loss: 0.0956
+Client 3 (MNIST) | Target Loss: 0.0059 | G Loss: 7.6710 | D Loss: 0.0013
+Client 4 (MNIST) | Target Loss: 0.0475 | G Loss: 5.1176 | D Loss: 0.0592
+Client 6 (EMNIST) | Target Loss: 0.4202 | G Loss: 8.1062 | D Loss: 0.0177
+Client 7 (EMNIST) | Target Loss: 0.3090 | G Loss: 8.2929 | D Loss: 0.0099
+Client 8 (EMNIST) | Target Loss: 0.0755 | G Loss: 8.3901 | D Loss: 0.0131
+Client 9 (EMNIST) | Target Loss: 0.0421 | G Loss: 8.1235 | D Loss: 0.0089
+Client 10 (EMNIST) | Target Loss: 0.3167 | G Loss: 8.6848 | D Loss: 0.0116
+Round 28 | Client 0 | Model: (MLP) | Acc: 95.72%
+Round 28 | Client 1 | Model: (CNN) | Acc: 82.41%
+Round 28 | Client 2 | Model: (ResNet8) | Acc: 97.15%
+Round 28 | Client 3 | Model: (ResNet18) | Acc: 99.18%
+Round 28 | Client 4 | Model: (MobileNetV2) | Acc: 98.09%
+Round 28 | Client 6 | Model: (MLP) | Acc: 81.95%
+Round 28 | Client 7 | Model: (CNN) | Acc: 85.56%
+Round 28 | Client 8 | Model: (ResNet8) | Acc: 83.96%
+Round 28 | Client 9 | Model: (ResNet18) | Acc: 83.53%
+Round 28 | Client 10 | Model: (MobileNetV2) | Acc: 86.04%
+Selected client ids: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]
+--- Round 29 ---
+Client 0 (MNIST) | Target Loss: 0.0532 | G Loss: 5.0548 | D Loss: 0.0713
+Client 1 (MNIST) | Target Loss: 0.0115 | G Loss: 5.9773 | D Loss: 0.0483
+Client 2 (MNIST) | Target Loss: 0.0253 | G Loss: 5.5253 | D Loss: 0.0149
+Client 3 (MNIST) | Target Loss: 0.0067 | G Loss: 7.9694 | D Loss: 0.0009
+Client 4 (MNIST) | Target Loss: 0.0685 | G Loss: 6.6308 | D Loss: 0.0038
+Client 6 (EMNIST) | Target Loss: 0.4085 | G Loss: 8.3004 | D Loss: 0.0138
+Client 7 (EMNIST) | Target Loss: 0.3069 | G Loss: 8.3798 | D Loss: 0.0104
+Client 8 (EMNIST) | Target Loss: 0.0677 | G Loss: 8.4939 | D Loss: 0.0136
+Client 9 (EMNIST) | Target Loss: 0.0372 | G Loss: 8.1666 | D Loss: 0.0082
+Client 10 (EMNIST) | Target Loss: 0.3124 | G Loss: 9.0279 | D Loss: 0.0079
+Round 29 | Client 0 | Model: (MLP) | Acc: 95.96%
+Round 29 | Client 1 | Model: (CNN) | Acc: 97.88%
+Round 29 | Client 2 | Model: (ResNet8) | Acc: 97.55%
+Round 29 | Client 3 | Model: (ResNet18) | Acc: 99.25%
+Round 29 | Client 4 | Model: (MobileNetV2) | Acc: 96.93%
+Round 29 | Client 6 | Model: (MLP) | Acc: 81.47%
+Round 29 | Client 7 | Model: (CNN) | Acc: 85.63%
+Round 29 | Client 8 | Model: (ResNet8) | Acc: 84.03%
+Round 29 | Client 9 | Model: (ResNet18) | Acc: 84.56%
+Round 29 | Client 10 | Model: (MobileNetV2) | Acc: 86.42%
+Selected client ids: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]
+--- Round 30 ---
+Client 0 (MNIST) | Target Loss: 0.0342 | G Loss: 4.9711 | D Loss: 0.0608
+Client 1 (MNIST) | Target Loss: 0.0198 | G Loss: 4.6051 | D Loss: 0.1093
+Client 2 (MNIST) | Target Loss: 0.0029 | G Loss: 6.6239 | D Loss: 0.0040
+Client 3 (MNIST) | Target Loss: 0.0159 | G Loss: 8.4219 | D Loss: 0.0006
+Client 4 (MNIST) | Target Loss: 0.0499 | G Loss: 5.9290 | D Loss: 0.1042
+Client 6 (EMNIST) | Target Loss: 0.4074 | G Loss: 8.4993 | D Loss: 0.0135
+Client 7 (EMNIST) | Target Loss: 0.3036 | G Loss: 8.7327 | D Loss: 0.0105
+Client 8 (EMNIST) | Target Loss: 0.0621 | G Loss: 8.1467 | D Loss: 0.0151
+Client 9 (EMNIST) | Target Loss: 0.0332 | G Loss: 8.2772 | D Loss: 0.0081
+Client 10 (EMNIST) | Target Loss: 0.3103 | G Loss: 12.1586 | D Loss: 0.0041
+Round 30 | Client 0 | Model: (MLP) | Acc: 94.84%
+Round 30 | Client 1 | Model: (CNN) | Acc: 90.12%
+Round 30 | Client 2 | Model: (ResNet8) | Acc: 98.80%
+Round 30 | Client 3 | Model: (ResNet18) | Acc: 98.18%
+Round 30 | Client 4 | Model: (MobileNetV2) | Acc: 97.68%
+Round 30 | Client 6 | Model: (MLP) | Acc: 81.22%
+Round 30 | Client 7 | Model: (CNN) | Acc: 85.01%
+Round 30 | Client 8 | Model: (ResNet8) | Acc: 84.39%
+Round 30 | Client 9 | Model: (ResNet18) | Acc: 83.76%
+Round 30 | Client 10 | Model: (MobileNetV2) | Acc: 86.21%
+Selected client ids: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]
+--- Round 31 ---
+Client 0 (MNIST) | Target Loss: 0.0500 | G Loss: 6.3767 | D Loss: 0.0046
+Client 1 (MNIST) | Target Loss: 0.0193 | G Loss: 5.4013 | D Loss: 0.0438
+Client 2 (MNIST) | Target Loss: 0.0043 | G Loss: 5.8223 | D Loss: 0.0713
+Client 3 (MNIST) | Target Loss: 0.0116 | G Loss: 5.9927 | D Loss: 0.0843
+Client 4 (MNIST) | Target Loss: 0.0481 | G Loss: 5.1401 | D Loss: 0.0943
+Client 6 (EMNIST) | Target Loss: 0.4066 | G Loss: 8.9290 | D Loss: 0.0099
+Client 7 (EMNIST) | Target Loss: 0.3000 | G Loss: 8.4190 | D Loss: 0.0114
+Client 8 (EMNIST) | Target Loss: 0.0579 | G Loss: 10.7714 | D Loss: 0.0044
+Client 9 (EMNIST) | Target Loss: 0.0305 | G Loss: 8.0445 | D Loss: 0.0084
+Client 10 (EMNIST) | Target Loss: 0.3086 | G Loss: 8.5235 | D Loss: 0.0064
+Round 31 | Client 0 | Model: (MLP) | Acc: 95.96%
+Round 31 | Client 1 | Model: (CNN) | Acc: 95.96%
+Round 31 | Client 2 | Model: (ResNet8) | Acc: 98.29%
+Round 31 | Client 3 | Model: (ResNet18) | Acc: 98.99%
+Round 31 | Client 4 | Model: (MobileNetV2) | Acc: 96.58%
+Round 31 | Client 6 | Model: (MLP) | Acc: 81.63%
+Round 31 | Client 7 | Model: (CNN) | Acc: 85.19%
+Round 31 | Client 8 | Model: (ResNet8) | Acc: 84.13%
+Round 31 | Client 9 | Model: (ResNet18) | Acc: 84.31%
+Round 31 | Client 10 | Model: (MobileNetV2) | Acc: 86.22%
+Selected client ids: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]
+--- Round 32 ---
+Client 0 (MNIST) | Target Loss: 0.0269 | G Loss: 6.9197 | D Loss: 0.0027
+Client 1 (MNIST) | Target Loss: 0.0129 | G Loss: 5.6215 | D Loss: 0.0296
+Client 2 (MNIST) | Target Loss: 0.0113 | G Loss: 5.9138 | D Loss: 0.0427
+Client 3 (MNIST) | Target Loss: 0.0040 | G Loss: 5.7861 | D Loss: 0.0409
+Client 4 (MNIST) | Target Loss: 0.0818 | G Loss: 5.1759 | D Loss: 0.0555
+Client 6 (EMNIST) | Target Loss: 0.4108 | G Loss: 8.4169 | D Loss: 0.0143
+Client 7 (EMNIST) | Target Loss: 0.2971 | G Loss: 8.2792 | D Loss: 0.0088
+Client 8 (EMNIST) | Target Loss: 0.0526 | G Loss: 10.2090 | D Loss: 0.0053
+Client 9 (EMNIST) | Target Loss: 0.0289 | G Loss: 8.1224 | D Loss: 0.0082
+Client 10 (EMNIST) | Target Loss: 0.3015 | G Loss: 7.9212 | D Loss: 0.0054
+Round 32 | Client 0 | Model: (MLP) | Acc: 95.78%
+Round 32 | Client 1 | Model: (CNN) | Acc: 98.01%
+Round 32 | Client 2 | Model: (ResNet8) | Acc: 97.95%
+Round 32 | Client 3 | Model: (ResNet18) | Acc: 99.12%
+Round 32 | Client 4 | Model: (MobileNetV2) | Acc: 97.28%
+Round 32 | Client 6 | Model: (MLP) | Acc: 81.80%
+Round 32 | Client 7 | Model: (CNN) | Acc: 85.24%
+Round 32 | Client 8 | Model: (ResNet8) | Acc: 83.28%
+Round 32 | Client 9 | Model: (ResNet18) | Acc: 83.37%
+Round 32 | Client 10 | Model: (MobileNetV2) | Acc: 86.07%
+Selected client ids: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]
+--- Round 33 ---
+Client 0 (MNIST) | Target Loss: 0.0190 | G Loss: 6.1763 | D Loss: 0.0567
+Client 1 (MNIST) | Target Loss: 0.0056 | G Loss: 5.5431 | D Loss: 0.0758
+Client 2 (MNIST) | Target Loss: 0.0194 | G Loss: 7.1917 | D Loss: 0.0023
+Client 3 (MNIST) | Target Loss: 0.0108 | G Loss: 5.6751 | D Loss: 0.0508
+Client 4 (MNIST) | Target Loss: 0.0424 | G Loss: 6.4204 | D Loss: 0.0053
+Client 6 (EMNIST) | Target Loss: 0.3981 | G Loss: 8.6109 | D Loss: 0.0119
+Client 7 (EMNIST) | Target Loss: 0.2952 | G Loss: 8.4558 | D Loss: 0.0098
+Client 8 (EMNIST) | Target Loss: 0.0483 | G Loss: 8.2752 | D Loss: 0.0067
+Client 9 (EMNIST) | Target Loss: 0.0259 | G Loss: 8.4254 | D Loss: 0.0081
+Client 10 (EMNIST) | Target Loss: 0.3033 | G Loss: 8.0283 | D Loss: 0.0078
+Round 33 | Client 0 | Model: (MLP) | Acc: 96.72%
+Round 33 | Client 1 | Model: (CNN) | Acc: 98.52%
+Round 33 | Client 2 | Model: (ResNet8) | Acc: 96.30%
+Round 33 | Client 3 | Model: (ResNet18) | Acc: 98.99%
+Round 33 | Client 4 | Model: (MobileNetV2) | Acc: 97.74%
+Round 33 | Client 6 | Model: (MLP) | Acc: 81.73%
+Round 33 | Client 7 | Model: (CNN) | Acc: 84.96%
+Round 33 | Client 8 | Model: (ResNet8) | Acc: 83.53%
+Round 33 | Client 9 | Model: (ResNet18) | Acc: 83.99%
+Round 33 | Client 10 | Model: (MobileNetV2) | Acc: 85.98%
+Selected client ids: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]
+--- Round 34 ---
+Client 0 (MNIST) | Target Loss: 0.0261 | G Loss: 5.6353 | D Loss: 0.0508
+Client 1 (MNIST) | Target Loss: 0.0018 | G Loss: 5.1712 | D Loss: 0.0675
+Client 2 (MNIST) | Target Loss: 0.0125 | G Loss: 6.7733 | D Loss: 0.0456
+Client 3 (MNIST) | Target Loss: 0.0157 | G Loss: 5.1120 | D Loss: 0.0513
+Client 4 (MNIST) | Target Loss: 0.0298 | G Loss: 5.1968 | D Loss: 0.0890
+Client 6 (EMNIST) | Target Loss: 0.3973 | G Loss: 8.5715 | D Loss: 0.0139
+Client 7 (EMNIST) | Target Loss: 0.2922 | G Loss: 8.3860 | D Loss: 0.0081
+Client 8 (EMNIST) | Target Loss: 0.0455 | G Loss: 8.0097 | D Loss: 0.0071
+Client 9 (EMNIST) | Target Loss: 0.0275 | G Loss: 8.4473 | D Loss: 0.0072
+Client 10 (EMNIST) | Target Loss: 0.3004 | G Loss: 7.8633 | D Loss: 0.0084
+Round 34 | Client 0 | Model: (MLP) | Acc: 93.91%
+Round 34 | Client 1 | Model: (CNN) | Acc: 98.65%
+Round 34 | Client 2 | Model: (ResNet8) | Acc: 98.86%
+Round 34 | Client 3 | Model: (ResNet18) | Acc: 98.55%
+Round 34 | Client 4 | Model: (MobileNetV2) | Acc: 98.09%
+Round 34 | Client 6 | Model: (MLP) | Acc: 81.76%
+Round 34 | Client 7 | Model: (CNN) | Acc: 85.62%
+Round 34 | Client 8 | Model: (ResNet8) | Acc: 83.96%
+Round 34 | Client 9 | Model: (ResNet18) | Acc: 84.01%
+Round 34 | Client 10 | Model: (MobileNetV2) | Acc: 86.06%
+Selected client ids: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]
+--- Round 35 ---
+Client 0 (MNIST) | Target Loss: 0.0466 | G Loss: 5.3573 | D Loss: 0.0586
+Client 1 (MNIST) | Target Loss: 0.0011 | G Loss: 6.0557 | D Loss: 0.0361
+Client 2 (MNIST) | Target Loss: 0.0030 | G Loss: 5.0455 | D Loss: 0.0776
+Client 3 (MNIST) | Target Loss: 0.0167 | G Loss: 6.3755 | D Loss: 0.0048
+Client 4 (MNIST) | Target Loss: 0.0450 | G Loss: 5.2149 | D Loss: 0.0614
+Client 6 (EMNIST) | Target Loss: 0.4132 | G Loss: 8.6800 | D Loss: 0.0120
+Client 7 (EMNIST) | Target Loss: 0.2875 | G Loss: 7.9475 | D Loss: 0.0072
+Client 8 (EMNIST) | Target Loss: 0.0413 | G Loss: 7.9132 | D Loss: 0.0085
+Client 9 (EMNIST) | Target Loss: 0.0235 | G Loss: 8.6665 | D Loss: 0.0075
+Client 10 (EMNIST) | Target Loss: 0.2975 | G Loss: 8.0515 | D Loss: 0.0057
+Round 35 | Client 0 | Model: (MLP) | Acc: 95.90%
+Round 35 | Client 1 | Model: (CNN) | Acc: 98.65%
+Round 35 | Client 2 | Model: (ResNet8) | Acc: 98.75%
+Round 35 | Client 3 | Model: (ResNet18) | Acc: 99.31%
+Round 35 | Client 4 | Model: (MobileNetV2) | Acc: 98.15%
+Round 35 | Client 6 | Model: (MLP) | Acc: 81.48%
+Round 35 | Client 7 | Model: (CNN) | Acc: 85.40%
+Round 35 | Client 8 | Model: (ResNet8) | Acc: 84.05%
+Round 35 | Client 9 | Model: (ResNet18) | Acc: 84.19%
+Round 35 | Client 10 | Model: (MobileNetV2) | Acc: 86.30%
+Selected client ids: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]
+--- Round 36 ---
+Client 0 (MNIST) | Target Loss: 0.0219 | G Loss: 5.0921 | D Loss: 0.0750
+Client 1 (MNIST) | Target Loss: 0.0022 | G Loss: 4.9402 | D Loss: 0.0704
+Client 2 (MNIST) | Target Loss: 0.0057 | G Loss: 5.4609 | D Loss: 0.0659
+Client 3 (MNIST) | Target Loss: 0.0226 | G Loss: 6.9705 | D Loss: 0.0024
+Client 4 (MNIST) | Target Loss: 0.0292 | G Loss: 5.5305 | D Loss: 0.0282
+Client 6 (EMNIST) | Target Loss: 0.4028 | G Loss: 8.5660 | D Loss: 0.0115
+Client 7 (EMNIST) | Target Loss: 0.2860 | G Loss: 8.1671 | D Loss: 0.0079
+Client 8 (EMNIST) | Target Loss: 0.0408 | G Loss: 7.8696 | D Loss: 0.0083
+Client 9 (EMNIST) | Target Loss: 0.0233 | G Loss: 8.2376 | D Loss: 0.0074
+Client 10 (EMNIST) | Target Loss: 0.2939 | G Loss: 7.8145 | D Loss: 0.0072
+Round 36 | Client 0 | Model: (MLP) | Acc: 96.02%
+Round 36 | Client 1 | Model: (CNN) | Acc: 98.07%
+Round 36 | Client 2 | Model: (ResNet8) | Acc: 98.80%
+Round 36 | Client 3 | Model: (ResNet18) | Acc: 98.99%
+Round 36 | Client 4 | Model: (MobileNetV2) | Acc: 98.20%
+Round 36 | Client 6 | Model: (MLP) | Acc: 81.40%
+Round 36 | Client 7 | Model: (CNN) | Acc: 84.66%
+Round 36 | Client 8 | Model: (ResNet8) | Acc: 83.71%
+Round 36 | Client 9 | Model: (ResNet18) | Acc: 84.46%
+Round 36 | Client 10 | Model: (MobileNetV2) | Acc: 86.07%
+Selected client ids: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]
+--- Round 37 ---
+Client 0 (MNIST) | Target Loss: 0.0246 | G Loss: 4.9427 | D Loss: 0.0969
+Client 1 (MNIST) | Target Loss: 0.0022 | G Loss: 5.5510 | D Loss: 0.0531
+Client 2 (MNIST) | Target Loss: 0.0041 | G Loss: 5.7388 | D Loss: 0.0473
+Client 3 (MNIST) | Target Loss: 0.0070 | G Loss: 7.0071 | D Loss: 0.0419
+Client 4 (MNIST) | Target Loss: 0.0298 | G Loss: 6.9221 | D Loss: 0.0240
+Client 6 (EMNIST) | Target Loss: 0.4018 | G Loss: 8.8183 | D Loss: 0.0123
+Client 7 (EMNIST) | Target Loss: 0.2827 | G Loss: 8.2148 | D Loss: 0.0061
+Client 8 (EMNIST) | Target Loss: 0.0357 | G Loss: 7.7220 | D Loss: 0.0081
+Client 9 (EMNIST) | Target Loss: 0.0214 | G Loss: 8.6518 | D Loss: 0.0076
+Client 10 (EMNIST) | Target Loss: 0.2928 | G Loss: 8.2842 | D Loss: 0.0071
+Round 37 | Client 0 | Model: (MLP) | Acc: 95.25%
+Round 37 | Client 1 | Model: (CNN) | Acc: 89.99%
+Round 37 | Client 2 | Model: (ResNet8) | Acc: 99.43%
+Round 37 | Client 3 | Model: (ResNet18) | Acc: 98.87%
+Round 37 | Client 4 | Model: (MobileNetV2) | Acc: 97.86%
+Round 37 | Client 6 | Model: (MLP) | Acc: 81.77%
+Round 37 | Client 7 | Model: (CNN) | Acc: 85.08%
+Round 37 | Client 8 | Model: (ResNet8) | Acc: 84.04%
+Round 37 | Client 9 | Model: (ResNet18) | Acc: 84.05%
+Round 37 | Client 10 | Model: (MobileNetV2) | Acc: 86.21%
+Selected client ids: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]
+--- Round 38 ---
+Client 0 (MNIST) | Target Loss: 0.0410 | G Loss: 6.3319 | D Loss: 0.0051
+Client 1 (MNIST) | Target Loss: 0.0066 | G Loss: 7.0456 | D Loss: 0.0028
+Client 2 (MNIST) | Target Loss: 0.0046 | G Loss: 6.9397 | D Loss: 0.0038
+Client 3 (MNIST) | Target Loss: 0.0042 | G Loss: 5.5223 | D Loss: 0.0627
+Client 4 (MNIST) | Target Loss: 0.0200 | G Loss: 4.9646 | D Loss: 0.0699
+Client 6 (EMNIST) | Target Loss: 0.4025 | G Loss: 8.6583 | D Loss: 0.0131
+Client 7 (EMNIST) | Target Loss: 0.2815 | G Loss: 7.9385 | D Loss: 0.0066
+Client 8 (EMNIST) | Target Loss: 0.0363 | G Loss: 7.7872 | D Loss: 0.0087
+Client 9 (EMNIST) | Target Loss: 0.0206 | G Loss: 8.5881 | D Loss: 0.0071
+Client 10 (EMNIST) | Target Loss: 0.2912 | G Loss: 7.8152 | D Loss: 0.0068
+Round 38 | Client 0 | Model: (MLP) | Acc: 95.78%
+Round 38 | Client 1 | Model: (CNN) | Acc: 96.85%
+Round 38 | Client 2 | Model: (ResNet8) | Acc: 98.01%
+Round 38 | Client 3 | Model: (ResNet18) | Acc: 98.87%
+Round 38 | Client 4 | Model: (MobileNetV2) | Acc: 97.68%
+Round 38 | Client 6 | Model: (MLP) | Acc: 82.21%
+Round 38 | Client 7 | Model: (CNN) | Acc: 84.89%
+Round 38 | Client 8 | Model: (ResNet8) | Acc: 83.45%
+Round 38 | Client 9 | Model: (ResNet18) | Acc: 84.22%
+Round 38 | Client 10 | Model: (MobileNetV2) | Acc: 86.16%
+Selected client ids: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]
+--- Round 39 ---
+Client 0 (MNIST) | Target Loss: 0.0641 | G Loss: 7.0369 | D Loss: 0.0025
+Client 1 (MNIST) | Target Loss: 0.0057 | G Loss: 7.5769 | D Loss: 0.0015
+Client 2 (MNIST) | Target Loss: 0.0056 | G Loss: 7.6741 | D Loss: 0.0014
+Client 3 (MNIST) | Target Loss: 0.0080 | G Loss: 5.8278 | D Loss: 0.0322
+Client 4 (MNIST) | Target Loss: 0.0294 | G Loss: 5.8781 | D Loss: 0.0142
+Client 6 (EMNIST) | Target Loss: 0.4025 | G Loss: 8.7305 | D Loss: 0.0131
+Client 7 (EMNIST) | Target Loss: 0.2786 | G Loss: 8.1190 | D Loss: 0.0074
+Client 8 (EMNIST) | Target Loss: 0.0340 | G Loss: 7.7733 | D Loss: 0.0067
+Client 9 (EMNIST) | Target Loss: 0.0197 | G Loss: 9.0594 | D Loss: 0.0054
+Client 10 (EMNIST) | Target Loss: 0.2888 | G Loss: 8.2158 | D Loss: 0.0074
+Round 39 | Client 0 | Model: (MLP) | Acc: 95.20%
+Round 39 | Client 1 | Model: (CNN) | Acc: 93.39%
+Round 39 | Client 2 | Model: (ResNet8) | Acc: 98.69%
+Round 39 | Client 3 | Model: (ResNet18) | Acc: 99.12%
+Round 39 | Client 4 | Model: (MobileNetV2) | Acc: 98.26%
+Round 39 | Client 6 | Model: (MLP) | Acc: 81.93%
+Round 39 | Client 7 | Model: (CNN) | Acc: 85.64%
+Round 39 | Client 8 | Model: (ResNet8) | Acc: 83.80%
+Round 39 | Client 9 | Model: (ResNet18) | Acc: 84.22%
+Round 39 | Client 10 | Model: (MobileNetV2) | Acc: 86.15%
+Selected client ids: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]
+--- Round 40 ---
+Client 0 (MNIST) | Target Loss: 0.0350 | G Loss: 6.8216 | D Loss: 0.0477
+Client 1 (MNIST) | Target Loss: 0.0166 | G Loss: 5.2817 | D Loss: 0.1044
+Client 2 (MNIST) | Target Loss: 0.0047 | G Loss: 8.1149 | D Loss: 0.0009
+Client 3 (MNIST) | Target Loss: 0.0053 | G Loss: 5.9789 | D Loss: 0.0359
+Client 4 (MNIST) | Target Loss: 0.0303 | G Loss: 7.0917 | D Loss: 0.0025
+Client 6 (EMNIST) | Target Loss: 0.4066 | G Loss: 8.8070 | D Loss: 0.0094
+Client 7 (EMNIST) | Target Loss: 0.2747 | G Loss: 8.6748 | D Loss: 0.0051
+Client 8 (EMNIST) | Target Loss: 0.0318 | G Loss: 8.2202 | D Loss: 0.0084
+Client 9 (EMNIST) | Target Loss: 0.0203 | G Loss: 8.8063 | D Loss: 0.0077
+Client 10 (EMNIST) | Target Loss: 0.2866 | G Loss: 8.0684 | D Loss: 0.0081
+Round 40 | Client 0 | Model: (MLP) | Acc: 95.14%
+Round 40 | Client 1 | Model: (CNN) | Acc: 91.27%
+Round 40 | Client 2 | Model: (ResNet8) | Acc: 98.97%
+Round 40 | Client 3 | Model: (ResNet18) | Acc: 99.06%
+Round 40 | Client 4 | Model: (MobileNetV2) | Acc: 98.09%
+Round 40 | Client 6 | Model: (MLP) | Acc: 81.98%
+Round 40 | Client 7 | Model: (CNN) | Acc: 85.39%
+Round 40 | Client 8 | Model: (ResNet8) | Acc: 83.86%
+Round 40 | Client 9 | Model: (ResNet18) | Acc: 84.53%
+Round 40 | Client 10 | Model: (MobileNetV2) | Acc: 85.93%
+Selected client ids: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]
+--- Round 41 ---
+Client 0 (MNIST) | Target Loss: 0.0311 | G Loss: 5.8115 | D Loss: 0.0503
+Client 1 (MNIST) | Target Loss: 0.0263 | G Loss: 5.2540 | D Loss: 0.0705
+Client 2 (MNIST) | Target Loss: 0.0047 | G Loss: 6.5975 | D Loss: 0.0715
+Client 3 (MNIST) | Target Loss: 0.0066 | G Loss: 5.2310 | D Loss: 0.0413
+Client 4 (MNIST) | Target Loss: 0.0477 | G Loss: 6.1239 | D Loss: 0.0637
+Client 6 (EMNIST) | Target Loss: 0.4063 | G Loss: 8.8721 | D Loss: 0.0103
+Client 7 (EMNIST) | Target Loss: 0.2729 | G Loss: 8.6877 | D Loss: 0.0057
+Client 8 (EMNIST) | Target Loss: 0.0312 | G Loss: 7.9563 | D Loss: 0.0070
+Client 9 (EMNIST) | Target Loss: 0.0176 | G Loss: 8.9782 | D Loss: 0.0056
+Client 10 (EMNIST) | Target Loss: 0.2822 | G Loss: 8.4055 | D Loss: 0.0060
+Round 41 | Client 0 | Model: (MLP) | Acc: 95.78%
+Round 41 | Client 1 | Model: (CNN) | Acc: 95.38%
+Round 41 | Client 2 | Model: (ResNet8) | Acc: 98.92%
+Round 41 | Client 3 | Model: (ResNet18) | Acc: 99.18%
+Round 41 | Client 4 | Model: (MobileNetV2) | Acc: 97.62%
+Round 41 | Client 6 | Model: (MLP) | Acc: 81.60%
+Round 41 | Client 7 | Model: (CNN) | Acc: 84.61%
+Round 41 | Client 8 | Model: (ResNet8) | Acc: 84.35%
+Round 41 | Client 9 | Model: (ResNet18) | Acc: 83.42%
+Round 41 | Client 10 | Model: (MobileNetV2) | Acc: 85.89%
+Selected client ids: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]
+--- Round 42 ---
+Client 0 (MNIST) | Target Loss: 0.0282 | G Loss: 6.5531 | D Loss: 0.0332
+Client 1 (MNIST) | Target Loss: 0.0074 | G Loss: 6.1001 | D Loss: 0.0373
+Client 2 (MNIST) | Target Loss: 0.0027 | G Loss: 6.7656 | D Loss: 0.0040
+Client 3 (MNIST) | Target Loss: 0.0102 | G Loss: 6.4481 | D Loss: 0.0049
+Client 4 (MNIST) | Target Loss: 0.0327 | G Loss: 5.5086 | D Loss: 0.0370
+Client 6 (EMNIST) | Target Loss: 0.3869 | G Loss: 8.9135 | D Loss: 0.0103
+Client 7 (EMNIST) | Target Loss: 0.2698 | G Loss: 8.3378 | D Loss: 0.0065
+Client 8 (EMNIST) | Target Loss: 0.0278 | G Loss: 7.9320 | D Loss: 0.0083
+Client 9 (EMNIST) | Target Loss: 0.0206 | G Loss: 9.0634 | D Loss: 0.0082
+Client 10 (EMNIST) | Target Loss: 0.2812 | G Loss: 8.3455 | D Loss: 0.0066
+Round 42 | Client 0 | Model: (MLP) | Acc: 95.08%
+Round 42 | Client 1 | Model: (CNN) | Acc: 97.37%
+Round 42 | Client 2 | Model: (ResNet8) | Acc: 98.46%
+Round 42 | Client 3 | Model: (ResNet18) | Acc: 98.87%
+Round 42 | Client 4 | Model: (MobileNetV2) | Acc: 97.68%
+Round 42 | Client 6 | Model: (MLP) | Acc: 81.69%
+Round 42 | Client 7 | Model: (CNN) | Acc: 84.94%
+Round 42 | Client 8 | Model: (ResNet8) | Acc: 84.02%
+Round 42 | Client 9 | Model: (ResNet18) | Acc: 84.22%
+Round 42 | Client 10 | Model: (MobileNetV2) | Acc: 85.83%
+Selected client ids: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]
+--- Round 43 ---
+Client 0 (MNIST) | Target Loss: 0.0183 | G Loss: 5.4095 | D Loss: 0.0452
+Client 1 (MNIST) | Target Loss: 0.0044 | G Loss: 5.5398 | D Loss: 0.0680
+Client 2 (MNIST) | Target Loss: 0.0117 | G Loss: 6.0792 | D Loss: 0.0638
+Client 3 (MNIST) | Target Loss: 0.0024 | G Loss: 6.1444 | D Loss: 0.0399
+Client 4 (MNIST) | Target Loss: 0.0345 | G Loss: 5.5436 | D Loss: 0.0602
+Client 6 (EMNIST) | Target Loss: 0.4063 | G Loss: 9.0402 | D Loss: 0.0087
+Client 7 (EMNIST) | Target Loss: 0.2682 | G Loss: 8.7645 | D Loss: 0.0046
+Client 8 (EMNIST) | Target Loss: 0.0267 | G Loss: 7.8691 | D Loss: 0.0078
+Client 9 (EMNIST) | Target Loss: 0.0177 | G Loss: 8.7876 | D Loss: 0.0061
+Client 10 (EMNIST) | Target Loss: 0.2788 | G Loss: 8.1699 | D Loss: 0.0072
+Round 43 | Client 0 | Model: (MLP) | Acc: 95.66%
+Round 43 | Client 1 | Model: (CNN) | Acc: 94.54%
+Round 43 | Client 2 | Model: (ResNet8) | Acc: 97.84%
+Round 43 | Client 3 | Model: (ResNet18) | Acc: 99.18%
+Round 43 | Client 4 | Model: (MobileNetV2) | Acc: 97.91%
+Round 43 | Client 6 | Model: (MLP) | Acc: 81.95%
+Round 43 | Client 7 | Model: (CNN) | Acc: 84.60%
+Round 43 | Client 8 | Model: (ResNet8) | Acc: 84.28%
+Round 43 | Client 9 | Model: (ResNet18) | Acc: 84.11%
+Round 43 | Client 10 | Model: (MobileNetV2) | Acc: 85.96%
+Selected client ids: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]
+--- Round 44 ---
+Client 0 (MNIST) | Target Loss: 0.0241 | G Loss: 6.0794 | D Loss: 0.0335
+Client 1 (MNIST) | Target Loss: 0.0180 | G Loss: 5.1645 | D Loss: 0.0622
+Client 2 (MNIST) | Target Loss: 0.0126 | G Loss: 5.5380 | D Loss: 0.0368
+Client 3 (MNIST) | Target Loss: 0.0075 | G Loss: 6.7266 | D Loss: 0.0037
+Client 4 (MNIST) | Target Loss: 0.0274 | G Loss: 5.6214 | D Loss: 0.0650
+Client 6 (EMNIST) | Target Loss: 0.3932 | G Loss: 8.8488 | D Loss: 0.0098
+Client 7 (EMNIST) | Target Loss: 0.2657 | G Loss: 8.5366 | D Loss: 0.0072
+Client 8 (EMNIST) | Target Loss: 0.0277 | G Loss: 7.7448 | D Loss: 0.0070
+Client 9 (EMNIST) | Target Loss: 0.0167 | G Loss: 9.0420 | D Loss: 0.0066
+Client 10 (EMNIST) | Target Loss: 0.2755 | G Loss: 8.1556 | D Loss: 0.0071
+Round 44 | Client 0 | Model: (MLP) | Acc: 95.49%
+Round 44 | Client 1 | Model: (CNN) | Acc: 80.55%
+Round 44 | Client 2 | Model: (ResNet8) | Acc: 98.52%
+Round 44 | Client 3 | Model: (ResNet18) | Acc: 97.55%
+Round 44 | Client 4 | Model: (MobileNetV2) | Acc: 98.20%
+Round 44 | Client 6 | Model: (MLP) | Acc: 81.42%
+Round 44 | Client 7 | Model: (CNN) | Acc: 85.34%
+Round 44 | Client 8 | Model: (ResNet8) | Acc: 83.43%
+Round 44 | Client 9 | Model: (ResNet18) | Acc: 84.37%
+Round 44 | Client 10 | Model: (MobileNetV2) | Acc: 86.31%
+Selected client ids: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]
+--- Round 45 ---
+Client 0 (MNIST) | Target Loss: 0.0215 | G Loss: 5.6395 | D Loss: 0.0602
+Client 1 (MNIST) | Target Loss: 0.0148 | G Loss: 5.2863 | D Loss: 0.0769
+Client 2 (MNIST) | Target Loss: 0.0121 | G Loss: 6.2034 | D Loss: 0.0220
+Client 3 (MNIST) | Target Loss: 0.0223 | G Loss: 6.2173 | D Loss: 0.0385
+Client 4 (MNIST) | Target Loss: 0.0326 | G Loss: 6.2581 | D Loss: 0.0073
+Client 6 (EMNIST) | Target Loss: 0.4037 | G Loss: 8.3991 | D Loss: 0.0094
+Client 7 (EMNIST) | Target Loss: 0.2635 | G Loss: 8.7999 | D Loss: 0.0058
+Client 8 (EMNIST) | Target Loss: 0.0252 | G Loss: 8.4485 | D Loss: 0.0073
+Client 9 (EMNIST) | Target Loss: 0.0172 | G Loss: 9.2831 | D Loss: 0.0064
+Client 10 (EMNIST) | Target Loss: 0.2741 | G Loss: 8.8672 | D Loss: 0.0061
+Round 45 | Client 0 | Model: (MLP) | Acc: 95.90%
+Round 45 | Client 1 | Model: (CNN) | Acc: 98.27%
+Round 45 | Client 2 | Model: (ResNet8) | Acc: 98.80%
+Round 45 | Client 3 | Model: (ResNet18) | Acc: 98.55%
+Round 45 | Client 4 | Model: (MobileNetV2) | Acc: 98.03%
+Round 45 | Client 6 | Model: (MLP) | Acc: 81.85%
+Round 45 | Client 7 | Model: (CNN) | Acc: 85.06%
+Round 45 | Client 8 | Model: (ResNet8) | Acc: 84.02%
+Round 45 | Client 9 | Model: (ResNet18) | Acc: 84.17%
+Round 45 | Client 10 | Model: (MobileNetV2) | Acc: 85.96%
+Selected client ids: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]
+--- Round 46 ---
+Client 0 (MNIST) | Target Loss: 0.0224 | G Loss: 5.2037 | D Loss: 0.0511
+Client 1 (MNIST) | Target Loss: 0.0030 | G Loss: 6.5192 | D Loss: 0.0059
+Client 2 (MNIST) | Target Loss: 0.0078 | G Loss: 6.7629 | D Loss: 0.0238
+Client 3 (MNIST) | Target Loss: 0.0039 | G Loss: 5.3781 | D Loss: 0.0514
+Client 4 (MNIST) | Target Loss: 0.0404 | G Loss: 6.2062 | D Loss: 0.0362
+Client 6 (EMNIST) | Target Loss: 0.3988 | G Loss: 8.8391 | D Loss: 0.0075
+Client 7 (EMNIST) | Target Loss: 0.2606 | G Loss: 8.6652 | D Loss: 0.0062
+Client 8 (EMNIST) | Target Loss: 0.0249 | G Loss: 7.9301 | D Loss: 0.0075
+Client 9 (EMNIST) | Target Loss: 0.0170 | G Loss: 9.0802 | D Loss: 0.0056
+Client 10 (EMNIST) | Target Loss: 0.2716 | G Loss: 8.3528 | D Loss: 0.0077
+Round 46 | Client 0 | Model: (MLP) | Acc: 95.96%
+Round 46 | Client 1 | Model: (CNN) | Acc: 98.84%
+Round 46 | Client 2 | Model: (ResNet8) | Acc: 98.23%
+Round 46 | Client 3 | Model: (ResNet18) | Acc: 99.06%
+Round 46 | Client 4 | Model: (MobileNetV2) | Acc: 97.97%
+Round 46 | Client 6 | Model: (MLP) | Acc: 81.64%
+Round 46 | Client 7 | Model: (CNN) | Acc: 85.15%
+Round 46 | Client 8 | Model: (ResNet8) | Acc: 84.14%
+Round 46 | Client 9 | Model: (ResNet18) | Acc: 84.06%
+Round 46 | Client 10 | Model: (MobileNetV2) | Acc: 85.56%
+Selected client ids: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]
+--- Round 47 ---
+Client 0 (MNIST) | Target Loss: 0.0323 | G Loss: 6.2663 | D Loss: 0.0407
+Client 1 (MNIST) | Target Loss: 0.0025 | G Loss: 6.2931 | D Loss: 0.0291
+Client 2 (MNIST) | Target Loss: 0.0035 | G Loss: 5.6577 | D Loss: 0.0309
+Client 3 (MNIST) | Target Loss: 0.0005 | G Loss: 5.9248 | D Loss: 0.0306
+Client 4 (MNIST) | Target Loss: 0.0361 | G Loss: 6.1721 | D Loss: 0.0632
+Client 6 (EMNIST) | Target Loss: 0.4050 | G Loss: 8.7270 | D Loss: 0.0054
+Client 7 (EMNIST) | Target Loss: 0.2585 | G Loss: 8.6411 | D Loss: 0.0055
+Client 8 (EMNIST) | Target Loss: 0.0242 | G Loss: 8.2125 | D Loss: 0.0080
+Client 9 (EMNIST) | Target Loss: 0.0165 | G Loss: 8.8335 | D Loss: 0.0057
+Client 10 (EMNIST) | Target Loss: 0.2702 | G Loss: 8.6480 | D Loss: 0.0066
+Round 47 | Client 0 | Model: (MLP) | Acc: 96.54%
+Round 47 | Client 1 | Model: (CNN) | Acc: 98.46%
+Round 47 | Client 2 | Model: (ResNet8) | Acc: 98.92%
+Round 47 | Client 3 | Model: (ResNet18) | Acc: 99.25%
+Round 47 | Client 4 | Model: (MobileNetV2) | Acc: 98.15%
+Round 47 | Client 6 | Model: (MLP) | Acc: 81.39%
+Round 47 | Client 7 | Model: (CNN) | Acc: 84.50%
+Round 47 | Client 8 | Model: (ResNet8) | Acc: 83.96%
+Round 47 | Client 9 | Model: (ResNet18) | Acc: 84.67%
+Round 47 | Client 10 | Model: (MobileNetV2) | Acc: 85.91%
+Selected client ids: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]
+--- Round 48 ---
+Client 0 (MNIST) | Target Loss: 0.0168 | G Loss: 6.0752 | D Loss: 0.0291
+Client 1 (MNIST) | Target Loss: 0.0010 | G Loss: 5.0971 | D Loss: 0.0621
+Client 2 (MNIST) | Target Loss: 0.0003 | G Loss: 6.6292 | D Loss: 0.0051
+Client 3 (MNIST) | Target Loss: 0.0035 | G Loss: 5.7908 | D Loss: 0.0110
+Client 4 (MNIST) | Target Loss: 0.0287 | G Loss: 6.4829 | D Loss: 0.0077
+Client 6 (EMNIST) | Target Loss: 0.4083 | G Loss: 8.9093 | D Loss: 0.0051
+Client 7 (EMNIST) | Target Loss: 0.2562 | G Loss: 8.4953 | D Loss: 0.0063
+Client 8 (EMNIST) | Target Loss: 0.0233 | G Loss: 8.6507 | D Loss: 0.0074
+Client 9 (EMNIST) | Target Loss: 0.0149 | G Loss: 8.9070 | D Loss: 0.0073
+Client 10 (EMNIST) | Target Loss: 0.2688 | G Loss: 8.4324 | D Loss: 0.0063
+Round 48 | Client 0 | Model: (MLP) | Acc: 96.31%
+Round 48 | Client 1 | Model: (CNN) | Acc: 98.72%
+Round 48 | Client 2 | Model: (ResNet8) | Acc: 99.26%
+Round 48 | Client 3 | Model: (ResNet18) | Acc: 99.31%
+Round 48 | Client 4 | Model: (MobileNetV2) | Acc: 97.86%
+Round 48 | Client 6 | Model: (MLP) | Acc: 81.44%
+Round 48 | Client 7 | Model: (CNN) | Acc: 85.08%
+Round 48 | Client 8 | Model: (ResNet8) | Acc: 83.08%
+Round 48 | Client 9 | Model: (ResNet18) | Acc: 84.09%
+Round 48 | Client 10 | Model: (MobileNetV2) | Acc: 86.20%
+Selected client ids: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]
+--- Round 49 ---
+Client 0 (MNIST) | Target Loss: 0.0311 | G Loss: 5.9578 | D Loss: 0.0140
+Client 1 (MNIST) | Target Loss: 0.0026 | G Loss: 6.2167 | D Loss: 0.0183
+Client 2 (MNIST) | Target Loss: 0.0001 | G Loss: 6.9882 | D Loss: 0.0267
+Client 3 (MNIST) | Target Loss: 0.0028 | G Loss: 6.9470 | D Loss: 0.0028
+Client 4 (MNIST) | Target Loss: 0.0355 | G Loss: 6.5354 | D Loss: 0.0304
+Client 6 (EMNIST) | Target Loss: 0.4093 | G Loss: 8.0136 | D Loss: 0.0069
+Client 7 (EMNIST) | Target Loss: 0.2529 | G Loss: 8.8577 | D Loss: 0.0056
+Client 8 (EMNIST) | Target Loss: 0.0223 | G Loss: 8.4504 | D Loss: 0.0071
+Client 9 (EMNIST) | Target Loss: 0.0140 | G Loss: 9.2448 | D Loss: 0.0059
+Client 10 (EMNIST) | Target Loss: 0.2655 | G Loss: 8.6526 | D Loss: 0.0050
+Round 49 | Client 0 | Model: (MLP) | Acc: 94.79%
+Round 49 | Client 1 | Model: (CNN) | Acc: 90.50%
+Round 49 | Client 2 | Model: (ResNet8) | Acc: 99.26%
+Round 49 | Client 3 | Model: (ResNet18) | Acc: 98.55%
+Round 49 | Client 4 | Model: (MobileNetV2) | Acc: 97.51%
+Round 49 | Client 6 | Model: (MLP) | Acc: 81.75%
+Round 49 | Client 7 | Model: (CNN) | Acc: 85.00%
+Round 49 | Client 8 | Model: (ResNet8) | Acc: 83.89%
+Round 49 | Client 9 | Model: (ResNet18) | Acc: 84.68%
+Round 49 | Client 10 | Model: (MobileNetV2) | Acc: 85.99%
+Selected client ids: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]
+--- Round 50 ---
+Client 0 (MNIST) | Target Loss: 0.0274 | G Loss: 5.5915 | D Loss: 0.0707
+Client 1 (MNIST) | Target Loss: 0.0159 | G Loss: 5.2982 | D Loss: 0.0780
+Client 2 (MNIST) | Target Loss: 0.0005 | G Loss: 5.8504 | D Loss: 0.0240
+Client 3 (MNIST) | Target Loss: 0.0179 | G Loss: 5.7742 | D Loss: 0.0514
+Client 4 (MNIST) | Target Loss: 0.0280 | G Loss: 6.0055 | D Loss: 0.0437
+Client 6 (EMNIST) | Target Loss: 0.4017 | G Loss: 8.6387 | D Loss: 0.0063
+Client 7 (EMNIST) | Target Loss: 0.2511 | G Loss: 8.8332 | D Loss: 0.0066
+Client 8 (EMNIST) | Target Loss: 0.0219 | G Loss: 8.3348 | D Loss: 0.0082
+Client 9 (EMNIST) | Target Loss: 0.0165 | G Loss: 9.3842 | D Loss: 0.0059
+Client 10 (EMNIST) | Target Loss: 0.2645 | G Loss: 8.5234 | D Loss: 0.0074
+Round 50 | Client 0 | Model: (MLP) | Acc: 95.31%
+Round 50 | Client 1 | Model: (CNN) | Acc: 37.55%
+Round 50 | Client 2 | Model: (ResNet8) | Acc: 99.20%
+Round 50 | Client 3 | Model: (ResNet18) | Acc: 98.62%
+Round 50 | Client 4 | Model: (MobileNetV2) | Acc: 98.26%
+Round 50 | Client 6 | Model: (MLP) | Acc: 81.04%
+Round 50 | Client 7 | Model: (CNN) | Acc: 84.96%
+Round 50 | Client 8 | Model: (ResNet8) | Acc: 83.43%
+Round 50 | Client 9 | Model: (ResNet18) | Acc: 84.38%
+Round 50 | Client 10 | Model: (MobileNetV2) | Acc: 85.99%
+Selected client ids: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]
+--- Round 51 ---
+Client 0 (MNIST) | Target Loss: 0.0158 | G Loss: 6.2882 | D Loss: 0.0268
+Client 1 (MNIST) | Target Loss: 0.0299 | G Loss: 5.7970 | D Loss: 0.0497
+Client 2 (MNIST) | Target Loss: 0.0003 | G Loss: 6.3326 | D Loss: 0.0411
+Client 3 (MNIST) | Target Loss: 0.0128 | G Loss: 6.0023 | D Loss: 0.0117
+Client 4 (MNIST) | Target Loss: 0.0237 | G Loss: 5.9616 | D Loss: 0.0449
+Client 6 (EMNIST) | Target Loss: 0.4035 | G Loss: 8.5176 | D Loss: 0.0044
+Client 7 (EMNIST) | Target Loss: 0.2485 | G Loss: 9.5760 | D Loss: 0.0051
+Client 8 (EMNIST) | Target Loss: 0.0223 | G Loss: 8.1910 | D Loss: 0.0061
+Client 9 (EMNIST) | Target Loss: 0.0133 | G Loss: 9.4121 | D Loss: 0.0068
+Client 10 (EMNIST) | Target Loss: 0.2595 | G Loss: 8.4344 | D Loss: 0.0064
+Round 51 | Client 0 | Model: (MLP) | Acc: 95.08%
+Round 51 | Client 1 | Model: (CNN) | Acc: 97.24%
+Round 51 | Client 2 | Model: (ResNet8) | Acc: 98.86%
+Round 51 | Client 3 | Model: (ResNet18) | Acc: 99.18%
+Round 51 | Client 4 | Model: (MobileNetV2) | Acc: 98.44%
+Round 51 | Client 6 | Model: (MLP) | Acc: 82.04%
+Round 51 | Client 7 | Model: (CNN) | Acc: 84.88%
+Round 51 | Client 8 | Model: (ResNet8) | Acc: 83.83%
+Round 51 | Client 9 | Model: (ResNet18) | Acc: 84.20%
+Round 51 | Client 10 | Model: (MobileNetV2) | Acc: 85.93%
+Selected client ids: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]
+--- Round 52 ---
+Client 0 (MNIST) | Target Loss: 0.0377 | G Loss: 5.6247 | D Loss: 0.0307
+Client 1 (MNIST) | Target Loss: 0.0064 | G Loss: 5.9351 | D Loss: 0.0282
+Client 2 (MNIST) | Target Loss: 0.0001 | G Loss: 5.9112 | D Loss: 0.0263
+Client 3 (MNIST) | Target Loss: 0.0110 | G Loss: 5.5243 | D Loss: 0.0503
+Client 4 (MNIST) | Target Loss: 0.0419 | G Loss: 5.8644 | D Loss: 0.0316
+Client 6 (EMNIST) | Target Loss: 0.4035 | G Loss: 8.7309 | D Loss: 0.0060
+Client 7 (EMNIST) | Target Loss: 0.2459 | G Loss: 9.1714 | D Loss: 0.0054
+Client 8 (EMNIST) | Target Loss: 0.0201 | G Loss: 8.6769 | D Loss: 0.0069
+Client 9 (EMNIST) | Target Loss: 0.0149 | G Loss: 9.1334 | D Loss: 0.0064
+Client 10 (EMNIST) | Target Loss: 0.2600 | G Loss: 8.4333 | D Loss: 0.0078
+Round 52 | Client 0 | Model: (MLP) | Acc: 96.90%
+Round 52 | Client 1 | Model: (CNN) | Acc: 98.46%
+Round 52 | Client 2 | Model: (ResNet8) | Acc: 99.09%
+Round 52 | Client 3 | Model: (ResNet18) | Acc: 98.81%
+Round 52 | Client 4 | Model: (MobileNetV2) | Acc: 97.62%
+Round 52 | Client 6 | Model: (MLP) | Acc: 81.64%
+Round 52 | Client 7 | Model: (CNN) | Acc: 85.18%
+Round 52 | Client 8 | Model: (ResNet8) | Acc: 83.47%
+Round 52 | Client 9 | Model: (ResNet18) | Acc: 84.50%
+Round 52 | Client 10 | Model: (MobileNetV2) | Acc: 85.84%
+Selected client ids: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]
+--- Round 53 ---
+Client 0 (MNIST) | Target Loss: 0.0121 | G Loss: 5.9196 | D Loss: 0.0432
+Client 1 (MNIST) | Target Loss: 0.0021 | G Loss: 5.7489 | D Loss: 0.0720
+Client 2 (MNIST) | Target Loss: 0.0001 | G Loss: 6.8416 | D Loss: 0.0034
+Client 3 (MNIST) | Target Loss: 0.0043 | G Loss: 5.9179 | D Loss: 0.0389
+Client 4 (MNIST) | Target Loss: 0.0628 | G Loss: 5.8772 | D Loss: 0.0373
+Client 6 (EMNIST) | Target Loss: 0.4159 | G Loss: 8.5047 | D Loss: 0.0054
+Client 7 (EMNIST) | Target Loss: 0.2441 | G Loss: 8.9924 | D Loss: 0.0051
+Client 8 (EMNIST) | Target Loss: 0.0218 | G Loss: 8.4789 | D Loss: 0.0083
+Client 9 (EMNIST) | Target Loss: 0.0131 | G Loss: 9.4261 | D Loss: 0.0061
+Client 10 (EMNIST) | Target Loss: 0.2575 | G Loss: 9.1347 | D Loss: 0.0045
+Round 53 | Client 0 | Model: (MLP) | Acc: 95.02%
+Round 53 | Client 1 | Model: (CNN) | Acc: 98.59%
+Round 53 | Client 2 | Model: (ResNet8) | Acc: 99.37%
+Round 53 | Client 3 | Model: (ResNet18) | Acc: 99.31%
+Round 53 | Client 4 | Model: (MobileNetV2) | Acc: 97.80%
+Round 53 | Client 6 | Model: (MLP) | Acc: 80.96%
+Round 53 | Client 7 | Model: (CNN) | Acc: 84.75%
+Round 53 | Client 8 | Model: (ResNet8) | Acc: 83.02%
+Round 53 | Client 9 | Model: (ResNet18) | Acc: 84.76%
+Round 53 | Client 10 | Model: (MobileNetV2) | Acc: 85.57%
+Selected client ids: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]
+--- Round 54 ---
+Client 0 (MNIST) | Target Loss: 0.0380 | G Loss: 6.1740 | D Loss: 0.0301
+Client 1 (MNIST) | Target Loss: 0.0009 | G Loss: 5.5207 | D Loss: 0.0481
+Client 2 (MNIST) | Target Loss: 0.0000 | G Loss: 6.9543 | D Loss: 0.0263
+Client 3 (MNIST) | Target Loss: 0.0025 | G Loss: 5.5274 | D Loss: 0.0333
+Client 4 (MNIST) | Target Loss: 0.0224 | G Loss: 5.7828 | D Loss: 0.0265
+Client 6 (EMNIST) | Target Loss: 0.4024 | G Loss: 8.7659 | D Loss: 0.0051
+Client 7 (EMNIST) | Target Loss: 0.2423 | G Loss: 9.3290 | D Loss: 0.0048
+Client 8 (EMNIST) | Target Loss: 0.0199 | G Loss: 8.6740 | D Loss: 0.0068
+Client 9 (EMNIST) | Target Loss: 0.0146 | G Loss: 9.8664 | D Loss: 0.0045
+Client 10 (EMNIST) | Target Loss: 0.2555 | G Loss: 8.8248 | D Loss: 0.0064
+Round 54 | Client 0 | Model: (MLP) | Acc: 96.31%
+Round 54 | Client 1 | Model: (CNN) | Acc: 98.27%
+Round 54 | Client 2 | Model: (ResNet8) | Acc: 99.20%
+Round 54 | Client 3 | Model: (ResNet18) | Acc: 99.37%
+Round 54 | Client 4 | Model: (MobileNetV2) | Acc: 97.97%
+Round 54 | Client 6 | Model: (MLP) | Acc: 82.04%
+Round 54 | Client 7 | Model: (CNN) | Acc: 84.37%
+Round 54 | Client 8 | Model: (ResNet8) | Acc: 83.62%
+Round 54 | Client 9 | Model: (ResNet18) | Acc: 84.27%
+Round 54 | Client 10 | Model: (MobileNetV2) | Acc: 85.99%
+Selected client ids: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]
+--- Round 55 ---
+Client 0 (MNIST) | Target Loss: 0.0113 | G Loss: 6.3560 | D Loss: 0.0227
+Client 1 (MNIST) | Target Loss: 0.0010 | G Loss: 5.7063 | D Loss: 0.0364
+Client 2 (MNIST) | Target Loss: 0.0000 | G Loss: 6.5910 | D Loss: 0.0286
+Client 3 (MNIST) | Target Loss: 0.0003 | G Loss: 6.0180 | D Loss: 0.0084
+Client 4 (MNIST) | Target Loss: 0.0271 | G Loss: 6.4506 | D Loss: 0.0050
+Client 6 (EMNIST) | Target Loss: 0.4125 | G Loss: 9.4673 | D Loss: 0.0046
+Client 7 (EMNIST) | Target Loss: 0.2403 | G Loss: 8.9769 | D Loss: 0.0065
+Client 8 (EMNIST) | Target Loss: 0.0192 | G Loss: 8.6404 | D Loss: 0.0087
+Client 9 (EMNIST) | Target Loss: 0.0118 | G Loss: 9.3067 | D Loss: 0.0057
+Client 10 (EMNIST) | Target Loss: 0.2509 | G Loss: 8.9856 | D Loss: 0.0047
+Round 55 | Client 0 | Model: (MLP) | Acc: 95.72%
+Round 55 | Client 1 | Model: (CNN) | Acc: 98.59%
+Round 55 | Client 2 | Model: (ResNet8) | Acc: 99.15%
+Round 55 | Client 3 | Model: (ResNet18) | Acc: 99.18%
+Round 55 | Client 4 | Model: (MobileNetV2) | Acc: 97.51%
+Round 55 | Client 6 | Model: (MLP) | Acc: 81.22%
+Round 55 | Client 7 | Model: (CNN) | Acc: 84.71%
+Round 55 | Client 8 | Model: (ResNet8) | Acc: 83.95%
+Round 55 | Client 9 | Model: (ResNet18) | Acc: 84.71%
+Round 55 | Client 10 | Model: (MobileNetV2) | Acc: 85.56%
+Selected client ids: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]
+--- Round 56 ---
+Client 0 (MNIST) | Target Loss: 0.0403 | G Loss: 6.5609 | D Loss: 0.0330
+Client 1 (MNIST) | Target Loss: 0.0006 | G Loss: 5.7293 | D Loss: 0.0795
+Client 2 (MNIST) | Target Loss: 0.0000 | G Loss: 6.4494 | D Loss: 0.0155
+Client 3 (MNIST) | Target Loss: 0.0002 | G Loss: 6.9754 | D Loss: 0.0023
+Client 4 (MNIST) | Target Loss: 0.0307 | G Loss: 6.3123 | D Loss: 0.0242
+Client 6 (EMNIST) | Target Loss: 0.4164 | G Loss: 8.8710 | D Loss: 0.0057
+Client 7 (EMNIST) | Target Loss: 0.2374 | G Loss: 9.0746 | D Loss: 0.0056
+Client 8 (EMNIST) | Target Loss: 0.0199 | G Loss: 8.5676 | D Loss: 0.0060
+Client 9 (EMNIST) | Target Loss: 0.0134 | G Loss: 10.0378 | D Loss: 0.0054
+Client 10 (EMNIST) | Target Loss: 0.2512 | G Loss: 9.2398 | D Loss: 0.0070
+Round 56 | Client 0 | Model: (MLP) | Acc: 95.55%
+Round 56 | Client 1 | Model: (CNN) | Acc: 98.65%
+Round 56 | Client 2 | Model: (ResNet8) | Acc: 99.32%
+Round 56 | Client 3 | Model: (ResNet18) | Acc: 99.56%
+Round 56 | Client 4 | Model: (MobileNetV2) | Acc: 98.32%
+Round 56 | Client 6 | Model: (MLP) | Acc: 81.90%
+Round 56 | Client 7 | Model: (CNN) | Acc: 85.12%
+Round 56 | Client 8 | Model: (ResNet8) | Acc: 83.66%
+Round 56 | Client 9 | Model: (ResNet18) | Acc: 84.59%
+Round 56 | Client 10 | Model: (MobileNetV2) | Acc: 85.19%
+Selected client ids: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]
+--- Round 57 ---
+Client 0 (MNIST) | Target Loss: 0.0253 | G Loss: 5.8307 | D Loss: 0.0364
+Client 1 (MNIST) | Target Loss: 0.0006 | G Loss: 6.1237 | D Loss: 0.0369
+Client 2 (MNIST) | Target Loss: 0.0000 | G Loss: 6.8299 | D Loss: 0.0045
+Client 3 (MNIST) | Target Loss: 0.0000 | G Loss: 7.1770 | D Loss: 0.0395
+Client 4 (MNIST) | Target Loss: 0.0452 | G Loss: 6.1108 | D Loss: 0.0531
+Client 6 (EMNIST) | Target Loss: 0.4125 | G Loss: 9.7061 | D Loss: 0.0046
+Client 7 (EMNIST) | Target Loss: 0.2354 | G Loss: 8.8975 | D Loss: 0.0043
+Client 8 (EMNIST) | Target Loss: 0.0187 | G Loss: 9.1745 | D Loss: 0.0074
+Client 9 (EMNIST) | Target Loss: 0.0121 | G Loss: 10.0872 | D Loss: 0.0051
+Client 10 (EMNIST) | Target Loss: 0.2489 | G Loss: 9.3438 | D Loss: 0.0044
+Round 57 | Client 0 | Model: (MLP) | Acc: 95.61%
+Round 57 | Client 1 | Model: (CNN) | Acc: 98.46%
+Round 57 | Client 2 | Model: (ResNet8) | Acc: 99.15%
+Round 57 | Client 3 | Model: (ResNet18) | Acc: 99.43%
+Round 57 | Client 4 | Model: (MobileNetV2) | Acc: 98.26%
+Round 57 | Client 6 | Model: (MLP) | Acc: 82.13%
+Round 57 | Client 7 | Model: (CNN) | Acc: 84.25%
+Round 57 | Client 8 | Model: (ResNet8) | Acc: 82.83%
+Round 57 | Client 9 | Model: (ResNet18) | Acc: 84.40%
+Round 57 | Client 10 | Model: (MobileNetV2) | Acc: 85.44%
+Selected client ids: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]
+--- Round 58 ---
+Client 0 (MNIST) | Target Loss: 0.0071 | G Loss: 5.6942 | D Loss: 0.0487
+Client 1 (MNIST) | Target Loss: 0.0004 | G Loss: 6.0980 | D Loss: 0.0208
+Client 2 (MNIST) | Target Loss: 0.0000 | G Loss: 6.6942 | D Loss: 0.0331
+Client 3 (MNIST) | Target Loss: 0.0002 | G Loss: 6.2247 | D Loss: 0.0067
+Client 4 (MNIST) | Target Loss: 0.0257 | G Loss: 6.2968 | D Loss: 0.0071
+Client 6 (EMNIST) | Target Loss: 0.4072 | G Loss: 8.9658 | D Loss: 0.0055
+Client 7 (EMNIST) | Target Loss: 0.2336 | G Loss: 9.3645 | D Loss: 0.0054
+Client 8 (EMNIST) | Target Loss: 0.0191 | G Loss: 9.1499 | D Loss: 0.0063
+Client 9 (EMNIST) | Target Loss: 0.0132 | G Loss: 9.7608 | D Loss: 0.0047
+Client 10 (EMNIST) | Target Loss: 0.2460 | G Loss: 10.0228 | D Loss: 0.0050
+Round 58 | Client 0 | Model: (MLP) | Acc: 96.13%
+Round 58 | Client 1 | Model: (CNN) | Acc: 98.59%
+Round 58 | Client 2 | Model: (ResNet8) | Acc: 99.26%
+Round 58 | Client 3 | Model: (ResNet18) | Acc: 99.31%
+Round 58 | Client 4 | Model: (MobileNetV2) | Acc: 98.38%
+Round 58 | Client 6 | Model: (MLP) | Acc: 80.99%
+Round 58 | Client 7 | Model: (CNN) | Acc: 84.49%
+Round 58 | Client 8 | Model: (ResNet8) | Acc: 83.95%
+Round 58 | Client 9 | Model: (ResNet18) | Acc: 84.34%
+Round 58 | Client 10 | Model: (MobileNetV2) | Acc: 85.52%
+Selected client ids: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]
+--- Round 59 ---
+Client 0 (MNIST) | Target Loss: 0.0330 | G Loss: 6.2952 | D Loss: 0.0069
+Client 1 (MNIST) | Target Loss: 0.0002 | G Loss: 6.7531 | D Loss: 0.0375
+Client 2 (MNIST) | Target Loss: 0.0032 | G Loss: 7.3559 | D Loss: 0.0158
+Client 3 (MNIST) | Target Loss: 0.0001 | G Loss: 6.0187 | D Loss: 0.0357
+Client 4 (MNIST) | Target Loss: 0.0120 | G Loss: 6.3136 | D Loss: 0.0467
+Client 6 (EMNIST) | Target Loss: 0.4051 | G Loss: 8.7856 | D Loss: 0.0077
+Client 7 (EMNIST) | Target Loss: 0.2304 | G Loss: 9.8603 | D Loss: 0.0052
+Client 8 (EMNIST) | Target Loss: 0.0170 | G Loss: 8.9040 | D Loss: 0.0066
+Client 9 (EMNIST) | Target Loss: 0.0127 | G Loss: 9.5739 | D Loss: 0.0061
+Client 10 (EMNIST) | Target Loss: 0.2427 | G Loss: 9.4321 | D Loss: 0.0048
+Round 59 | Client 0 | Model: (MLP) | Acc: 96.25%
+Round 59 | Client 1 | Model: (CNN) | Acc: 98.84%
+Round 59 | Client 2 | Model: (ResNet8) | Acc: 97.27%
+Round 59 | Client 3 | Model: (ResNet18) | Acc: 99.43%
+Round 59 | Client 4 | Model: (MobileNetV2) | Acc: 98.67%
+Round 59 | Client 6 | Model: (MLP) | Acc: 81.36%
+Round 59 | Client 7 | Model: (CNN) | Acc: 84.25%
+Round 59 | Client 8 | Model: (ResNet8) | Acc: 83.51%
+Round 59 | Client 9 | Model: (ResNet18) | Acc: 84.75%
+Round 59 | Client 10 | Model: (MobileNetV2) | Acc: 85.63%
+Selected client ids: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]
+--- Round 60 ---
+Client 0 (MNIST) | Target Loss: 0.0082 | G Loss: 6.8670 | D Loss: 0.0485
+Client 1 (MNIST) | Target Loss: 0.0004 | G Loss: 5.3231 | D Loss: 0.0342
+Client 2 (MNIST) | Target Loss: 0.0440 | G Loss: 6.2684 | D Loss: 0.0219
+Client 3 (MNIST) | Target Loss: 0.0000 | G Loss: 6.4396 | D Loss: 0.0234
+Client 4 (MNIST) | Target Loss: 0.0234 | G Loss: 6.3457 | D Loss: 0.0321
+Client 6 (EMNIST) | Target Loss: 0.4068 | G Loss: 8.7629 | D Loss: 0.0062
+Client 7 (EMNIST) | Target Loss: 0.2284 | G Loss: 10.0133 | D Loss: 0.0041
+Client 8 (EMNIST) | Target Loss: 0.0182 | G Loss: 8.6336 | D Loss: 0.0060
+Client 9 (EMNIST) | Target Loss: 0.0098 | G Loss: 10.1194 | D Loss: 0.0048
+Client 10 (EMNIST) | Target Loss: 0.2436 | G Loss: 9.8690 | D Loss: 0.0055
+Round 60 | Client 0 | Model: (MLP) | Acc: 96.54%
+Round 60 | Client 1 | Model: (CNN) | Acc: 98.65%
+Round 60 | Client 2 | Model: (ResNet8) | Acc: 98.29%
+Round 60 | Client 3 | Model: (ResNet18) | Acc: 99.50%
+Round 60 | Client 4 | Model: (MobileNetV2) | Acc: 98.38%
+Round 60 | Client 6 | Model: (MLP) | Acc: 79.44%
+Round 60 | Client 7 | Model: (CNN) | Acc: 84.66%
+Round 60 | Client 8 | Model: (ResNet8) | Acc: 83.85%
+Round 60 | Client 9 | Model: (ResNet18) | Acc: 84.37%
+Round 60 | Client 10 | Model: (MobileNetV2) | Acc: 85.78%
+Selected client ids: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]
+--- Round 61 ---
+Client 0 (MNIST) | Target Loss: 0.0220 | G Loss: 5.6598 | D Loss: 0.0140
+Client 1 (MNIST) | Target Loss: 0.0225 | G Loss: 5.9078 | D Loss: 0.0500
+Client 2 (MNIST) | Target Loss: 0.0095 | G Loss: 6.8937 | D Loss: 0.0050
+Client 3 (MNIST) | Target Loss: 0.0000 | G Loss: 6.8864 | D Loss: 0.0376
+Client 4 (MNIST) | Target Loss: 0.0153 | G Loss: 6.3112 | D Loss: 0.0311
+Client 6 (EMNIST) | Target Loss: 0.4258 | G Loss: 9.1165 | D Loss: 0.0052
+Client 7 (EMNIST) | Target Loss: 0.2277 | G Loss: 10.0167 | D Loss: 0.0043
+Client 8 (EMNIST) | Target Loss: 0.0177 | G Loss: 9.4938 | D Loss: 0.0058
+Client 9 (EMNIST) | Target Loss: 0.0135 | G Loss: 10.1621 | D Loss: 0.0057
+Client 10 (EMNIST) | Target Loss: 0.2396 | G Loss: 9.1211 | D Loss: 0.0048
+Round 61 | Client 0 | Model: (MLP) | Acc: 95.90%
+Round 61 | Client 1 | Model: (CNN) | Acc: 94.99%
+Round 61 | Client 2 | Model: (ResNet8) | Acc: 98.86%
+Round 61 | Client 3 | Model: (ResNet18) | Acc: 99.43%
+Round 61 | Client 4 | Model: (MobileNetV2) | Acc: 98.55%
+Round 61 | Client 6 | Model: (MLP) | Acc: 81.40%
+Round 61 | Client 7 | Model: (CNN) | Acc: 83.87%
+Round 61 | Client 8 | Model: (ResNet8) | Acc: 84.01%
+Round 61 | Client 9 | Model: (ResNet18) | Acc: 84.36%
+Round 61 | Client 10 | Model: (MobileNetV2) | Acc: 85.55%
+Selected client ids: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]
+--- Round 62 ---
+Client 0 (MNIST) | Target Loss: 0.0307 | G Loss: 6.1877 | D Loss: 0.0398
+Client 1 (MNIST) | Target Loss: 0.0234 | G Loss: 7.0584 | D Loss: 0.0028
+Client 2 (MNIST) | Target Loss: 0.0041 | G Loss: 6.3880 | D Loss: 0.0329
+Client 3 (MNIST) | Target Loss: 0.0015 | G Loss: 5.5729 | D Loss: 0.0205
+Client 4 (MNIST) | Target Loss: 0.0228 | G Loss: 6.4195 | D Loss: 0.0053
+Client 6 (EMNIST) | Target Loss: 0.4198 | G Loss: 9.3651 | D Loss: 0.0051
+Client 7 (EMNIST) | Target Loss: 0.2246 | G Loss: 9.4728 | D Loss: 0.0044
+Client 8 (EMNIST) | Target Loss: 0.0157 | G Loss: 9.6241 | D Loss: 0.0054
+Client 9 (EMNIST) | Target Loss: 0.0116 | G Loss: 10.5006 | D Loss: 0.0055
+Client 10 (EMNIST) | Target Loss: 0.2390 | G Loss: 9.3721 | D Loss: 0.0061
+Round 62 | Client 0 | Model: (MLP) | Acc: 95.02%
+Round 62 | Client 1 | Model: (CNN) | Acc: 96.15%
+Round 62 | Client 2 | Model: (ResNet8) | Acc: 99.09%
+Round 62 | Client 3 | Model: (ResNet18) | Acc: 97.99%
+Round 62 | Client 4 | Model: (MobileNetV2) | Acc: 97.62%
+Round 62 | Client 6 | Model: (MLP) | Acc: 81.79%
+Round 62 | Client 7 | Model: (CNN) | Acc: 84.62%
+Round 62 | Client 8 | Model: (ResNet8) | Acc: 83.02%
+Round 62 | Client 9 | Model: (ResNet18) | Acc: 84.30%
+Round 62 | Client 10 | Model: (MobileNetV2) | Acc: 85.94%
+Selected client ids: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]
+--- Round 63 ---
+Client 0 (MNIST) | Target Loss: 0.0190 | G Loss: 6.6182 | D Loss: 0.0050
+Client 1 (MNIST) | Target Loss: 0.0057 | G Loss: 7.3698 | D Loss: 0.0276
+Client 2 (MNIST) | Target Loss: 0.0004 | G Loss: 6.3656 | D Loss: 0.0229
+Client 3 (MNIST) | Target Loss: 0.0180 | G Loss: 6.1330 | D Loss: 0.0269
+Client 4 (MNIST) | Target Loss: 0.0195 | G Loss: 7.2896 | D Loss: 0.0029
+Client 6 (EMNIST) | Target Loss: 0.4200 | G Loss: 9.6215 | D Loss: 0.0031
+Client 7 (EMNIST) | Target Loss: 0.2236 | G Loss: 9.5975 | D Loss: 0.0063
+Client 8 (EMNIST) | Target Loss: 0.0170 | G Loss: 9.8508 | D Loss: 0.0062
+Client 9 (EMNIST) | Target Loss: 0.0120 | G Loss: 9.9098 | D Loss: 0.0050
+Client 10 (EMNIST) | Target Loss: 0.2360 | G Loss: 9.3950 | D Loss: 0.0053
+Round 63 | Client 0 | Model: (MLP) | Acc: 96.31%
+Round 63 | Client 1 | Model: (CNN) | Acc: 97.37%
+Round 63 | Client 2 | Model: (ResNet8) | Acc: 99.15%
+Round 63 | Client 3 | Model: (ResNet18) | Acc: 97.80%
+Round 63 | Client 4 | Model: (MobileNetV2) | Acc: 98.26%
+Round 63 | Client 6 | Model: (MLP) | Acc: 81.83%
+Round 63 | Client 7 | Model: (CNN) | Acc: 83.74%
+Round 63 | Client 8 | Model: (ResNet8) | Acc: 83.40%
+Round 63 | Client 9 | Model: (ResNet18) | Acc: 84.34%
+Round 63 | Client 10 | Model: (MobileNetV2) | Acc: 85.76%
+Selected client ids: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]
+--- Round 64 ---
+Client 0 (MNIST) | Target Loss: 0.0045 | G Loss: 5.9778 | D Loss: 0.0623
+Client 1 (MNIST) | Target Loss: 0.0022 | G Loss: 5.8783 | D Loss: 0.0375
+Client 2 (MNIST) | Target Loss: 0.0002 | G Loss: 6.4621 | D Loss: 0.0057
+Client 3 (MNIST) | Target Loss: 0.0343 | G Loss: 5.9999 | D Loss: 0.0247
+Client 4 (MNIST) | Target Loss: 0.0164 | G Loss: 6.3504 | D Loss: 0.0497
+Client 6 (EMNIST) | Target Loss: 0.4061 | G Loss: 9.1918 | D Loss: 0.0081
+Client 7 (EMNIST) | Target Loss: 0.2195 | G Loss: 9.6811 | D Loss: 0.0043
+Client 8 (EMNIST) | Target Loss: 0.0164 | G Loss: 9.6639 | D Loss: 0.0050
+Client 9 (EMNIST) | Target Loss: 0.0102 | G Loss: 10.0226 | D Loss: 0.0069
+Client 10 (EMNIST) | Target Loss: 0.2341 | G Loss: 10.4377 | D Loss: 0.0035
+Round 64 | Client 0 | Model: (MLP) | Acc: 96.49%
+Round 64 | Client 1 | Model: (CNN) | Acc: 86.71%
+Round 64 | Client 2 | Model: (ResNet8) | Acc: 98.92%
+Round 64 | Client 3 | Model: (ResNet18) | Acc: 98.93%
+Round 64 | Client 4 | Model: (MobileNetV2) | Acc: 98.44%
+Round 64 | Client 6 | Model: (MLP) | Acc: 81.22%
+Round 64 | Client 7 | Model: (CNN) | Acc: 84.50%
+Round 64 | Client 8 | Model: (ResNet8) | Acc: 84.14%
+Round 64 | Client 9 | Model: (ResNet18) | Acc: 84.31%
+Round 64 | Client 10 | Model: (MobileNetV2) | Acc: 85.48%
+Selected client ids: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]
+--- Round 65 ---
+Client 0 (MNIST) | Target Loss: 0.0088 | G Loss: 6.2143 | D Loss: 0.0086
+Client 1 (MNIST) | Target Loss: 0.0057 | G Loss: 6.1803 | D Loss: 0.0452
+Client 2 (MNIST) | Target Loss: 0.0001 | G Loss: 7.2034 | D Loss: 0.0234
+Client 3 (MNIST) | Target Loss: 0.0062 | G Loss: 6.4241 | D Loss: 0.0097
+Client 4 (MNIST) | Target Loss: 0.0144 | G Loss: 6.2673 | D Loss: 0.0077
+Client 6 (EMNIST) | Target Loss: 0.4275 | G Loss: 9.5465 | D Loss: 0.0045
+Client 7 (EMNIST) | Target Loss: 0.2191 | G Loss: 10.3347 | D Loss: 0.0034
+Client 8 (EMNIST) | Target Loss: 0.0166 | G Loss: 9.3082 | D Loss: 0.0057
+Client 9 (EMNIST) | Target Loss: 0.0119 | G Loss: 9.6012 | D Loss: 0.0056
+Client 10 (EMNIST) | Target Loss: 0.2348 | G Loss: 9.3617 | D Loss: 0.0049
+Round 65 | Client 0 | Model: (MLP) | Acc: 95.66%
+Round 65 | Client 1 | Model: (CNN) | Acc: 98.33%
+Round 65 | Client 2 | Model: (ResNet8) | Acc: 98.97%
+Round 65 | Client 3 | Model: (ResNet18) | Acc: 98.81%
+Round 65 | Client 4 | Model: (MobileNetV2) | Acc: 98.26%
+Round 65 | Client 6 | Model: (MLP) | Acc: 81.67%
+Round 65 | Client 7 | Model: (CNN) | Acc: 84.69%
+Round 65 | Client 8 | Model: (ResNet8) | Acc: 83.37%
+Round 65 | Client 9 | Model: (ResNet18) | Acc: 84.65%
+Round 65 | Client 10 | Model: (MobileNetV2) | Acc: 85.55%
+Selected client ids: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]
+--- Round 66 ---
+Client 0 (MNIST) | Target Loss: 0.0238 | G Loss: 6.0913 | D Loss: 0.0324
+Client 1 (MNIST) | Target Loss: 0.0018 | G Loss: 5.7810 | D Loss: 0.0498
+Client 2 (MNIST) | Target Loss: 0.0001 | G Loss: 7.0193 | D Loss: 0.0143
+Client 3 (MNIST) | Target Loss: 0.0051 | G Loss: 5.9579 | D Loss: 0.0377
+Client 4 (MNIST) | Target Loss: 0.0139 | G Loss: 6.5894 | D Loss: 0.0333
+Client 6 (EMNIST) | Target Loss: 0.4186 | G Loss: 9.9832 | D Loss: 0.0039
+Client 7 (EMNIST) | Target Loss: 0.2178 | G Loss: 10.2291 | D Loss: 0.0042
+Client 8 (EMNIST) | Target Loss: 0.0162 | G Loss: 9.2917 | D Loss: 0.0044
+Client 9 (EMNIST) | Target Loss: 0.0107 | G Loss: 10.1681 | D Loss: 0.0057
+Client 10 (EMNIST) | Target Loss: 0.2315 | G Loss: 10.4609 | D Loss: 0.0057
+Round 66 | Client 0 | Model: (MLP) | Acc: 94.32%
+Round 66 | Client 1 | Model: (CNN) | Acc: 99.04%
+Round 66 | Client 2 | Model: (ResNet8) | Acc: 99.20%
+Round 66 | Client 3 | Model: (ResNet18) | Acc: 98.74%
+Round 66 | Client 4 | Model: (MobileNetV2) | Acc: 98.09%
+Round 66 | Client 6 | Model: (MLP) | Acc: 81.19%
+Round 66 | Client 7 | Model: (CNN) | Acc: 84.45%
+Round 66 | Client 8 | Model: (ResNet8) | Acc: 83.60%
+Round 66 | Client 9 | Model: (ResNet18) | Acc: 84.39%
+Round 66 | Client 10 | Model: (MobileNetV2) | Acc: 85.31%
+Selected client ids: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]
+--- Round 67 ---
+Client 0 (MNIST) | Target Loss: 0.0281 | G Loss: 6.0491 | D Loss: 0.0296
+Client 1 (MNIST) | Target Loss: 0.0006 | G Loss: 6.1512 | D Loss: 0.0535
+Client 2 (MNIST) | Target Loss: 0.0001 | G Loss: 6.8363 | D Loss: 0.0043
+Client 3 (MNIST) | Target Loss: 0.0018 | G Loss: 6.4206 | D Loss: 0.0395
+Client 4 (MNIST) | Target Loss: 0.0149 | G Loss: 6.3474 | D Loss: 0.0053
+Client 6 (EMNIST) | Target Loss: 0.4132 | G Loss: 9.8377 | D Loss: 0.0053
+Client 7 (EMNIST) | Target Loss: 0.2152 | G Loss: 10.5666 | D Loss: 0.0045
+Client 8 (EMNIST) | Target Loss: 0.0155 | G Loss: 9.8729 | D Loss: 0.0063
+Client 9 (EMNIST) | Target Loss: 0.0110 | G Loss: 10.0654 | D Loss: 0.0053
+Client 10 (EMNIST) | Target Loss: 0.2298 | G Loss: 10.0802 | D Loss: 0.0031
+Round 67 | Client 0 | Model: (MLP) | Acc: 95.43%
+Round 67 | Client 1 | Model: (CNN) | Acc: 97.69%
+Round 67 | Client 2 | Model: (ResNet8) | Acc: 99.20%
+Round 67 | Client 3 | Model: (ResNet18) | Acc: 99.18%
+Round 67 | Client 4 | Model: (MobileNetV2) | Acc: 98.49%
+Round 67 | Client 6 | Model: (MLP) | Acc: 81.26%
+Round 67 | Client 7 | Model: (CNN) | Acc: 83.87%
+Round 67 | Client 8 | Model: (ResNet8) | Acc: 84.10%
+Round 67 | Client 9 | Model: (ResNet18) | Acc: 84.40%
+Round 67 | Client 10 | Model: (MobileNetV2) | Acc: 85.39%
+Selected client ids: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]
+--- Round 68 ---
+Client 0 (MNIST) | Target Loss: 0.0370 | G Loss: 6.4153 | D Loss: 0.0330
+Client 1 (MNIST) | Target Loss: 0.0006 | G Loss: 6.0083 | D Loss: 0.0343
+Client 2 (MNIST) | Target Loss: 0.0001 | G Loss: 7.2324 | D Loss: 0.0315
+Client 3 (MNIST) | Target Loss: 0.0014 | G Loss: 6.4244 | D Loss: 0.0074
+Client 4 (MNIST) | Target Loss: 0.0179 | G Loss: 6.9964 | D Loss: 0.0224
+Client 6 (EMNIST) | Target Loss: 0.4324 | G Loss: 9.5154 | D Loss: 0.0042
+Client 7 (EMNIST) | Target Loss: 0.2134 | G Loss: 10.6357 | D Loss: 0.0038
+Client 8 (EMNIST) | Target Loss: 0.0152 | G Loss: 9.4580 | D Loss: 0.0039
+Client 9 (EMNIST) | Target Loss: 0.0103 | G Loss: 10.2314 | D Loss: 0.0069
+Client 10 (EMNIST) | Target Loss: 0.2277 | G Loss: 10.4047 | D Loss: 0.0042
+Round 68 | Client 0 | Model: (MLP) | Acc: 94.32%
+Round 68 | Client 1 | Model: (CNN) | Acc: 98.84%
+Round 68 | Client 2 | Model: (ResNet8) | Acc: 99.26%
+Round 68 | Client 3 | Model: (ResNet18) | Acc: 99.25%
+Round 68 | Client 4 | Model: (MobileNetV2) | Acc: 98.03%
+Round 68 | Client 6 | Model: (MLP) | Acc: 81.55%
+Round 68 | Client 7 | Model: (CNN) | Acc: 83.84%
+Round 68 | Client 8 | Model: (ResNet8) | Acc: 84.24%
+Round 68 | Client 9 | Model: (ResNet18) | Acc: 84.44%
+Round 68 | Client 10 | Model: (MobileNetV2) | Acc: 85.35%
+Selected client ids: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]
+--- Round 69 ---
+Client 0 (MNIST) | Target Loss: 0.0138 | G Loss: 6.5322 | D Loss: 0.0135
+Client 1 (MNIST) | Target Loss: 0.0004 | G Loss: 5.6804 | D Loss: 0.0329
+Client 2 (MNIST) | Target Loss: 0.0000 | G Loss: 7.6300 | D Loss: 0.0195
+Client 3 (MNIST) | Target Loss: 0.0002 | G Loss: 5.8673 | D Loss: 0.0340
+Client 4 (MNIST) | Target Loss: 0.0319 | G Loss: 6.7056 | D Loss: 0.0249
+Client 6 (EMNIST) | Target Loss: 0.4191 | G Loss: 9.7966 | D Loss: 0.0039
+Client 7 (EMNIST) | Target Loss: 0.2111 | G Loss: 10.4068 | D Loss: 0.0032
+Client 8 (EMNIST) | Target Loss: 0.0142 | G Loss: 9.6148 | D Loss: 0.0054
+Client 9 (EMNIST) | Target Loss: 0.0111 | G Loss: 9.6930 | D Loss: 0.0060
+Client 10 (EMNIST) | Target Loss: 0.2231 | G Loss: 9.5678 | D Loss: 0.0047
+Round 69 | Client 0 | Model: (MLP) | Acc: 96.49%
+Round 69 | Client 1 | Model: (CNN) | Acc: 98.78%
+Round 69 | Client 2 | Model: (ResNet8) | Acc: 99.20%
+Round 69 | Client 3 | Model: (ResNet18) | Acc: 99.37%
+Round 69 | Client 4 | Model: (MobileNetV2) | Acc: 98.15%
+Round 69 | Client 6 | Model: (MLP) | Acc: 80.43%
+Round 69 | Client 7 | Model: (CNN) | Acc: 84.19%
+Round 69 | Client 8 | Model: (ResNet8) | Acc: 83.63%
+Round 69 | Client 9 | Model: (ResNet18) | Acc: 84.01%
+Round 69 | Client 10 | Model: (MobileNetV2) | Acc: 85.72%
+Selected client ids: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]
+--- Round 70 ---
+Client 0 (MNIST) | Target Loss: 0.0015 | G Loss: 6.3595 | D Loss: 0.0208
+Client 1 (MNIST) | Target Loss: 0.0003 | G Loss: 6.4079 | D Loss: 0.0289
+Client 2 (MNIST) | Target Loss: 0.0000 | G Loss: 6.7426 | D Loss: 0.0143
+Client 3 (MNIST) | Target Loss: 0.0001 | G Loss: 6.1443 | D Loss: 0.0297
+Client 4 (MNIST) | Target Loss: 0.0217 | G Loss: 6.7979 | D Loss: 0.0055
+Client 6 (EMNIST) | Target Loss: 0.4730 | G Loss: 9.1286 | D Loss: 0.0054
+Client 7 (EMNIST) | Target Loss: 0.2101 | G Loss: 10.7930 | D Loss: 0.0042
+Client 8 (EMNIST) | Target Loss: 0.0140 | G Loss: 9.5268 | D Loss: 0.0065
+Client 9 (EMNIST) | Target Loss: 0.0095 | G Loss: 10.8224 | D Loss: 0.0056
+Client 10 (EMNIST) | Target Loss: 0.2235 | G Loss: 10.7410 | D Loss: 0.0030
+Round 70 | Client 0 | Model: (MLP) | Acc: 96.72%
+Round 70 | Client 1 | Model: (CNN) | Acc: 99.04%
+Round 70 | Client 2 | Model: (ResNet8) | Acc: 99.15%
+Round 70 | Client 3 | Model: (ResNet18) | Acc: 99.37%
+Round 70 | Client 4 | Model: (MobileNetV2) | Acc: 98.90%
+Round 70 | Client 6 | Model: (MLP) | Acc: 81.55%
+Round 70 | Client 7 | Model: (CNN) | Acc: 84.72%
+Round 70 | Client 8 | Model: (ResNet8) | Acc: 83.53%
+Round 70 | Client 9 | Model: (ResNet18) | Acc: 84.04%
+Round 70 | Client 10 | Model: (MobileNetV2) | Acc: 85.52%
+Selected client ids: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]
+--- Round 71 ---
+Client 0 (MNIST) | Target Loss: 0.0079 | G Loss: 6.4853 | D Loss: 0.0276
+Client 1 (MNIST) | Target Loss: 0.0003 | G Loss: 6.4612 | D Loss: 0.0437
+Client 2 (MNIST) | Target Loss: 0.0000 | G Loss: 6.6576 | D Loss: 0.0141
+Client 3 (MNIST) | Target Loss: 0.0000 | G Loss: 5.8261 | D Loss: 0.0301
+Client 4 (MNIST) | Target Loss: 0.0135 | G Loss: 7.0879 | D Loss: 0.0259
+Client 6 (EMNIST) | Target Loss: 0.4172 | G Loss: 9.6713 | D Loss: 0.0054
+Client 7 (EMNIST) | Target Loss: 0.2064 | G Loss: 10.3736 | D Loss: 0.0047
+Client 8 (EMNIST) | Target Loss: 0.0149 | G Loss: 10.2537 | D Loss: 0.0039
+Client 9 (EMNIST) | Target Loss: 0.0114 | G Loss: 10.3340 | D Loss: 0.0046
+Client 10 (EMNIST) | Target Loss: 0.2233 | G Loss: 10.5215 | D Loss: 0.0044
+Round 71 | Client 0 | Model: (MLP) | Acc: 95.78%
+Round 71 | Client 1 | Model: (CNN) | Acc: 98.78%
+Round 71 | Client 2 | Model: (ResNet8) | Acc: 99.15%
+Round 71 | Client 3 | Model: (ResNet18) | Acc: 99.37%
+Round 71 | Client 4 | Model: (MobileNetV2) | Acc: 97.86%
+Round 71 | Client 6 | Model: (MLP) | Acc: 81.58%
+Round 71 | Client 7 | Model: (CNN) | Acc: 84.44%
+Round 71 | Client 8 | Model: (ResNet8) | Acc: 83.52%
+Round 71 | Client 9 | Model: (ResNet18) | Acc: 84.12%
+Round 71 | Client 10 | Model: (MobileNetV2) | Acc: 85.56%
+Selected client ids: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]
+--- Round 72 ---
+Client 0 (MNIST) | Target Loss: 0.0220 | G Loss: 6.4792 | D Loss: 0.0205
+Client 1 (MNIST) | Target Loss: 0.0002 | G Loss: 5.6090 | D Loss: 0.0538
+Client 2 (MNIST) | Target Loss: 0.0000 | G Loss: 6.8783 | D Loss: 0.0095
+Client 3 (MNIST) | Target Loss: 0.0000 | G Loss: 6.9675 | D Loss: 0.0305
+Client 4 (MNIST) | Target Loss: 0.0188 | G Loss: 6.6233 | D Loss: 0.0148
+Client 6 (EMNIST) | Target Loss: 0.4417 | G Loss: 9.6371 | D Loss: 0.0045
+Client 7 (EMNIST) | Target Loss: 0.2056 | G Loss: 10.3515 | D Loss: 0.0038
+Client 8 (EMNIST) | Target Loss: 0.0140 | G Loss: 10.1138 | D Loss: 0.0051
+Client 9 (EMNIST) | Target Loss: 0.0094 | G Loss: 10.1086 | D Loss: 0.0055
+Client 10 (EMNIST) | Target Loss: 0.2191 | G Loss: 10.6762 | D Loss: 0.0041
+Round 72 | Client 0 | Model: (MLP) | Acc: 96.19%
+Round 72 | Client 1 | Model: (CNN) | Acc: 99.10%
+Round 72 | Client 2 | Model: (ResNet8) | Acc: 99.20%
+Round 72 | Client 3 | Model: (ResNet18) | Acc: 99.56%
+Round 72 | Client 4 | Model: (MobileNetV2) | Acc: 98.49%
+Round 72 | Client 6 | Model: (MLP) | Acc: 81.62%
+Round 72 | Client 7 | Model: (CNN) | Acc: 83.94%
+Round 72 | Client 8 | Model: (ResNet8) | Acc: 83.80%
+Round 72 | Client 9 | Model: (ResNet18) | Acc: 84.49%
+Round 72 | Client 10 | Model: (MobileNetV2) | Acc: 85.05%
+Selected client ids: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]
+--- Round 73 ---
+Client 0 (MNIST) | Target Loss: 0.0296 | G Loss: 6.1548 | D Loss: 0.0064
+Client 1 (MNIST) | Target Loss: 0.0003 | G Loss: 7.0412 | D Loss: 0.0029
+Client 2 (MNIST) | Target Loss: 0.0001 | G Loss: 7.7080 | D Loss: 0.0215
+Client 3 (MNIST) | Target Loss: 0.0000 | G Loss: 5.6211 | D Loss: 0.0105
+Client 4 (MNIST) | Target Loss: 0.0095 | G Loss: 7.2409 | D Loss: 0.0321
+Client 6 (EMNIST) | Target Loss: 0.4236 | G Loss: 9.0245 | D Loss: 0.0061
+Client 7 (EMNIST) | Target Loss: 0.2034 | G Loss: 10.1951 | D Loss: 0.0049
+Client 8 (EMNIST) | Target Loss: 0.0142 | G Loss: 10.1689 | D Loss: 0.0054
+Client 9 (EMNIST) | Target Loss: 0.0104 | G Loss: 10.1722 | D Loss: 0.0053
+Client 10 (EMNIST) | Target Loss: 0.2171 | G Loss: 10.0380 | D Loss: 0.0049
+Round 73 | Client 0 | Model: (MLP) | Acc: 95.55%
+Round 73 | Client 1 | Model: (CNN) | Acc: 98.84%
+Round 73 | Client 2 | Model: (ResNet8) | Acc: 99.15%
+Round 73 | Client 3 | Model: (ResNet18) | Acc: 99.50%
+Round 73 | Client 4 | Model: (MobileNetV2) | Acc: 98.26%
+Round 73 | Client 6 | Model: (MLP) | Acc: 81.89%
+Round 73 | Client 7 | Model: (CNN) | Acc: 84.00%
+Round 73 | Client 8 | Model: (ResNet8) | Acc: 84.23%
+Round 73 | Client 9 | Model: (ResNet18) | Acc: 84.10%
+Round 73 | Client 10 | Model: (MobileNetV2) | Acc: 85.15%
+Selected client ids: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]
+--- Round 74 ---
+Client 0 (MNIST) | Target Loss: 0.0271 | G Loss: 7.1617 | D Loss: 0.0295
+Client 1 (MNIST) | Target Loss: 0.0210 | G Loss: 6.0089 | D Loss: 0.0433
+Client 2 (MNIST) | Target Loss: 0.0000 | G Loss: 6.6810 | D Loss: 0.0209
+Client 3 (MNIST) | Target Loss: 0.0000 | G Loss: 6.2879 | D Loss: 0.0286
+Client 4 (MNIST) | Target Loss: 0.0350 | G Loss: 6.8715 | D Loss: 0.0093
+Client 6 (EMNIST) | Target Loss: 0.4392 | G Loss: 9.7063 | D Loss: 0.0046
+Client 7 (EMNIST) | Target Loss: 0.2023 | G Loss: 10.2631 | D Loss: 0.0044
+Client 8 (EMNIST) | Target Loss: 0.0129 | G Loss: 9.4765 | D Loss: 0.0052
+Client 9 (EMNIST) | Target Loss: 0.0094 | G Loss: 10.7633 | D Loss: 0.0040
+Client 10 (EMNIST) | Target Loss: 0.2144 | G Loss: 10.1794 | D Loss: 0.0043
+Round 74 | Client 0 | Model: (MLP) | Acc: 94.55%
+Round 74 | Client 1 | Model: (CNN) | Acc: 78.56%
+Round 74 | Client 2 | Model: (ResNet8) | Acc: 99.03%
+Round 74 | Client 3 | Model: (ResNet18) | Acc: 99.43%
+Round 74 | Client 4 | Model: (MobileNetV2) | Acc: 98.55%
+Round 74 | Client 6 | Model: (MLP) | Acc: 81.59%
+Round 74 | Client 7 | Model: (CNN) | Acc: 84.41%
+Round 74 | Client 8 | Model: (ResNet8) | Acc: 84.46%
+Round 74 | Client 9 | Model: (ResNet18) | Acc: 84.35%
+Round 74 | Client 10 | Model: (MobileNetV2) | Acc: 85.36%
+Selected client ids: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]
+--- Round 75 ---
+Client 0 (MNIST) | Target Loss: 0.0207 | G Loss: 7.0314 | D Loss: 0.0221
+Client 1 (MNIST) | Target Loss: 0.0305 | G Loss: 6.2627 | D Loss: 0.0563
+Client 2 (MNIST) | Target Loss: 0.0001 | G Loss: 7.1123 | D Loss: 0.0114
+Client 3 (MNIST) | Target Loss: 0.0000 | G Loss: 6.9855 | D Loss: 0.0028
+Client 4 (MNIST) | Target Loss: 0.0290 | G Loss: 7.8177 | D Loss: 0.0185
+Client 6 (EMNIST) | Target Loss: 0.4399 | G Loss: 10.3734 | D Loss: 0.0040
+Client 7 (EMNIST) | Target Loss: 0.1992 | G Loss: 10.1307 | D Loss: 0.0043
+Client 8 (EMNIST) | Target Loss: 0.0134 | G Loss: 9.6932 | D Loss: 0.0058
+Client 9 (EMNIST) | Target Loss: 0.0094 | G Loss: 10.8053 | D Loss: 0.0070
+Client 10 (EMNIST) | Target Loss: 0.2133 | G Loss: 11.1143 | D Loss: 0.0026
+Round 75 | Client 0 | Model: (MLP) | Acc: 96.49%
+Round 75 | Client 1 | Model: (CNN) | Acc: 98.46%
+Round 75 | Client 2 | Model: (ResNet8) | Acc: 99.03%
+Round 75 | Client 3 | Model: (ResNet18) | Acc: 99.37%
+Round 75 | Client 4 | Model: (MobileNetV2) | Acc: 96.81%
+Round 75 | Client 6 | Model: (MLP) | Acc: 81.64%
+Round 75 | Client 7 | Model: (CNN) | Acc: 84.26%
+Round 75 | Client 8 | Model: (ResNet8) | Acc: 83.51%
+Round 75 | Client 9 | Model: (ResNet18) | Acc: 84.00%
+Round 75 | Client 10 | Model: (MobileNetV2) | Acc: 85.55%
+Selected client ids: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]
+--- Round 76 ---
+Client 0 (MNIST) | Target Loss: 0.0060 | G Loss: 7.0122 | D Loss: 0.0248
+Client 1 (MNIST) | Target Loss: 0.0031 | G Loss: 6.1777 | D Loss: 0.0143
+Client 2 (MNIST) | Target Loss: 0.0000 | G Loss: 6.8114 | D Loss: 0.0169
+Client 3 (MNIST) | Target Loss: 0.0000 | G Loss: 7.0034 | D Loss: 0.0378
+Client 4 (MNIST) | Target Loss: 0.0391 | G Loss: 6.9991 | D Loss: 0.0205
+Client 6 (EMNIST) | Target Loss: 0.4292 | G Loss: 11.2143 | D Loss: 0.0029
+Client 7 (EMNIST) | Target Loss: 0.1990 | G Loss: 10.3261 | D Loss: 0.0044
+Client 8 (EMNIST) | Target Loss: 0.0148 | G Loss: 9.9255 | D Loss: 0.0048
+Client 9 (EMNIST) | Target Loss: 0.0095 | G Loss: 10.7811 | D Loss: 0.0044
+Client 10 (EMNIST) | Target Loss: 0.2116 | G Loss: 10.6078 | D Loss: 0.0038
+Round 76 | Client 0 | Model: (MLP) | Acc: 95.72%
+Round 76 | Client 1 | Model: (CNN) | Acc: 98.97%
+Round 76 | Client 2 | Model: (ResNet8) | Acc: 99.09%
+Round 76 | Client 3 | Model: (ResNet18) | Acc: 99.31%
+Round 76 | Client 4 | Model: (MobileNetV2) | Acc: 98.26%
+Round 76 | Client 6 | Model: (MLP) | Acc: 80.93%
+Round 76 | Client 7 | Model: (CNN) | Acc: 84.19%
+Round 76 | Client 8 | Model: (ResNet8) | Acc: 83.46%
+Round 76 | Client 9 | Model: (ResNet18) | Acc: 84.16%
+Round 76 | Client 10 | Model: (MobileNetV2) | Acc: 84.93%
+Selected client ids: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]
+--- Round 77 ---
+Client 0 (MNIST) | Target Loss: 0.0309 | G Loss: 6.4460 | D Loss: 0.0152
+Client 1 (MNIST) | Target Loss: 0.0026 | G Loss: 6.9710 | D Loss: 0.0366
+Client 2 (MNIST) | Target Loss: 0.0000 | G Loss: 7.0099 | D Loss: 0.0081
+Client 3 (MNIST) | Target Loss: 0.0003 | G Loss: 6.1050 | D Loss: 0.0083
+Client 4 (MNIST) | Target Loss: 0.0207 | G Loss: 6.6139 | D Loss: 0.0177
+Client 6 (EMNIST) | Target Loss: 0.4398 | G Loss: 10.2876 | D Loss: 0.0051
+Client 7 (EMNIST) | Target Loss: 0.1964 | G Loss: 10.4168 | D Loss: 0.0033
+Client 8 (EMNIST) | Target Loss: 0.0129 | G Loss: 9.7583 | D Loss: 0.0056
+Client 9 (EMNIST) | Target Loss: 0.0093 | G Loss: 10.2602 | D Loss: 0.0039
+Client 10 (EMNIST) | Target Loss: 0.2097 | G Loss: 10.2566 | D Loss: 0.0044
+Round 77 | Client 0 | Model: (MLP) | Acc: 96.49%
+Round 77 | Client 1 | Model: (CNN) | Acc: 98.91%
+Round 77 | Client 2 | Model: (ResNet8) | Acc: 99.09%
+Round 77 | Client 3 | Model: (ResNet18) | Acc: 99.06%
+Round 77 | Client 4 | Model: (MobileNetV2) | Acc: 98.26%
+Round 77 | Client 6 | Model: (MLP) | Acc: 81.01%
+Round 77 | Client 7 | Model: (CNN) | Acc: 84.70%
+Round 77 | Client 8 | Model: (ResNet8) | Acc: 83.89%
+Round 77 | Client 9 | Model: (ResNet18) | Acc: 84.60%
+Round 77 | Client 10 | Model: (MobileNetV2) | Acc: 85.25%
+Selected client ids: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]
+--- Round 78 ---
+Client 0 (MNIST) | Target Loss: 0.0267 | G Loss: 6.6113 | D Loss: 0.0221
+Client 1 (MNIST) | Target Loss: 0.0027 | G Loss: 5.7180 | D Loss: 0.0382
+Client 2 (MNIST) | Target Loss: 0.0000 | G Loss: 7.5372 | D Loss: 0.0182
+Client 3 (MNIST) | Target Loss: 0.0324 | G Loss: 6.3335 | D Loss: 0.0271
+Client 4 (MNIST) | Target Loss: 0.0272 | G Loss: 7.0265 | D Loss: 0.0209
+Client 6 (EMNIST) | Target Loss: 0.4660 | G Loss: 10.0556 | D Loss: 0.0033
+Client 7 (EMNIST) | Target Loss: 0.1956 | G Loss: 10.7300 | D Loss: 0.0045
+Client 8 (EMNIST) | Target Loss: 0.0117 | G Loss: 9.8619 | D Loss: 0.0047
+Client 9 (EMNIST) | Target Loss: 0.0096 | G Loss: 10.5842 | D Loss: 0.0049
+Client 10 (EMNIST) | Target Loss: 0.2099 | G Loss: 10.1839 | D Loss: 0.0044
+Round 78 | Client 0 | Model: (MLP) | Acc: 96.37%
+Round 78 | Client 1 | Model: (CNN) | Acc: 98.78%
+Round 78 | Client 2 | Model: (ResNet8) | Acc: 99.15%
+Round 78 | Client 3 | Model: (ResNet18) | Acc: 97.80%
+Round 78 | Client 4 | Model: (MobileNetV2) | Acc: 98.44%
+Round 78 | Client 6 | Model: (MLP) | Acc: 80.15%
+Round 78 | Client 7 | Model: (CNN) | Acc: 84.13%
+Round 78 | Client 8 | Model: (ResNet8) | Acc: 83.32%
+Round 78 | Client 9 | Model: (ResNet18) | Acc: 84.41%
+Round 78 | Client 10 | Model: (MobileNetV2) | Acc: 85.43%
+Selected client ids: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]
+--- Round 79 ---
+Client 0 (MNIST) | Target Loss: 0.0089 | G Loss: 7.0811 | D Loss: 0.0108
+Client 1 (MNIST) | Target Loss: 0.0007 | G Loss: 6.6062 | D Loss: 0.0054
+Client 2 (MNIST) | Target Loss: 0.0000 | G Loss: 7.0545 | D Loss: 0.0092
+Client 3 (MNIST) | Target Loss: 0.0192 | G Loss: 6.5021 | D Loss: 0.0230
+Client 4 (MNIST) | Target Loss: 0.0181 | G Loss: 6.7960 | D Loss: 0.0131
+Client 6 (EMNIST) | Target Loss: 0.4338 | G Loss: 10.5238 | D Loss: 0.0045
+Client 7 (EMNIST) | Target Loss: 0.1941 | G Loss: 11.3186 | D Loss: 0.0026
+Client 8 (EMNIST) | Target Loss: 0.0133 | G Loss: 9.8481 | D Loss: 0.0054
+Client 9 (EMNIST) | Target Loss: 0.0077 | G Loss: 11.5972 | D Loss: 0.0042
+Client 10 (EMNIST) | Target Loss: 0.2059 | G Loss: 10.6015 | D Loss: 0.0030
+Round 79 | Client 0 | Model: (MLP) | Acc: 96.13%
+Round 79 | Client 1 | Model: (CNN) | Acc: 98.59%
+Round 79 | Client 2 | Model: (ResNet8) | Acc: 98.97%
+Round 79 | Client 3 | Model: (ResNet18) | Acc: 99.12%
+Round 79 | Client 4 | Model: (MobileNetV2) | Acc: 97.80%
+Round 79 | Client 6 | Model: (MLP) | Acc: 80.98%
+Round 79 | Client 7 | Model: (CNN) | Acc: 84.66%
+Round 79 | Client 8 | Model: (ResNet8) | Acc: 82.98%
+Round 79 | Client 9 | Model: (ResNet18) | Acc: 84.80%
+Round 79 | Client 10 | Model: (MobileNetV2) | Acc: 85.07%
+Selected client ids: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]
+--- Round 80 ---
+Client 0 (MNIST) | Target Loss: 0.0451 | G Loss: 7.2273 | D Loss: 0.0205
+Client 1 (MNIST) | Target Loss: 0.0005 | G Loss: 5.9002 | D Loss: 0.0664
+Client 2 (MNIST) | Target Loss: 0.0000 | G Loss: 7.0738 | D Loss: 0.0193
+Client 3 (MNIST) | Target Loss: 0.0083 | G Loss: 5.9985 | D Loss: 0.0310
+Client 4 (MNIST) | Target Loss: 0.0207 | G Loss: 7.0044 | D Loss: 0.0149
+Client 6 (EMNIST) | Target Loss: 0.4411 | G Loss: 10.4459 | D Loss: 0.0030
+Client 7 (EMNIST) | Target Loss: 0.1899 | G Loss: 10.9586 | D Loss: 0.0043
+Client 8 (EMNIST) | Target Loss: 0.0137 | G Loss: 9.6013 | D Loss: 0.0046
+Client 9 (EMNIST) | Target Loss: 0.0093 | G Loss: 10.3622 | D Loss: 0.0054
+Client 10 (EMNIST) | Target Loss: 0.2065 | G Loss: 10.4340 | D Loss: 0.0043
+Round 80 | Client 0 | Model: (MLP) | Acc: 96.25%
+Round 80 | Client 1 | Model: (CNN) | Acc: 98.65%
+Round 80 | Client 2 | Model: (ResNet8) | Acc: 98.97%
+Round 80 | Client 3 | Model: (ResNet18) | Acc: 99.18%
+Round 80 | Client 4 | Model: (MobileNetV2) | Acc: 98.61%
+Round 80 | Client 6 | Model: (MLP) | Acc: 80.34%
+Round 80 | Client 7 | Model: (CNN) | Acc: 83.99%
+Round 80 | Client 8 | Model: (ResNet8) | Acc: 84.14%
+Round 80 | Client 9 | Model: (ResNet18) | Acc: 84.41%
+Round 80 | Client 10 | Model: (MobileNetV2) | Acc: 85.17%
+Selected client ids: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]
+--- Round 81 ---
+Client 0 (MNIST) | Target Loss: 0.0282 | G Loss: 6.7084 | D Loss: 0.0209
+Client 1 (MNIST) | Target Loss: 0.0004 | G Loss: 6.3588 | D Loss: 0.0184
+Client 2 (MNIST) | Target Loss: 0.0000 | G Loss: 7.4197 | D Loss: 0.0035
+Client 3 (MNIST) | Target Loss: 0.0110 | G Loss: 6.1851 | D Loss: 0.0356
+Client 4 (MNIST) | Target Loss: 0.0262 | G Loss: 7.5390 | D Loss: 0.0159
+Client 6 (EMNIST) | Target Loss: 0.4855 | G Loss: 9.9557 | D Loss: 0.0044
+Client 7 (EMNIST) | Target Loss: 0.1901 | G Loss: 10.4456 | D Loss: 0.0027
+Client 8 (EMNIST) | Target Loss: 0.0113 | G Loss: 9.9527 | D Loss: 0.0052
+Client 9 (EMNIST) | Target Loss: 0.0088 | G Loss: 11.1507 | D Loss: 0.0044
+Client 10 (EMNIST) | Target Loss: 0.2008 | G Loss: 11.0713 | D Loss: 0.0032
+Round 81 | Client 0 | Model: (MLP) | Acc: 96.31%
+Round 81 | Client 1 | Model: (CNN) | Acc: 98.84%
+Round 81 | Client 2 | Model: (ResNet8) | Acc: 98.92%
+Round 81 | Client 3 | Model: (ResNet18) | Acc: 99.43%
+Round 81 | Client 4 | Model: (MobileNetV2) | Acc: 98.09%
+Round 81 | Client 6 | Model: (MLP) | Acc: 81.36%
+Round 81 | Client 7 | Model: (CNN) | Acc: 83.28%
+Round 81 | Client 8 | Model: (ResNet8) | Acc: 84.02%
+Round 81 | Client 9 | Model: (ResNet18) | Acc: 83.93%
+Round 81 | Client 10 | Model: (MobileNetV2) | Acc: 84.71%
+Selected client ids: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]
+--- Round 82 ---
+Client 0 (MNIST) | Target Loss: 0.0227 | G Loss: 6.9652 | D Loss: 0.0181
+Client 1 (MNIST) | Target Loss: 0.0002 | G Loss: 6.1900 | D Loss: 0.0397
+Client 2 (MNIST) | Target Loss: 0.0000 | G Loss: 7.2562 | D Loss: 0.0261
+Client 3 (MNIST) | Target Loss: 0.0006 | G Loss: 6.4315 | D Loss: 0.0245
+Client 4 (MNIST) | Target Loss: 0.0263 | G Loss: 6.9258 | D Loss: 0.0200
+Client 6 (EMNIST) | Target Loss: 0.4718 | G Loss: 10.5514 | D Loss: 0.0048
+Client 7 (EMNIST) | Target Loss: 0.1875 | G Loss: 11.7464 | D Loss: 0.0028
+Client 8 (EMNIST) | Target Loss: 0.0125 | G Loss: 9.6115 | D Loss: 0.0053
+Client 9 (EMNIST) | Target Loss: 0.0088 | G Loss: 10.7813 | D Loss: 0.0053
+Client 10 (EMNIST) | Target Loss: 0.2010 | G Loss: 10.9768 | D Loss: 0.0041
+Round 82 | Client 0 | Model: (MLP) | Acc: 96.25%
+Round 82 | Client 1 | Model: (CNN) | Acc: 98.91%
+Round 82 | Client 2 | Model: (ResNet8) | Acc: 99.15%
+Round 82 | Client 3 | Model: (ResNet18) | Acc: 99.56%
+Round 82 | Client 4 | Model: (MobileNetV2) | Acc: 98.38%
+Round 82 | Client 6 | Model: (MLP) | Acc: 81.13%
+Round 82 | Client 7 | Model: (CNN) | Acc: 83.99%
+Round 82 | Client 8 | Model: (ResNet8) | Acc: 83.51%
+Round 82 | Client 9 | Model: (ResNet18) | Acc: 84.64%
+Round 82 | Client 10 | Model: (MobileNetV2) | Acc: 84.94%
+Selected client ids: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]
+--- Round 83 ---
+Client 0 (MNIST) | Target Loss: 0.0076 | G Loss: 7.0887 | D Loss: 0.0252
+Client 1 (MNIST) | Target Loss: 0.0004 | G Loss: 6.1942 | D Loss: 0.0806
+Client 2 (MNIST) | Target Loss: 0.0000 | G Loss: 6.8911 | D Loss: 0.0126
+Client 3 (MNIST) | Target Loss: 0.0003 | G Loss: 6.4601 | D Loss: 0.0053
+Client 4 (MNIST) | Target Loss: 0.0187 | G Loss: 6.8289 | D Loss: 0.0203
+Client 6 (EMNIST) | Target Loss: 0.4647 | G Loss: 10.3123 | D Loss: 0.0038
+Client 7 (EMNIST) | Target Loss: 0.1868 | G Loss: 10.7148 | D Loss: 0.0041
+Client 8 (EMNIST) | Target Loss: 0.0120 | G Loss: 9.8633 | D Loss: 0.0056
+Client 9 (EMNIST) | Target Loss: 0.0083 | G Loss: 11.2016 | D Loss: 0.0035
+Client 10 (EMNIST) | Target Loss: 0.1992 | G Loss: 10.8154 | D Loss: 0.0027
+Round 83 | Client 0 | Model: (MLP) | Acc: 96.25%
+Round 83 | Client 1 | Model: (CNN) | Acc: 98.78%
+Round 83 | Client 2 | Model: (ResNet8) | Acc: 99.15%
+Round 83 | Client 3 | Model: (ResNet18) | Acc: 99.50%
+Round 83 | Client 4 | Model: (MobileNetV2) | Acc: 98.67%
+Round 83 | Client 6 | Model: (MLP) | Acc: 81.02%
+Round 83 | Client 7 | Model: (CNN) | Acc: 84.37%
+Round 83 | Client 8 | Model: (ResNet8) | Acc: 83.56%
+Round 83 | Client 9 | Model: (ResNet18) | Acc: 84.17%
+Round 83 | Client 10 | Model: (MobileNetV2) | Acc: 85.30%
+Selected client ids: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]
+--- Round 84 ---
+Client 0 (MNIST) | Target Loss: 0.0034 | G Loss: 6.8845 | D Loss: 0.0191
+Client 1 (MNIST) | Target Loss: 0.0002 | G Loss: 6.6181 | D Loss: 0.0064
+Client 2 (MNIST) | Target Loss: 0.0000 | G Loss: 7.3322 | D Loss: 0.0081
+Client 3 (MNIST) | Target Loss: 0.0001 | G Loss: 7.3102 | D Loss: 0.0016
+Client 4 (MNIST) | Target Loss: 0.0149 | G Loss: 6.9910 | D Loss: 0.0272
+Client 6 (EMNIST) | Target Loss: 0.5201 | G Loss: 10.2302 | D Loss: 0.0050
+Client 7 (EMNIST) | Target Loss: 0.1850 | G Loss: 10.8210 | D Loss: 0.0047
+Client 8 (EMNIST) | Target Loss: 0.0142 | G Loss: 10.5340 | D Loss: 0.0045
+Client 9 (EMNIST) | Target Loss: 0.0078 | G Loss: 11.1110 | D Loss: 0.0047
+Client 10 (EMNIST) | Target Loss: 0.1985 | G Loss: 10.7827 | D Loss: 0.0030
+Round 84 | Client 0 | Model: (MLP) | Acc: 96.19%
+Round 84 | Client 1 | Model: (CNN) | Acc: 98.78%
+Round 84 | Client 2 | Model: (ResNet8) | Acc: 99.15%
+Round 84 | Client 3 | Model: (ResNet18) | Acc: 99.31%
+Round 84 | Client 4 | Model: (MobileNetV2) | Acc: 98.44%
+Round 84 | Client 6 | Model: (MLP) | Acc: 81.74%
+Round 84 | Client 7 | Model: (CNN) | Acc: 84.42%
+Round 84 | Client 8 | Model: (ResNet8) | Acc: 84.24%
+Round 84 | Client 9 | Model: (ResNet18) | Acc: 84.12%
+Round 84 | Client 10 | Model: (MobileNetV2) | Acc: 85.06%
+Selected client ids: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]
+--- Round 85 ---
+Client 0 (MNIST) | Target Loss: 0.0011 | G Loss: 6.4537 | D Loss: 0.0120
+Client 1 (MNIST) | Target Loss: 0.0057 | G Loss: 5.7708 | D Loss: 0.0610
+Client 2 (MNIST) | Target Loss: 0.0000 | G Loss: 7.2198 | D Loss: 0.0282
+Client 3 (MNIST) | Target Loss: 0.0000 | G Loss: 7.8680 | D Loss: 0.0009
+Client 4 (MNIST) | Target Loss: 0.0562 | G Loss: 7.1789 | D Loss: 0.0111
+Client 6 (EMNIST) | Target Loss: 0.4631 | G Loss: 10.5614 | D Loss: 0.0036
+Client 7 (EMNIST) | Target Loss: 0.1840 | G Loss: 11.2324 | D Loss: 0.0036
+Client 8 (EMNIST) | Target Loss: 0.0111 | G Loss: 10.8861 | D Loss: 0.0037
+Client 9 (EMNIST) | Target Loss: 0.0088 | G Loss: 10.8962 | D Loss: 0.0066
+Client 10 (EMNIST) | Target Loss: 0.1960 | G Loss: 10.2946 | D Loss: 0.0033
+Round 85 | Client 0 | Model: (MLP) | Acc: 96.43%
+Round 85 | Client 1 | Model: (CNN) | Acc: 67.27%
+Round 85 | Client 2 | Model: (ResNet8) | Acc: 99.09%
+Round 85 | Client 3 | Model: (ResNet18) | Acc: 99.31%
+Round 85 | Client 4 | Model: (MobileNetV2) | Acc: 98.15%
+Round 85 | Client 6 | Model: (MLP) | Acc: 79.05%
+Round 85 | Client 7 | Model: (CNN) | Acc: 83.96%
+Round 85 | Client 8 | Model: (ResNet8) | Acc: 83.81%
+Round 85 | Client 9 | Model: (ResNet18) | Acc: 84.52%
+Round 85 | Client 10 | Model: (MobileNetV2) | Acc: 85.22%
+Selected client ids: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]
+--- Round 86 ---
+Client 0 (MNIST) | Target Loss: 0.0001 | G Loss: 7.5385 | D Loss: 0.0140
+Client 1 (MNIST) | Target Loss: 0.0399 | G Loss: 6.4701 | D Loss: 0.0352
+Client 2 (MNIST) | Target Loss: 0.0000 | G Loss: 6.7702 | D Loss: 0.0106
+Client 3 (MNIST) | Target Loss: 0.0000 | G Loss: 6.5648 | D Loss: 0.0453
+Client 4 (MNIST) | Target Loss: 0.0193 | G Loss: 6.8999 | D Loss: 0.0206
+Client 6 (EMNIST) | Target Loss: 0.4995 | G Loss: 10.0895 | D Loss: 0.0060
+Client 7 (EMNIST) | Target Loss: 0.1813 | G Loss: 11.5904 | D Loss: 0.0032
+Client 8 (EMNIST) | Target Loss: 0.0126 | G Loss: 10.2822 | D Loss: 0.0046
+Client 9 (EMNIST) | Target Loss: 0.0102 | G Loss: 11.2773 | D Loss: 0.0044
+Client 10 (EMNIST) | Target Loss: 0.1933 | G Loss: 10.4142 | D Loss: 0.0055
+Round 86 | Client 0 | Model: (MLP) | Acc: 96.54%
+Round 86 | Client 1 | Model: (CNN) | Acc: 88.77%
+Round 86 | Client 2 | Model: (ResNet8) | Acc: 99.15%
+Round 86 | Client 3 | Model: (ResNet18) | Acc: 99.43%
+Round 86 | Client 4 | Model: (MobileNetV2) | Acc: 98.03%
+Round 86 | Client 6 | Model: (MLP) | Acc: 80.69%
+Round 86 | Client 7 | Model: (CNN) | Acc: 84.14%
+Round 86 | Client 8 | Model: (ResNet8) | Acc: 84.15%
+Round 86 | Client 9 | Model: (ResNet18) | Acc: 84.40%
+Round 86 | Client 10 | Model: (MobileNetV2) | Acc: 85.38%
+Selected client ids: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]
+--- Round 87 ---
+Client 0 (MNIST) | Target Loss: 0.0000 | G Loss: 7.1017 | D Loss: 0.0333
+Client 1 (MNIST) | Target Loss: 0.0070 | G Loss: 6.3249 | D Loss: 0.0119
+Client 2 (MNIST) | Target Loss: 0.0000 | G Loss: 7.5452 | D Loss: 0.0144
+Client 3 (MNIST) | Target Loss: 0.0018 | G Loss: 6.3951 | D Loss: 0.0304
+Client 4 (MNIST) | Target Loss: 0.0454 | G Loss: 7.0323 | D Loss: 0.0143
+Client 6 (EMNIST) | Target Loss: 0.4783 | G Loss: 10.5258 | D Loss: 0.0040
+Client 7 (EMNIST) | Target Loss: 0.1783 | G Loss: 11.3684 | D Loss: 0.0026
+Client 8 (EMNIST) | Target Loss: 0.0100 | G Loss: 9.9683 | D Loss: 0.0056
+Client 9 (EMNIST) | Target Loss: 0.0085 | G Loss: 10.7969 | D Loss: 0.0047
+Client 10 (EMNIST) | Target Loss: 0.1939 | G Loss: 10.8964 | D Loss: 0.0036
+Round 87 | Client 0 | Model: (MLP) | Acc: 96.54%
+Round 87 | Client 1 | Model: (CNN) | Acc: 98.59%
+Round 87 | Client 2 | Model: (ResNet8) | Acc: 99.09%
+Round 87 | Client 3 | Model: (ResNet18) | Acc: 99.06%
+Round 87 | Client 4 | Model: (MobileNetV2) | Acc: 98.20%
+Round 87 | Client 6 | Model: (MLP) | Acc: 78.34%
+Round 87 | Client 7 | Model: (CNN) | Acc: 83.16%
+Round 87 | Client 8 | Model: (ResNet8) | Acc: 84.53%
+Round 87 | Client 9 | Model: (ResNet18) | Acc: 84.88%
+Round 87 | Client 10 | Model: (MobileNetV2) | Acc: 85.13%
+Selected client ids: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]
+--- Round 88 ---
+Client 0 (MNIST) | Target Loss: 0.0000 | G Loss: 6.4373 | D Loss: 0.0168
+Client 1 (MNIST) | Target Loss: 0.0009 | G Loss: 7.9189 | D Loss: 0.0015
+Client 2 (MNIST) | Target Loss: 0.0000 | G Loss: 7.0600 | D Loss: 0.0060
+Client 3 (MNIST) | Target Loss: 0.0161 | G Loss: 6.8168 | D Loss: 0.0093
+Client 4 (MNIST) | Target Loss: 0.0152 | G Loss: 6.8560 | D Loss: 0.0093
+Client 6 (EMNIST) | Target Loss: 0.4764 | G Loss: 10.3337 | D Loss: 0.0050
+Client 7 (EMNIST) | Target Loss: 0.1781 | G Loss: 10.9956 | D Loss: 0.0038
+Client 8 (EMNIST) | Target Loss: 0.0132 | G Loss: 10.7655 | D Loss: 0.0036
+Client 9 (EMNIST) | Target Loss: 0.0076 | G Loss: 10.3011 | D Loss: 0.0056
+Client 10 (EMNIST) | Target Loss: 0.1901 | G Loss: 10.4892 | D Loss: 0.0035
+Round 88 | Client 0 | Model: (MLP) | Acc: 96.60%
+Round 88 | Client 1 | Model: (CNN) | Acc: 98.97%
+Round 88 | Client 2 | Model: (ResNet8) | Acc: 99.03%
+Round 88 | Client 3 | Model: (ResNet18) | Acc: 99.12%
+Round 88 | Client 4 | Model: (MobileNetV2) | Acc: 98.44%
+Round 88 | Client 6 | Model: (MLP) | Acc: 81.21%
+Round 88 | Client 7 | Model: (CNN) | Acc: 84.08%
+Round 88 | Client 8 | Model: (ResNet8) | Acc: 83.64%
+Round 88 | Client 9 | Model: (ResNet18) | Acc: 84.68%
+Round 88 | Client 10 | Model: (MobileNetV2) | Acc: 85.11%
+Selected client ids: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]
+--- Round 89 ---
+Client 0 (MNIST) | Target Loss: 0.0000 | G Loss: 6.5414 | D Loss: 0.0191
+Client 1 (MNIST) | Target Loss: 0.0006 | G Loss: 6.2651 | D Loss: 0.0586
+Client 2 (MNIST) | Target Loss: 0.0000 | G Loss: 7.4680 | D Loss: 0.0219
+Client 3 (MNIST) | Target Loss: 0.0025 | G Loss: 7.2881 | D Loss: 0.0026
+Client 4 (MNIST) | Target Loss: 0.0166 | G Loss: 6.9378 | D Loss: 0.0195
+Client 6 (EMNIST) | Target Loss: 0.4908 | G Loss: 11.2911 | D Loss: 0.0040
+Client 7 (EMNIST) | Target Loss: 0.1769 | G Loss: 11.3272 | D Loss: 0.0030
+Client 8 (EMNIST) | Target Loss: 0.0097 | G Loss: 10.9009 | D Loss: 0.0049
+Client 9 (EMNIST) | Target Loss: 0.0093 | G Loss: 10.8288 | D Loss: 0.0038
+Client 10 (EMNIST) | Target Loss: 0.1927 | G Loss: 10.8434 | D Loss: 0.0035
+Round 89 | Client 0 | Model: (MLP) | Acc: 96.60%
+Round 89 | Client 1 | Model: (CNN) | Acc: 98.91%
+Round 89 | Client 2 | Model: (ResNet8) | Acc: 99.03%
+Round 89 | Client 3 | Model: (ResNet18) | Acc: 99.18%
+Round 89 | Client 4 | Model: (MobileNetV2) | Acc: 98.15%
+Round 89 | Client 6 | Model: (MLP) | Acc: 81.60%
+Round 89 | Client 7 | Model: (CNN) | Acc: 83.41%
+Round 89 | Client 8 | Model: (ResNet8) | Acc: 83.81%
+Round 89 | Client 9 | Model: (ResNet18) | Acc: 84.32%
+Round 89 | Client 10 | Model: (MobileNetV2) | Acc: 84.82%
+Selected client ids: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]
+--- Round 90 ---
+Client 0 (MNIST) | Target Loss: 0.0000 | G Loss: 7.0953 | D Loss: 0.0199
+Client 1 (MNIST) | Target Loss: 0.0004 | G Loss: 6.1522 | D Loss: 0.0259
+Client 2 (MNIST) | Target Loss: 0.0429 | G Loss: 7.3257 | D Loss: 0.0063
+Client 3 (MNIST) | Target Loss: 0.0004 | G Loss: 6.7238 | D Loss: 0.0340
+Client 4 (MNIST) | Target Loss: 0.0171 | G Loss: 6.9331 | D Loss: 0.0181
+Client 6 (EMNIST) | Target Loss: 0.4818 | G Loss: 10.7624 | D Loss: 0.0040
+Client 7 (EMNIST) | Target Loss: 0.1748 | G Loss: 11.4631 | D Loss: 0.0043
+Client 8 (EMNIST) | Target Loss: 0.0120 | G Loss: 11.0318 | D Loss: 0.0028
+Client 9 (EMNIST) | Target Loss: 0.0067 | G Loss: 11.4188 | D Loss: 0.0030
+Client 10 (EMNIST) | Target Loss: 0.1831 | G Loss: 11.2305 | D Loss: 0.0027
+Round 90 | Client 0 | Model: (MLP) | Acc: 96.60%
+Round 90 | Client 1 | Model: (CNN) | Acc: 98.91%
+Round 90 | Client 2 | Model: (ResNet8) | Acc: 98.01%
+Round 90 | Client 3 | Model: (ResNet18) | Acc: 99.06%
+Round 90 | Client 4 | Model: (MobileNetV2) | Acc: 98.26%
+Round 90 | Client 6 | Model: (MLP) | Acc: 80.45%
+Round 90 | Client 7 | Model: (CNN) | Acc: 83.22%
+Round 90 | Client 8 | Model: (ResNet8) | Acc: 84.31%
+Round 90 | Client 9 | Model: (ResNet18) | Acc: 84.49%
+Round 90 | Client 10 | Model: (MobileNetV2) | Acc: 84.82%
+Selected client ids: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]
+--- Round 91 ---
+Client 0 (MNIST) | Target Loss: 0.0000 | G Loss: 7.5031 | D Loss: 0.0112
+Client 1 (MNIST) | Target Loss: 0.0005 | G Loss: 6.5226 | D Loss: 0.0320
+Client 2 (MNIST) | Target Loss: 0.0148 | G Loss: 7.9040 | D Loss: 0.0190
+Client 3 (MNIST) | Target Loss: 0.0015 | G Loss: 6.6015 | D Loss: 0.0048
+Client 4 (MNIST) | Target Loss: 0.0064 | G Loss: 6.9568 | D Loss: 0.0067
+Client 6 (EMNIST) | Target Loss: 0.4954 | G Loss: 9.8830 | D Loss: 0.0048
+Client 7 (EMNIST) | Target Loss: 0.1737 | G Loss: 11.1623 | D Loss: 0.0041
+Client 8 (EMNIST) | Target Loss: 0.0110 | G Loss: 11.6656 | D Loss: 0.0027
+Client 9 (EMNIST) | Target Loss: 0.0090 | G Loss: 11.1111 | D Loss: 0.0034
+Client 10 (EMNIST) | Target Loss: 0.1848 | G Loss: 11.5202 | D Loss: 0.0036
+Round 91 | Client 0 | Model: (MLP) | Acc: 96.60%
+Round 91 | Client 1 | Model: (CNN) | Acc: 98.97%
+Round 91 | Client 2 | Model: (ResNet8) | Acc: 98.80%
+Round 91 | Client 3 | Model: (ResNet18) | Acc: 98.93%
+Round 91 | Client 4 | Model: (MobileNetV2) | Acc: 98.26%
+Round 91 | Client 6 | Model: (MLP) | Acc: 81.29%
+Round 91 | Client 7 | Model: (CNN) | Acc: 83.81%
+Round 91 | Client 8 | Model: (ResNet8) | Acc: 84.01%
+Round 91 | Client 9 | Model: (ResNet18) | Acc: 84.20%
+Round 91 | Client 10 | Model: (MobileNetV2) | Acc: 84.85%
+Selected client ids: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]
+--- Round 92 ---
+Client 0 (MNIST) | Target Loss: 0.0000 | G Loss: 8.3009 | D Loss: 0.0244
+Client 1 (MNIST) | Target Loss: 0.0004 | G Loss: 6.0451 | D Loss: 0.0588
+Client 2 (MNIST) | Target Loss: 0.0030 | G Loss: 7.2095 | D Loss: 0.0038
+Client 3 (MNIST) | Target Loss: 0.0020 | G Loss: 7.0036 | D Loss: 0.0233
+Client 4 (MNIST) | Target Loss: 0.0199 | G Loss: 8.1744 | D Loss: 0.0167
+Client 6 (EMNIST) | Target Loss: 0.4969 | G Loss: 10.7695 | D Loss: 0.0029
+Client 7 (EMNIST) | Target Loss: 0.1728 | G Loss: 11.9419 | D Loss: 0.0015
+Client 8 (EMNIST) | Target Loss: 0.0114 | G Loss: 10.7792 | D Loss: 0.0034
+Client 9 (EMNIST) | Target Loss: 0.0073 | G Loss: 10.8812 | D Loss: 0.0046
+Client 10 (EMNIST) | Target Loss: 0.1862 | G Loss: 10.7659 | D Loss: 0.0044
+Round 92 | Client 0 | Model: (MLP) | Acc: 96.60%
+Round 92 | Client 1 | Model: (CNN) | Acc: 99.23%
+Round 92 | Client 2 | Model: (ResNet8) | Acc: 99.03%
+Round 92 | Client 3 | Model: (ResNet18) | Acc: 99.43%
+Round 92 | Client 4 | Model: (MobileNetV2) | Acc: 98.44%
+Round 92 | Client 6 | Model: (MLP) | Acc: 81.67%
+Round 92 | Client 7 | Model: (CNN) | Acc: 83.56%
+Round 92 | Client 8 | Model: (ResNet8) | Acc: 84.20%
+Round 92 | Client 9 | Model: (ResNet18) | Acc: 84.42%
+Round 92 | Client 10 | Model: (MobileNetV2) | Acc: 85.44%
+Selected client ids: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]
+--- Round 93 ---
+Client 0 (MNIST) | Target Loss: 0.0000 | G Loss: 6.6195 | D Loss: 0.0119
+Client 1 (MNIST) | Target Loss: 0.0002 | G Loss: 6.9093 | D Loss: 0.0271
+Client 2 (MNIST) | Target Loss: 0.0009 | G Loss: 7.5405 | D Loss: 0.0145
+Client 3 (MNIST) | Target Loss: 0.0110 | G Loss: 6.2928 | D Loss: 0.0270
+Client 4 (MNIST) | Target Loss: 0.0121 | G Loss: 7.1178 | D Loss: 0.0168
+Client 6 (EMNIST) | Target Loss: 0.5003 | G Loss: 10.8199 | D Loss: 0.0032
+Client 7 (EMNIST) | Target Loss: 0.1711 | G Loss: 11.3118 | D Loss: 0.0050
+Client 8 (EMNIST) | Target Loss: 0.0100 | G Loss: 11.4859 | D Loss: 0.0039
+Client 9 (EMNIST) | Target Loss: 0.0081 | G Loss: 10.9431 | D Loss: 0.0053
+Client 10 (EMNIST) | Target Loss: 0.1851 | G Loss: 11.3745 | D Loss: 0.0036
+Round 93 | Client 0 | Model: (MLP) | Acc: 96.60%
+Round 93 | Client 1 | Model: (CNN) | Acc: 99.23%
+Round 93 | Client 2 | Model: (ResNet8) | Acc: 99.43%
+Round 93 | Client 3 | Model: (ResNet18) | Acc: 98.87%
+Round 93 | Client 4 | Model: (MobileNetV2) | Acc: 98.73%
+Round 93 | Client 6 | Model: (MLP) | Acc: 79.69%
+Round 93 | Client 7 | Model: (CNN) | Acc: 83.24%
+Round 93 | Client 8 | Model: (ResNet8) | Acc: 84.35%
+Round 93 | Client 9 | Model: (ResNet18) | Acc: 83.90%
+Round 93 | Client 10 | Model: (MobileNetV2) | Acc: 84.56%
+Selected client ids: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]
+--- Round 94 ---
+Client 0 (MNIST) | Target Loss: 0.0000 | G Loss: 7.0339 | D Loss: 0.0187
+Client 1 (MNIST) | Target Loss: 0.0047 | G Loss: 6.4891 | D Loss: 0.0230
+Client 2 (MNIST) | Target Loss: 0.0003 | G Loss: 8.0888 | D Loss: 0.0171
+Client 3 (MNIST) | Target Loss: 0.0036 | G Loss: 7.1403 | D Loss: 0.0032
+Client 4 (MNIST) | Target Loss: 0.0234 | G Loss: 7.5691 | D Loss: 0.0120
+Client 6 (EMNIST) | Target Loss: 0.5146 | G Loss: 10.6921 | D Loss: 0.0036
+Client 7 (EMNIST) | Target Loss: 0.1702 | G Loss: 11.2053 | D Loss: 0.0036
+Client 8 (EMNIST) | Target Loss: 0.0110 | G Loss: 10.8815 | D Loss: 0.0028
+Client 9 (EMNIST) | Target Loss: 0.0083 | G Loss: 10.9264 | D Loss: 0.0039
+Client 10 (EMNIST) | Target Loss: 0.1819 | G Loss: 10.8291 | D Loss: 0.0031
+Round 94 | Client 0 | Model: (MLP) | Acc: 96.60%
+Round 94 | Client 1 | Model: (CNN) | Acc: 76.64%
+Round 94 | Client 2 | Model: (ResNet8) | Acc: 99.09%
+Round 94 | Client 3 | Model: (ResNet18) | Acc: 98.81%
+Round 94 | Client 4 | Model: (MobileNetV2) | Acc: 98.20%
+Round 94 | Client 6 | Model: (MLP) | Acc: 80.90%
+Round 94 | Client 7 | Model: (CNN) | Acc: 83.66%
+Round 94 | Client 8 | Model: (ResNet8) | Acc: 84.11%
+Round 94 | Client 9 | Model: (ResNet18) | Acc: 84.37%
+Round 94 | Client 10 | Model: (MobileNetV2) | Acc: 84.77%
+Selected client ids: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]
+--- Round 95 ---
+Client 0 (MNIST) | Target Loss: 0.0000 | G Loss: 7.1946 | D Loss: 0.0117
+Client 1 (MNIST) | Target Loss: 0.0160 | G Loss: 7.5476 | D Loss: 0.0261
+Client 2 (MNIST) | Target Loss: 0.0008 | G Loss: 7.4452 | D Loss: 0.0075
+Client 3 (MNIST) | Target Loss: 0.0012 | G Loss: 6.1257 | D Loss: 0.0324
+Client 4 (MNIST) | Target Loss: 0.0452 | G Loss: 7.3050 | D Loss: 0.0065
+Client 6 (EMNIST) | Target Loss: 0.5204 | G Loss: 11.1665 | D Loss: 0.0031
+Client 7 (EMNIST) | Target Loss: 0.1674 | G Loss: 11.1007 | D Loss: 0.0035
+Client 8 (EMNIST) | Target Loss: 0.0102 | G Loss: 11.2086 | D Loss: 0.0028
+Client 9 (EMNIST) | Target Loss: 0.0072 | G Loss: 11.2799 | D Loss: 0.0054
+Client 10 (EMNIST) | Target Loss: 0.1806 | G Loss: 11.1178 | D Loss: 0.0034
+Round 95 | Client 0 | Model: (MLP) | Acc: 96.54%
+Round 95 | Client 1 | Model: (CNN) | Acc: 87.36%
+Round 95 | Client 2 | Model: (ResNet8) | Acc: 98.97%
+Round 95 | Client 3 | Model: (ResNet18) | Acc: 99.25%
+Round 95 | Client 4 | Model: (MobileNetV2) | Acc: 98.26%
+Round 95 | Client 6 | Model: (MLP) | Acc: 81.89%
+Round 95 | Client 7 | Model: (CNN) | Acc: 83.90%
+Round 95 | Client 8 | Model: (ResNet8) | Acc: 84.30%
+Round 95 | Client 9 | Model: (ResNet18) | Acc: 84.40%
+Round 95 | Client 10 | Model: (MobileNetV2) | Acc: 84.64%
+Selected client ids: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]
+--- Round 96 ---
+Client 0 (MNIST) | Target Loss: 0.0000 | G Loss: 6.9554 | D Loss: 0.0259
+Client 1 (MNIST) | Target Loss: 0.0122 | G Loss: 6.0808 | D Loss: 0.0157
+Client 2 (MNIST) | Target Loss: 0.0014 | G Loss: 7.5829 | D Loss: 0.0121
+Client 3 (MNIST) | Target Loss: 0.0058 | G Loss: 6.3383 | D Loss: 0.0114
+Client 4 (MNIST) | Target Loss: 0.0138 | G Loss: 7.3533 | D Loss: 0.0270
+Client 6 (EMNIST) | Target Loss: 0.4700 | G Loss: 11.6349 | D Loss: 0.0024
+Client 7 (EMNIST) | Target Loss: 0.1666 | G Loss: 11.7144 | D Loss: 0.0036
+Client 8 (EMNIST) | Target Loss: 0.0109 | G Loss: 11.5342 | D Loss: 0.0046
+Client 9 (EMNIST) | Target Loss: 0.0072 | G Loss: 10.9337 | D Loss: 0.0050
+Client 10 (EMNIST) | Target Loss: 0.1767 | G Loss: 11.2051 | D Loss: 0.0035
+Round 96 | Client 0 | Model: (MLP) | Acc: 96.66%
+Round 96 | Client 1 | Model: (CNN) | Acc: 98.65%
+Round 96 | Client 2 | Model: (ResNet8) | Acc: 98.97%
+Round 96 | Client 3 | Model: (ResNet18) | Acc: 98.87%
+Round 96 | Client 4 | Model: (MobileNetV2) | Acc: 98.73%
+Round 96 | Client 6 | Model: (MLP) | Acc: 80.45%
+Round 96 | Client 7 | Model: (CNN) | Acc: 84.03%
+Round 96 | Client 8 | Model: (ResNet8) | Acc: 83.51%
+Round 96 | Client 9 | Model: (ResNet18) | Acc: 83.76%
+Round 96 | Client 10 | Model: (MobileNetV2) | Acc: 84.72%
+Selected client ids: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]
+--- Round 97 ---
+Client 0 (MNIST) | Target Loss: 0.0000 | G Loss: 6.6994 | D Loss: 0.0138
+Client 1 (MNIST) | Target Loss: 0.0042 | G Loss: 6.3571 | D Loss: 0.0615
+Client 2 (MNIST) | Target Loss: 0.0008 | G Loss: 7.3555 | D Loss: 0.0150
+Client 3 (MNIST) | Target Loss: 0.0072 | G Loss: 6.5687 | D Loss: 0.0263
+Client 4 (MNIST) | Target Loss: 0.0056 | G Loss: 7.2054 | D Loss: 0.0081
+Client 6 (EMNIST) | Target Loss: 0.5439 | G Loss: 10.5895 | D Loss: 0.0046
+Client 7 (EMNIST) | Target Loss: 0.1659 | G Loss: 10.5733 | D Loss: 0.0037
+Client 8 (EMNIST) | Target Loss: 0.0104 | G Loss: 11.3167 | D Loss: 0.0026
+Client 9 (EMNIST) | Target Loss: 0.0087 | G Loss: 11.0912 | D Loss: 0.0030
+Client 10 (EMNIST) | Target Loss: 0.1758 | G Loss: 10.5147 | D Loss: 0.0032
+Round 97 | Client 0 | Model: (MLP) | Acc: 96.66%
+Round 97 | Client 1 | Model: (CNN) | Acc: 98.65%
+Round 97 | Client 2 | Model: (ResNet8) | Acc: 98.58%
+Round 97 | Client 3 | Model: (ResNet18) | Acc: 98.87%
+Round 97 | Client 4 | Model: (MobileNetV2) | Acc: 98.78%
+Round 97 | Client 6 | Model: (MLP) | Acc: 80.95%
+Round 97 | Client 7 | Model: (CNN) | Acc: 83.59%
+Round 97 | Client 8 | Model: (ResNet8) | Acc: 83.95%
+Round 97 | Client 9 | Model: (ResNet18) | Acc: 84.33%
+Round 97 | Client 10 | Model: (MobileNetV2) | Acc: 84.56%
+Selected client ids: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]
+--- Round 98 ---
+Client 0 (MNIST) | Target Loss: 0.0000 | G Loss: 7.4665 | D Loss: 0.0135
+Client 1 (MNIST) | Target Loss: 0.0008 | G Loss: 6.2822 | D Loss: 0.0377
+Client 2 (MNIST) | Target Loss: 0.0065 | G Loss: 7.3453 | D Loss: 0.0039
+Client 3 (MNIST) | Target Loss: 0.0016 | G Loss: 7.5148 | D Loss: 0.0019
+Client 4 (MNIST) | Target Loss: 0.0113 | G Loss: 7.9944 | D Loss: 0.0284
+Client 6 (EMNIST) | Target Loss: 0.5456 | G Loss: 11.2510 | D Loss: 0.0032
+Client 7 (EMNIST) | Target Loss: 0.1632 | G Loss: 11.2570 | D Loss: 0.0028
+Client 8 (EMNIST) | Target Loss: 0.0107 | G Loss: 10.8228 | D Loss: 0.0041
+Client 9 (EMNIST) | Target Loss: 0.0074 | G Loss: 11.6278 | D Loss: 0.0046
+Client 10 (EMNIST) | Target Loss: 0.1739 | G Loss: 10.9876 | D Loss: 0.0027
+Round 98 | Client 0 | Model: (MLP) | Acc: 96.72%
+Round 98 | Client 1 | Model: (CNN) | Acc: 99.04%
+Round 98 | Client 2 | Model: (ResNet8) | Acc: 98.86%
+Round 98 | Client 3 | Model: (ResNet18) | Acc: 99.37%
+Round 98 | Client 4 | Model: (MobileNetV2) | Acc: 98.84%
+Round 98 | Client 6 | Model: (MLP) | Acc: 78.33%
+Round 98 | Client 7 | Model: (CNN) | Acc: 83.75%
+Round 98 | Client 8 | Model: (ResNet8) | Acc: 84.21%
+Round 98 | Client 9 | Model: (ResNet18) | Acc: 84.37%
+Round 98 | Client 10 | Model: (MobileNetV2) | Acc: 84.85%
+Selected client ids: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]
+--- Round 99 ---
+Client 0 (MNIST) | Target Loss: 0.0000 | G Loss: 6.8264 | D Loss: 0.0226
+Client 1 (MNIST) | Target Loss: 0.0013 | G Loss: 5.9745 | D Loss: 0.0566
+Client 2 (MNIST) | Target Loss: 0.0092 | G Loss: 7.3081 | D Loss: 0.0172
+Client 3 (MNIST) | Target Loss: 0.0002 | G Loss: 8.1557 | D Loss: 0.0283
+Client 4 (MNIST) | Target Loss: 0.0064 | G Loss: 6.9798 | D Loss: 0.0091
+Client 6 (EMNIST) | Target Loss: 0.5521 | G Loss: 10.8075 | D Loss: 0.0040
+Client 7 (EMNIST) | Target Loss: 0.1622 | G Loss: 11.7765 | D Loss: 0.0032
+Client 8 (EMNIST) | Target Loss: 0.0095 | G Loss: 10.8419 | D Loss: 0.0041
+Client 9 (EMNIST) | Target Loss: 0.0071 | G Loss: 11.1460 | D Loss: 0.0042
+Client 10 (EMNIST) | Target Loss: 0.1759 | G Loss: 11.7870 | D Loss: 0.0025
+Round 99 | Client 0 | Model: (MLP) | Acc: 96.72%
+Round 99 | Client 1 | Model: (CNN) | Acc: 99.10%
+Round 99 | Client 2 | Model: (ResNet8) | Acc: 98.52%
+Round 99 | Client 3 | Model: (ResNet18) | Acc: 99.31%
+Round 99 | Client 4 | Model: (MobileNetV2) | Acc: 98.78%
+Round 99 | Client 6 | Model: (MLP) | Acc: 77.98%
+Round 99 | Client 7 | Model: (CNN) | Acc: 83.65%
+Round 99 | Client 8 | Model: (ResNet8) | Acc: 83.78%
+Round 99 | Client 9 | Model: (ResNet18) | Acc: 84.98%
+Round 99 | Client 10 | Model: (MobileNetV2) | Acc: 84.60%
+Selected client ids: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]
+--- Round 100 ---
+Client 0 (MNIST) | Target Loss: 0.0000 | G Loss: 7.3397 | D Loss: 0.0233
+Client 1 (MNIST) | Target Loss: 0.0009 | G Loss: 6.5089 | D Loss: 0.0085
+Client 2 (MNIST) | Target Loss: 0.0107 | G Loss: 7.5524 | D Loss: 0.0090
+Client 3 (MNIST) | Target Loss: 0.0001 | G Loss: 6.7903 | D Loss: 0.0084
+Client 4 (MNIST) | Target Loss: 0.0162 | G Loss: 8.0986 | D Loss: 0.0231
+Client 6 (EMNIST) | Target Loss: 0.5809 | G Loss: 11.3640 | D Loss: 0.0044
+Client 7 (EMNIST) | Target Loss: 0.1613 | G Loss: 11.5728 | D Loss: 0.0025
+Client 8 (EMNIST) | Target Loss: 0.0104 | G Loss: 10.7454 | D Loss: 0.0040
+Client 9 (EMNIST) | Target Loss: 0.0077 | G Loss: 11.7660 | D Loss: 0.0024
+Client 10 (EMNIST) | Target Loss: 0.1761 | G Loss: 11.7293 | D Loss: 0.0021
+Round 100 | Client 0 | Model: (MLP) | Acc: 96.66%
+Round 100 | Client 1 | Model: (CNN) | Acc: 99.10%
+Round 100 | Client 2 | Model: (ResNet8) | Acc: 98.46%
+Round 100 | Client 3 | Model: (ResNet18) | Acc: 99.37%
+Round 100 | Client 4 | Model: (MobileNetV2) | Acc: 98.32%
+Round 100 | Client 6 | Model: (MLP) | Acc: 78.64%
+Round 100 | Client 7 | Model: (CNN) | Acc: 83.63%
+Round 100 | Client 8 | Model: (ResNet8) | Acc: 84.44%
+Round 100 | Client 9 | Model: (ResNet18) | Acc: 84.13%
+Round 100 | Client 10 | Model: (MobileNetV2) | Acc: 85.06%
+Saving checkpoints ...
+[Server] Checkpoint saved to logs/2026-04-24_15-51-57/GeFL_local/server_checkpoints.pth
+[Server] All 10 clients saved in logs/2026-04-24_15-51-57/GeFL_local/clients_last_round_checkpoints/
+==============================    Finished. Total Time: 16:42:36    ==============================

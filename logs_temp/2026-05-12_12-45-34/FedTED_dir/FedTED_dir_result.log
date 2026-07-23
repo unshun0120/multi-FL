@@ -1,0 +1,1283 @@
+Time: 2026-05-12 12:45:34
+Log Dir: logs/2026-05-12_12-45-34/FedTED_dir
+================================================================================
+
+==============================        Args        ==============================
+  exp_timestamp: None
+  exp_conf: ./configs/het-iid-exp.yaml
+  device: cuda:1
+  seed: 15698
+  algorithm: FedTED_dir
+  num_new_clients: 1
+  num_train_mnist: 10
+  num_train_emnist: 10
+  num_train_fashionmnist: 10
+  num_train_cifar10: 0
+  num_train_cifar100: 0
+  num_train_usps: 0
+================================================================================
+==============================    Exp Configs     ==============================
+exp_name: model-heterogeneity
+heterogeneous: true
+dirichlet_alpha: 100
+global_rounds: 30
+local_epochs: 1
+local_loss_fn: CrossEntropyLoss
+local_optim: Adam
+local_lr: 0.001
+batch_size: 64
+sample_frac: 1.0
+test_interval: 1
+metric_type: accuracy
+global_feature_dim: 256
+optim: Adam
+optim_lr: 0.001
+global_gen_epochs: 10
+gen_noise_dim: 128
+gen_optim: Adam
+gen_optim_lr: 0.001
+global_feat_gen_epochs: 10
+feat_gen_noise_dim: 128
+feat_gen_optim: Adam
+feat_gen_optim_lr: 0.001
+feat_gen_div_beta: 1.0
+public_data_ratio: 0.05
+start_mapping_epoch: 1
+gen_observer_weight: 1.0
+index_matching: class_name
+aggregate_method: dataset_name
+use_new_entropy_method: true
+entropy_ratio: 0.85
+global_model_epochs: 5
+global_model_optim: Adam
+global_model_optim_lr: 0.0001
+global_samples_per_class: 64
+
+================================================================================
+
+==================================================
+Start 30 rounds training by FedTED_dir
+Selected client ids: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29]
+--- Round 1 ---
+Round 1 | Client 0 | Model: (MLP) | Acc: 84.73%
+Round 1 | Client 1 | Model: (CNN) | Acc: 67.88%
+Round 1 | Client 2 | Model: (ResNet8) | Acc: 91.62%
+Round 1 | Client 3 | Model: (ResNet18) | Acc: 88.69%
+Round 1 | Client 4 | Model: (MobileNetV2) | Acc: 74.63%
+Round 1 | Client 5 | Model: (MobileNetV3) | Acc: 47.38%
+Round 1 | Client 6 | Model: (LeNet) | Acc: 77.35%
+Round 1 | Client 7 | Model: (AlexNet) | Acc: 90.74%
+Round 1 | Client 8 | Model: (ShuffleNet) | Acc: 60.13%
+Round 1 | Client 9 | Model: (SqueezeNet) | Acc: 61.20%
+Round 1 | Client 11 | Model: (MLP) | Acc: 74.66%
+Round 1 | Client 12 | Model: (CNN) | Acc: 65.84%
+Round 1 | Client 13 | Model: (ResNet8) | Acc: 73.75%
+Round 1 | Client 14 | Model: (ResNet18) | Acc: 79.01%
+Round 1 | Client 15 | Model: (MobileNetV2) | Acc: 63.50%
+Round 1 | Client 16 | Model: (MobileNetV3) | Acc: 63.13%
+Round 1 | Client 17 | Model: (LeNet) | Acc: 63.21%
+Round 1 | Client 18 | Model: (AlexNet) | Acc: 70.57%
+Round 1 | Client 19 | Model: (ShuffleNet) | Acc: 64.41%
+Round 1 | Client 20 | Model: (SqueezeNet) | Acc: 53.40%
+Round 1 | Client 22 | Model: (MLP) | Acc: 31.44%
+Round 1 | Client 23 | Model: (CNN) | Acc: 22.02%
+Round 1 | Client 24 | Model: (ResNet8) | Acc: 36.21%
+Round 1 | Client 25 | Model: (ResNet18) | Acc: 40.40%
+Round 1 | Client 26 | Model: (MobileNetV2) | Acc: 42.82%
+Round 1 | Client 27 | Model: (MobileNetV3) | Acc: 10.48%
+Round 1 | Client 28 | Model: (LeNet) | Acc: 27.76%
+Round 1 | Client 29 | Model: (AlexNet) | Acc: 41.84%
+Round 1 | Client 30 | Model: (ShuffleNet) | Acc: 31.45%
+Round 1 | Client 31 | Model: (SqueezeNet) | Acc: 25.68%
+[Server] Aggregating by Dataset Name ...
+[Server] Performing Name-Based Label Mapping...
+[Server] Name-based mapping completed. Found 72 unique global classes.
+
+=========================================================================================================
+Global ID  | Class Name           | Mapped Datasets (Local ID)
+---------------------------------------------------------------------------------------------------------
+0          | 0                    | MNIST(0), EMNIST(0)
+1          | 1                    | MNIST(1), EMNIST(1)
+2          | 2                    | MNIST(2), EMNIST(2)
+3          | 3                    | MNIST(3), EMNIST(3)
+4          | 4                    | MNIST(4), EMNIST(4)
+5          | 5                    | MNIST(5), EMNIST(5)
+6          | 6                    | MNIST(6), EMNIST(6)
+7          | 7                    | MNIST(7), EMNIST(7)
+8          | 8                    | MNIST(8), EMNIST(8)
+9          | 9                    | MNIST(9), EMNIST(9)
+10         | A                    | EMNIST(10)
+11         | Ankle boot           | FashionMNIST(0)
+12         | B                    | EMNIST(11)
+13         | Bag                  | FashionMNIST(1)
+14         | C                    | EMNIST(12)
+15         | Coat                 | FashionMNIST(2)
+16         | D                    | EMNIST(13)
+17         | Dress                | FashionMNIST(3)
+18         | E                    | EMNIST(14)
+19         | F                    | EMNIST(15)
+20         | G                    | EMNIST(16)
+21         | H                    | EMNIST(17)
+22         | I                    | EMNIST(18)
+23         | J                    | EMNIST(19)
+24         | K                    | EMNIST(20)
+25         | L                    | EMNIST(21)
+26         | M                    | EMNIST(22)
+27         | N                    | EMNIST(23)
+28         | O                    | EMNIST(24)
+29         | P                    | EMNIST(25)
+30         | Pullover             | FashionMNIST(4)
+31         | Q                    | EMNIST(26)
+32         | R                    | EMNIST(27)
+33         | S                    | EMNIST(28)
+34         | Sandal               | FashionMNIST(5)
+35         | Shirt                | FashionMNIST(6)
+36         | Sneaker              | FashionMNIST(7)
+37         | T                    | EMNIST(29)
+38         | T-shirt/top          | FashionMNIST(8)
+39         | Trouser              | FashionMNIST(9)
+40         | U                    | EMNIST(30)
+41         | V                    | EMNIST(31)
+42         | W                    | EMNIST(32)
+43         | X                    | EMNIST(33)
+44         | Y                    | EMNIST(34)
+45         | Z                    | EMNIST(35)
+46         | a                    | EMNIST(36)
+47         | b                    | EMNIST(37)
+48         | c                    | EMNIST(38)
+49         | d                    | EMNIST(39)
+50         | e                    | EMNIST(40)
+51         | f                    | EMNIST(41)
+52         | g                    | EMNIST(42)
+53         | h                    | EMNIST(43)
+54         | i                    | EMNIST(44)
+55         | j                    | EMNIST(45)
+56         | k                    | EMNIST(46)
+57         | l                    | EMNIST(47)
+58         | m                    | EMNIST(48)
+59         | n                    | EMNIST(49)
+60         | o                    | EMNIST(50)
+61         | p                    | EMNIST(51)
+62         | q                    | EMNIST(52)
+63         | r                    | EMNIST(53)
+64         | s                    | EMNIST(54)
+65         | t                    | EMNIST(55)
+66         | u                    | EMNIST(56)
+67         | v                    | EMNIST(57)
+68         | w                    | EMNIST(58)
+69         | x                    | EMNIST(59)
+70         | y                    | EMNIST(60)
+71         | z                    | EMNIST(61)
+=========================================================================================================
+
+[Server] Training Feature-Based Global Generator...
+Initializing Global Inference Model with 72 classes...
+[Server] Global Inference Model Acc (MNIST) (Round 1): 97.64% (Tested on 9095 samples)
+[Server] Global Inference Model Acc (FashionMNIST) (Round 1): 75.85% (Tested on 9100 samples)
+[Server] Global Inference Model Acc (EMNIST) (Round 1): 78.34% (Tested on 105779 samples)
+[Server] Global Inference Model Acc (Mix) (Round 1): 79.58% (Tested on 123974 samples)
+Selected client ids: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29]
+--- Round 2 ---
+Round 2 | Client 0 | Model: (MLP) | Acc: 88.22%
+Round 2 | Client 1 | Model: (CNN) | Acc: 80.73%
+Round 2 | Client 2 | Model: (ResNet8) | Acc: 92.30%
+Round 2 | Client 3 | Model: (ResNet18) | Acc: 82.58%
+Round 2 | Client 4 | Model: (MobileNetV2) | Acc: 10.49%
+Round 2 | Client 5 | Model: (MobileNetV3) | Acc: 53.40%
+Round 2 | Client 6 | Model: (LeNet) | Acc: 86.00%
+Round 2 | Client 7 | Model: (AlexNet) | Acc: 83.58%
+Round 2 | Client 8 | Model: (ShuffleNet) | Acc: 24.28%
+Round 2 | Client 9 | Model: (SqueezeNet) | Acc: 36.17%
+Round 2 | Client 11 | Model: (MLP) | Acc: 75.46%
+Round 2 | Client 12 | Model: (CNN) | Acc: 73.30%
+Round 2 | Client 13 | Model: (ResNet8) | Acc: 73.43%
+Round 2 | Client 14 | Model: (ResNet18) | Acc: 72.15%
+Round 2 | Client 15 | Model: (MobileNetV2) | Acc: 67.01%
+Round 2 | Client 16 | Model: (MobileNetV3) | Acc: 65.81%
+Round 2 | Client 17 | Model: (LeNet) | Acc: 66.89%
+Round 2 | Client 18 | Model: (AlexNet) | Acc: 69.56%
+Round 2 | Client 19 | Model: (ShuffleNet) | Acc: 25.99%
+Round 2 | Client 20 | Model: (SqueezeNet) | Acc: 59.79%
+Round 2 | Client 22 | Model: (MLP) | Acc: 37.02%
+Round 2 | Client 23 | Model: (CNN) | Acc: 30.21%
+Round 2 | Client 24 | Model: (ResNet8) | Acc: 44.00%
+Round 2 | Client 25 | Model: (ResNet18) | Acc: 47.72%
+Round 2 | Client 26 | Model: (MobileNetV2) | Acc: 37.11%
+Round 2 | Client 27 | Model: (MobileNetV3) | Acc: 12.53%
+Round 2 | Client 28 | Model: (LeNet) | Acc: 35.17%
+Round 2 | Client 29 | Model: (AlexNet) | Acc: 49.26%
+Round 2 | Client 30 | Model: (ShuffleNet) | Acc: 37.89%
+Round 2 | Client 31 | Model: (SqueezeNet) | Acc: 33.91%
+[Server] Aggregating by Dataset Name ...
+[Server] Training Feature-Based Global Generator...
+[Server] Global Inference Model Acc (MNIST) (Round 2): 98.15% (Tested on 9095 samples)
+[Server] Global Inference Model Acc (FashionMNIST) (Round 2): 81.45% (Tested on 9100 samples)
+[Server] Global Inference Model Acc (EMNIST) (Round 2): 77.37% (Tested on 105779 samples)
+[Server] Global Inference Model Acc (Mix) (Round 2): 79.19% (Tested on 123974 samples)
+Selected client ids: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29]
+--- Round 3 ---
+Round 3 | Client 0 | Model: (MLP) | Acc: 50.05%
+Round 3 | Client 1 | Model: (CNN) | Acc: 91.58%
+Round 3 | Client 2 | Model: (ResNet8) | Acc: 89.92%
+Round 3 | Client 3 | Model: (ResNet18) | Acc: 84.84%
+Round 3 | Client 4 | Model: (MobileNetV2) | Acc: 10.49%
+Round 3 | Client 5 | Model: (MobileNetV3) | Acc: 55.30%
+Round 3 | Client 6 | Model: (LeNet) | Acc: 91.14%
+Round 3 | Client 7 | Model: (AlexNet) | Acc: 75.37%
+Round 3 | Client 8 | Model: (ShuffleNet) | Acc: 26.28%
+Round 3 | Client 9 | Model: (SqueezeNet) | Acc: 21.75%
+Round 3 | Client 11 | Model: (MLP) | Acc: 73.63%
+Round 3 | Client 12 | Model: (CNN) | Acc: 73.08%
+Round 3 | Client 13 | Model: (ResNet8) | Acc: 73.32%
+Round 3 | Client 14 | Model: (ResNet18) | Acc: 49.39%
+Round 3 | Client 15 | Model: (MobileNetV2) | Acc: 13.45%
+Round 3 | Client 16 | Model: (MobileNetV3) | Acc: 65.70%
+Round 3 | Client 17 | Model: (LeNet) | Acc: 71.13%
+Round 3 | Client 18 | Model: (AlexNet) | Acc: 71.14%
+Round 3 | Client 19 | Model: (ShuffleNet) | Acc: 68.02%
+Round 3 | Client 20 | Model: (SqueezeNet) | Acc: 38.45%
+Round 3 | Client 22 | Model: (MLP) | Acc: 5.47%
+Round 3 | Client 23 | Model: (CNN) | Acc: 32.85%
+Round 3 | Client 24 | Model: (ResNet8) | Acc: 42.13%
+Round 3 | Client 25 | Model: (ResNet18) | Acc: 6.49%
+Round 3 | Client 26 | Model: (MobileNetV2) | Acc: 23.40%
+Round 3 | Client 27 | Model: (MobileNetV3) | Acc: 13.67%
+Round 3 | Client 28 | Model: (LeNet) | Acc: 5.93%
+Round 3 | Client 29 | Model: (AlexNet) | Acc: 42.88%
+Round 3 | Client 30 | Model: (ShuffleNet) | Acc: 5.23%
+Round 3 | Client 31 | Model: (SqueezeNet) | Acc: 16.47%
+[Server] Aggregating by Dataset Name ...
+[Server] Training Feature-Based Global Generator...
+[Server] Global Inference Model Acc (MNIST) (Round 3): 98.00% (Tested on 9095 samples)
+[Server] Global Inference Model Acc (FashionMNIST) (Round 3): 82.86% (Tested on 9100 samples)
+[Server] Global Inference Model Acc (EMNIST) (Round 3): 74.37% (Tested on 105779 samples)
+[Server] Global Inference Model Acc (Mix) (Round 3): 76.72% (Tested on 123974 samples)
+Selected client ids: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29]
+--- Round 4 ---
+Round 4 | Client 0 | Model: (MLP) | Acc: 81.24%
+Round 4 | Client 1 | Model: (CNN) | Acc: 91.92%
+Round 4 | Client 2 | Model: (ResNet8) | Acc: 90.26%
+Round 4 | Client 3 | Model: (ResNet18) | Acc: 82.13%
+Round 4 | Client 4 | Model: (MobileNetV2) | Acc: 11.67%
+Round 4 | Client 5 | Model: (MobileNetV3) | Acc: 58.75%
+Round 4 | Client 6 | Model: (LeNet) | Acc: 92.89%
+Round 4 | Client 7 | Model: (AlexNet) | Acc: 87.68%
+Round 4 | Client 8 | Model: (ShuffleNet) | Acc: 10.36%
+Round 4 | Client 9 | Model: (SqueezeNet) | Acc: 41.75%
+Round 4 | Client 11 | Model: (MLP) | Acc: 75.23%
+Round 4 | Client 12 | Model: (CNN) | Acc: 73.95%
+Round 4 | Client 13 | Model: (ResNet8) | Acc: 74.28%
+Round 4 | Client 14 | Model: (ResNet18) | Acc: 73.15%
+Round 4 | Client 15 | Model: (MobileNetV2) | Acc: 13.45%
+Round 4 | Client 16 | Model: (MobileNetV3) | Acc: 69.88%
+Round 4 | Client 17 | Model: (LeNet) | Acc: 71.01%
+Round 4 | Client 18 | Model: (AlexNet) | Acc: 10.71%
+Round 4 | Client 19 | Model: (ShuffleNet) | Acc: 66.44%
+Round 4 | Client 20 | Model: (SqueezeNet) | Acc: 28.45%
+Round 4 | Client 22 | Model: (MLP) | Acc: 5.47%
+Round 4 | Client 23 | Model: (CNN) | Acc: 37.30%
+Round 4 | Client 24 | Model: (ResNet8) | Acc: 42.48%
+Round 4 | Client 25 | Model: (ResNet18) | Acc: 6.49%
+Round 4 | Client 26 | Model: (MobileNetV2) | Acc: 37.20%
+Round 4 | Client 27 | Model: (MobileNetV3) | Acc: 19.15%
+Round 4 | Client 28 | Model: (LeNet) | Acc: 5.93%
+Round 4 | Client 29 | Model: (AlexNet) | Acc: 36.12%
+Round 4 | Client 30 | Model: (ShuffleNet) | Acc: 5.23%
+Round 4 | Client 31 | Model: (SqueezeNet) | Acc: 22.38%
+[Server] Aggregating by Dataset Name ...
+[Server] Training Feature-Based Global Generator...
+[Server] Global Inference Model Acc (MNIST) (Round 4): 98.83% (Tested on 9095 samples)
+[Server] Global Inference Model Acc (FashionMNIST) (Round 4): 83.27% (Tested on 9100 samples)
+[Server] Global Inference Model Acc (EMNIST) (Round 4): 78.20% (Tested on 105779 samples)
+[Server] Global Inference Model Acc (Mix) (Round 4): 80.09% (Tested on 123974 samples)
+Selected client ids: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29]
+--- Round 5 ---
+Round 5 | Client 0 | Model: (MLP) | Acc: 83.97%
+Round 5 | Client 1 | Model: (CNN) | Acc: 90.81%
+Round 5 | Client 2 | Model: (ResNet8) | Acc: 90.94%
+Round 5 | Client 3 | Model: (ResNet18) | Acc: 67.87%
+Round 5 | Client 4 | Model: (MobileNetV2) | Acc: 11.67%
+Round 5 | Client 5 | Model: (MobileNetV3) | Acc: 62.65%
+Round 5 | Client 6 | Model: (LeNet) | Acc: 93.22%
+Round 5 | Client 7 | Model: (AlexNet) | Acc: 11.05%
+Round 5 | Client 8 | Model: (ShuffleNet) | Acc: 25.95%
+Round 5 | Client 9 | Model: (SqueezeNet) | Acc: 30.05%
+Round 5 | Client 11 | Model: (MLP) | Acc: 69.75%
+Round 5 | Client 12 | Model: (CNN) | Acc: 74.49%
+Round 5 | Client 13 | Model: (ResNet8) | Acc: 72.15%
+Round 5 | Client 14 | Model: (ResNet18) | Acc: 70.50%
+Round 5 | Client 15 | Model: (MobileNetV2) | Acc: 23.62%
+Round 5 | Client 16 | Model: (MobileNetV3) | Acc: 69.88%
+Round 5 | Client 17 | Model: (LeNet) | Acc: 73.24%
+Round 5 | Client 18 | Model: (AlexNet) | Acc: 10.71%
+Round 5 | Client 19 | Model: (ShuffleNet) | Acc: 62.37%
+Round 5 | Client 20 | Model: (SqueezeNet) | Acc: 39.48%
+Round 5 | Client 22 | Model: (MLP) | Acc: 5.47%
+Round 5 | Client 23 | Model: (CNN) | Acc: 37.53%
+Round 5 | Client 24 | Model: (ResNet8) | Acc: 47.27%
+Round 5 | Client 25 | Model: (ResNet18) | Acc: 6.49%
+Round 5 | Client 26 | Model: (MobileNetV2) | Acc: 32.92%
+Round 5 | Client 27 | Model: (MobileNetV3) | Acc: 23.15%
+Round 5 | Client 28 | Model: (LeNet) | Acc: 5.93%
+Round 5 | Client 29 | Model: (AlexNet) | Acc: 29.89%
+Round 5 | Client 30 | Model: (ShuffleNet) | Acc: 5.23%
+Round 5 | Client 31 | Model: (SqueezeNet) | Acc: 19.97%
+[Server] Aggregating by Dataset Name ...
+[Server] Training Feature-Based Global Generator...
+[Server] Global Inference Model Acc (MNIST) (Round 5): 98.56% (Tested on 9095 samples)
+[Server] Global Inference Model Acc (FashionMNIST) (Round 5): 84.58% (Tested on 9100 samples)
+[Server] Global Inference Model Acc (EMNIST) (Round 5): 78.78% (Tested on 105779 samples)
+[Server] Global Inference Model Acc (Mix) (Round 5): 80.65% (Tested on 123974 samples)
+Selected client ids: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29]
+--- Round 6 ---
+Round 6 | Client 0 | Model: (MLP) | Acc: 83.75%
+Round 6 | Client 1 | Model: (CNN) | Acc: 92.36%
+Round 6 | Client 2 | Model: (ResNet8) | Acc: 92.75%
+Round 6 | Client 3 | Model: (ResNet18) | Acc: 64.37%
+Round 6 | Client 4 | Model: (MobileNetV2) | Acc: 11.67%
+Round 6 | Client 5 | Model: (MobileNetV3) | Acc: 66.11%
+Round 6 | Client 6 | Model: (LeNet) | Acc: 94.31%
+Round 6 | Client 7 | Model: (AlexNet) | Acc: 11.05%
+Round 6 | Client 8 | Model: (ShuffleNet) | Acc: 30.07%
+Round 6 | Client 9 | Model: (SqueezeNet) | Acc: 11.04%
+Round 6 | Client 11 | Model: (MLP) | Acc: 10.05%
+Round 6 | Client 12 | Model: (CNN) | Acc: 77.08%
+Round 6 | Client 13 | Model: (ResNet8) | Acc: 74.49%
+Round 6 | Client 14 | Model: (ResNet18) | Acc: 66.19%
+Round 6 | Client 15 | Model: (MobileNetV2) | Acc: 58.31%
+Round 6 | Client 16 | Model: (MobileNetV3) | Acc: 72.13%
+Round 6 | Client 17 | Model: (LeNet) | Acc: 62.99%
+Round 6 | Client 18 | Model: (AlexNet) | Acc: 10.71%
+Round 6 | Client 19 | Model: (ShuffleNet) | Acc: 71.75%
+Round 6 | Client 20 | Model: (SqueezeNet) | Acc: 20.21%
+Round 6 | Client 22 | Model: (MLP) | Acc: 5.47%
+Round 6 | Client 23 | Model: (CNN) | Acc: 40.65%
+Round 6 | Client 24 | Model: (ResNet8) | Acc: 49.56%
+Round 6 | Client 25 | Model: (ResNet18) | Acc: 6.49%
+Round 6 | Client 26 | Model: (MobileNetV2) | Acc: 30.47%
+Round 6 | Client 27 | Model: (MobileNetV3) | Acc: 23.79%
+Round 6 | Client 28 | Model: (LeNet) | Acc: 5.93%
+Round 6 | Client 29 | Model: (AlexNet) | Acc: 46.06%
+Round 6 | Client 30 | Model: (ShuffleNet) | Acc: 5.23%
+Round 6 | Client 31 | Model: (SqueezeNet) | Acc: 20.76%
+[Server] Aggregating by Dataset Name ...
+[Server] Training Feature-Based Global Generator...
+[Server] Global Inference Model Acc (MNIST) (Round 6): 98.77% (Tested on 9095 samples)
+[Server] Global Inference Model Acc (FashionMNIST) (Round 6): 85.53% (Tested on 9100 samples)
+[Server] Global Inference Model Acc (EMNIST) (Round 6): 77.24% (Tested on 105779 samples)
+[Server] Global Inference Model Acc (Mix) (Round 6): 79.43% (Tested on 123974 samples)
+Selected client ids: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29]
+--- Round 7 ---
+Round 7 | Client 0 | Model: (MLP) | Acc: 88.33%
+Round 7 | Client 1 | Model: (CNN) | Acc: 93.91%
+Round 7 | Client 2 | Model: (ResNet8) | Acc: 93.32%
+Round 7 | Client 3 | Model: (ResNet18) | Acc: 86.76%
+Round 7 | Client 4 | Model: (MobileNetV2) | Acc: 11.67%
+Round 7 | Client 5 | Model: (MobileNetV3) | Acc: 69.01%
+Round 7 | Client 6 | Model: (LeNet) | Acc: 91.79%
+Round 7 | Client 7 | Model: (AlexNet) | Acc: 11.05%
+Round 7 | Client 8 | Model: (ShuffleNet) | Acc: 34.19%
+Round 7 | Client 9 | Model: (SqueezeNet) | Acc: 21.75%
+Round 7 | Client 11 | Model: (MLP) | Acc: 10.05%
+Round 7 | Client 12 | Model: (CNN) | Acc: 74.92%
+Round 7 | Client 13 | Model: (ResNet8) | Acc: 75.24%
+Round 7 | Client 14 | Model: (ResNet18) | Acc: 71.60%
+Round 7 | Client 15 | Model: (MobileNetV2) | Acc: 36.38%
+Round 7 | Client 16 | Model: (MobileNetV3) | Acc: 72.56%
+Round 7 | Client 17 | Model: (LeNet) | Acc: 74.69%
+Round 7 | Client 18 | Model: (AlexNet) | Acc: 11.05%
+Round 7 | Client 19 | Model: (ShuffleNet) | Acc: 71.64%
+Round 7 | Client 20 | Model: (SqueezeNet) | Acc: 43.30%
+Round 7 | Client 22 | Model: (MLP) | Acc: 5.47%
+Round 7 | Client 23 | Model: (CNN) | Acc: 44.23%
+Round 7 | Client 24 | Model: (ResNet8) | Acc: 50.86%
+Round 7 | Client 25 | Model: (ResNet18) | Acc: 6.49%
+Round 7 | Client 26 | Model: (MobileNetV2) | Acc: 5.29%
+Round 7 | Client 27 | Model: (MobileNetV3) | Acc: 25.48%
+Round 7 | Client 28 | Model: (LeNet) | Acc: 5.93%
+Round 7 | Client 29 | Model: (AlexNet) | Acc: 5.41%
+Round 7 | Client 30 | Model: (ShuffleNet) | Acc: 5.23%
+Round 7 | Client 31 | Model: (SqueezeNet) | Acc: 12.03%
+[Server] Aggregating by Dataset Name ...
+[Server] Training Feature-Based Global Generator...
+[Server] Global Inference Model Acc (MNIST) (Round 7): 98.88% (Tested on 9095 samples)
+[Server] Global Inference Model Acc (FashionMNIST) (Round 7): 86.54% (Tested on 9100 samples)
+[Server] Global Inference Model Acc (EMNIST) (Round 7): 80.17% (Tested on 105779 samples)
+[Server] Global Inference Model Acc (Mix) (Round 7): 82.01% (Tested on 123974 samples)
+Selected client ids: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29]
+--- Round 8 ---
+Round 8 | Client 0 | Model: (MLP) | Acc: 69.47%
+Round 8 | Client 1 | Model: (CNN) | Acc: 94.35%
+Round 8 | Client 2 | Model: (ResNet8) | Acc: 93.54%
+Round 8 | Client 3 | Model: (ResNet18) | Acc: 44.57%
+Round 8 | Client 4 | Model: (MobileNetV2) | Acc: 11.67%
+Round 8 | Client 5 | Model: (MobileNetV3) | Acc: 73.36%
+Round 8 | Client 6 | Model: (LeNet) | Acc: 93.87%
+Round 8 | Client 7 | Model: (AlexNet) | Acc: 11.05%
+Round 8 | Client 8 | Model: (ShuffleNet) | Acc: 47.88%
+Round 8 | Client 9 | Model: (SqueezeNet) | Acc: 36.83%
+Round 8 | Client 11 | Model: (MLP) | Acc: 10.05%
+Round 8 | Client 12 | Model: (CNN) | Acc: 75.78%
+Round 8 | Client 13 | Model: (ResNet8) | Acc: 74.49%
+Round 8 | Client 14 | Model: (ResNet18) | Acc: 68.51%
+Round 8 | Client 15 | Model: (MobileNetV2) | Acc: 53.33%
+Round 8 | Client 16 | Model: (MobileNetV3) | Acc: 73.63%
+Round 8 | Client 17 | Model: (LeNet) | Acc: 70.68%
+Round 8 | Client 18 | Model: (AlexNet) | Acc: 11.05%
+Round 8 | Client 19 | Model: (ShuffleNet) | Acc: 74.58%
+Round 8 | Client 20 | Model: (SqueezeNet) | Acc: 54.43%
+Round 8 | Client 22 | Model: (MLP) | Acc: 5.47%
+Round 8 | Client 23 | Model: (CNN) | Acc: 44.29%
+Round 8 | Client 24 | Model: (ResNet8) | Acc: 51.21%
+Round 8 | Client 25 | Model: (ResNet18) | Acc: 6.49%
+Round 8 | Client 26 | Model: (MobileNetV2) | Acc: 5.07%
+Round 8 | Client 27 | Model: (MobileNetV3) | Acc: 27.97%
+Round 8 | Client 28 | Model: (LeNet) | Acc: 5.93%
+Round 8 | Client 29 | Model: (AlexNet) | Acc: 5.41%
+Round 8 | Client 30 | Model: (ShuffleNet) | Acc: 38.30%
+Round 8 | Client 31 | Model: (SqueezeNet) | Acc: 22.59%
+[Server] Aggregating by Dataset Name ...
+[Server] Training Feature-Based Global Generator...
+[Server] Global Inference Model Acc (MNIST) (Round 8): 98.26% (Tested on 9095 samples)
+[Server] Global Inference Model Acc (FashionMNIST) (Round 8): 84.05% (Tested on 9100 samples)
+[Server] Global Inference Model Acc (EMNIST) (Round 8): 79.79% (Tested on 105779 samples)
+[Server] Global Inference Model Acc (Mix) (Round 8): 81.46% (Tested on 123974 samples)
+Selected client ids: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29]
+--- Round 9 ---
+Round 9 | Client 0 | Model: (MLP) | Acc: 25.74%
+Round 9 | Client 1 | Model: (CNN) | Acc: 95.13%
+Round 9 | Client 2 | Model: (ResNet8) | Acc: 91.62%
+Round 9 | Client 3 | Model: (ResNet18) | Acc: 84.84%
+Round 9 | Client 4 | Model: (MobileNetV2) | Acc: 11.67%
+Round 9 | Client 5 | Model: (MobileNetV3) | Acc: 74.36%
+Round 9 | Client 6 | Model: (LeNet) | Acc: 95.19%
+Round 9 | Client 7 | Model: (AlexNet) | Acc: 12.63%
+Round 9 | Client 8 | Model: (ShuffleNet) | Acc: 53.12%
+Round 9 | Client 9 | Model: (SqueezeNet) | Acc: 35.08%
+Round 9 | Client 11 | Model: (MLP) | Acc: 10.62%
+Round 9 | Client 12 | Model: (CNN) | Acc: 76.86%
+Round 9 | Client 13 | Model: (ResNet8) | Acc: 74.39%
+Round 9 | Client 14 | Model: (ResNet18) | Acc: 70.50%
+Round 9 | Client 15 | Model: (MobileNetV2) | Acc: 56.16%
+Round 9 | Client 16 | Model: (MobileNetV3) | Acc: 74.92%
+Round 9 | Client 17 | Model: (LeNet) | Acc: 73.24%
+Round 9 | Client 18 | Model: (AlexNet) | Acc: 11.05%
+Round 9 | Client 19 | Model: (ShuffleNet) | Acc: 76.95%
+Round 9 | Client 20 | Model: (SqueezeNet) | Acc: 13.61%
+Round 9 | Client 22 | Model: (MLP) | Acc: 5.86%
+Round 9 | Client 23 | Model: (CNN) | Acc: 46.01%
+Round 9 | Client 24 | Model: (ResNet8) | Acc: 51.52%
+Round 9 | Client 25 | Model: (ResNet18) | Acc: 6.49%
+Round 9 | Client 26 | Model: (MobileNetV2) | Acc: 5.07%
+Round 9 | Client 27 | Model: (MobileNetV3) | Acc: 29.04%
+Round 9 | Client 28 | Model: (LeNet) | Acc: 5.93%
+Round 9 | Client 29 | Model: (AlexNet) | Acc: 3.93%
+Round 9 | Client 30 | Model: (ShuffleNet) | Acc: 16.06%
+Round 9 | Client 31 | Model: (SqueezeNet) | Acc: 4.72%
+[Server] Aggregating by Dataset Name ...
+[Server] Training Feature-Based Global Generator...
+[Server] Global Inference Model Acc (MNIST) (Round 9): 98.52% (Tested on 9095 samples)
+[Server] Global Inference Model Acc (FashionMNIST) (Round 9): 87.59% (Tested on 9100 samples)
+[Server] Global Inference Model Acc (EMNIST) (Round 9): 81.43% (Tested on 105779 samples)
+[Server] Global Inference Model Acc (Mix) (Round 9): 83.13% (Tested on 123974 samples)
+Selected client ids: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29]
+--- Round 10 ---
+Round 10 | Client 0 | Model: (MLP) | Acc: 10.14%
+Round 10 | Client 1 | Model: (CNN) | Acc: 94.46%
+Round 10 | Client 2 | Model: (ResNet8) | Acc: 93.88%
+Round 10 | Client 3 | Model: (ResNet18) | Acc: 86.65%
+Round 10 | Client 4 | Model: (MobileNetV2) | Acc: 11.67%
+Round 10 | Client 5 | Model: (MobileNetV3) | Acc: 78.71%
+Round 10 | Client 6 | Model: (LeNet) | Acc: 93.44%
+Round 10 | Client 7 | Model: (AlexNet) | Acc: 12.63%
+Round 10 | Client 8 | Model: (ShuffleNet) | Acc: 56.46%
+Round 10 | Client 9 | Model: (SqueezeNet) | Acc: 30.93%
+Round 10 | Client 11 | Model: (MLP) | Acc: 10.62%
+Round 10 | Client 12 | Model: (CNN) | Acc: 77.41%
+Round 10 | Client 13 | Model: (ResNet8) | Acc: 74.81%
+Round 10 | Client 14 | Model: (ResNet18) | Acc: 69.39%
+Round 10 | Client 15 | Model: (MobileNetV2) | Acc: 54.46%
+Round 10 | Client 16 | Model: (MobileNetV3) | Acc: 75.67%
+Round 10 | Client 17 | Model: (LeNet) | Acc: 74.80%
+Round 10 | Client 18 | Model: (AlexNet) | Acc: 11.05%
+Round 10 | Client 19 | Model: (ShuffleNet) | Acc: 77.97%
+Round 10 | Client 20 | Model: (SqueezeNet) | Acc: 37.53%
+Round 10 | Client 22 | Model: (MLP) | Acc: 5.86%
+Round 10 | Client 23 | Model: (CNN) | Acc: 47.03%
+Round 10 | Client 24 | Model: (ResNet8) | Acc: 51.65%
+Round 10 | Client 25 | Model: (ResNet18) | Acc: 6.49%
+Round 10 | Client 26 | Model: (MobileNetV2) | Acc: 5.07%
+Round 10 | Client 27 | Model: (MobileNetV3) | Acc: 30.46%
+Round 10 | Client 28 | Model: (LeNet) | Acc: 5.93%
+Round 10 | Client 29 | Model: (AlexNet) | Acc: 3.27%
+Round 10 | Client 30 | Model: (ShuffleNet) | Acc: 37.63%
+Round 10 | Client 31 | Model: (SqueezeNet) | Acc: 4.72%
+[Server] Aggregating by Dataset Name ...
+[Server] Training Feature-Based Global Generator...
+[Server] Global Inference Model Acc (MNIST) (Round 10): 97.59% (Tested on 9095 samples)
+[Server] Global Inference Model Acc (FashionMNIST) (Round 10): 87.05% (Tested on 9100 samples)
+[Server] Global Inference Model Acc (EMNIST) (Round 10): 80.16% (Tested on 105779 samples)
+[Server] Global Inference Model Acc (Mix) (Round 10): 81.94% (Tested on 123974 samples)
+Selected client ids: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29]
+--- Round 11 ---
+Round 11 | Client 0 | Model: (MLP) | Acc: 10.14%
+Round 11 | Client 1 | Model: (CNN) | Acc: 95.24%
+Round 11 | Client 2 | Model: (ResNet8) | Acc: 94.00%
+Round 11 | Client 3 | Model: (ResNet18) | Acc: 93.33%
+Round 11 | Client 4 | Model: (MobileNetV2) | Acc: 11.67%
+Round 11 | Client 5 | Model: (MobileNetV3) | Acc: 79.82%
+Round 11 | Client 6 | Model: (LeNet) | Acc: 93.54%
+Round 11 | Client 7 | Model: (AlexNet) | Acc: 12.63%
+Round 11 | Client 8 | Model: (ShuffleNet) | Acc: 34.86%
+Round 11 | Client 9 | Model: (SqueezeNet) | Acc: 42.95%
+Round 11 | Client 11 | Model: (MLP) | Acc: 10.62%
+Round 11 | Client 12 | Model: (CNN) | Acc: 77.30%
+Round 11 | Client 13 | Model: (ResNet8) | Acc: 75.35%
+Round 11 | Client 14 | Model: (ResNet18) | Acc: 74.25%
+Round 11 | Client 15 | Model: (MobileNetV2) | Acc: 56.27%
+Round 11 | Client 16 | Model: (MobileNetV3) | Acc: 76.10%
+Round 11 | Client 17 | Model: (LeNet) | Acc: 73.69%
+Round 11 | Client 18 | Model: (AlexNet) | Acc: 11.05%
+Round 11 | Client 19 | Model: (ShuffleNet) | Acc: 80.23%
+Round 11 | Client 20 | Model: (SqueezeNet) | Acc: 47.84%
+Round 11 | Client 22 | Model: (MLP) | Acc: 5.86%
+Round 11 | Client 23 | Model: (CNN) | Acc: 47.98%
+Round 11 | Client 24 | Model: (ResNet8) | Acc: 53.41%
+Round 11 | Client 25 | Model: (ResNet18) | Acc: 6.49%
+Round 11 | Client 26 | Model: (MobileNetV2) | Acc: 5.07%
+Round 11 | Client 27 | Model: (MobileNetV3) | Acc: 32.61%
+Round 11 | Client 28 | Model: (LeNet) | Acc: 5.93%
+Round 11 | Client 29 | Model: (AlexNet) | Acc: 3.27%
+Round 11 | Client 30 | Model: (ShuffleNet) | Acc: 35.99%
+Round 11 | Client 31 | Model: (SqueezeNet) | Acc: 4.72%
+[Server] Aggregating by Dataset Name ...
+[Server] Training Feature-Based Global Generator...
+[Server] Global Inference Model Acc (MNIST) (Round 11): 98.74% (Tested on 9095 samples)
+[Server] Global Inference Model Acc (FashionMNIST) (Round 11): 87.45% (Tested on 9100 samples)
+[Server] Global Inference Model Acc (EMNIST) (Round 11): 79.35% (Tested on 105779 samples)
+[Server] Global Inference Model Acc (Mix) (Round 11): 81.37% (Tested on 123974 samples)
+Selected client ids: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29]
+--- Round 12 ---
+Round 12 | Client 0 | Model: (MLP) | Acc: 10.14%
+Round 12 | Client 1 | Model: (CNN) | Acc: 95.79%
+Round 12 | Client 2 | Model: (ResNet8) | Acc: 94.45%
+Round 12 | Client 3 | Model: (ResNet18) | Acc: 92.31%
+Round 12 | Client 4 | Model: (MobileNetV2) | Acc: 11.67%
+Round 12 | Client 5 | Model: (MobileNetV3) | Acc: 81.72%
+Round 12 | Client 6 | Model: (LeNet) | Acc: 94.64%
+Round 12 | Client 7 | Model: (AlexNet) | Acc: 12.63%
+Round 12 | Client 8 | Model: (ShuffleNet) | Acc: 47.55%
+Round 12 | Client 9 | Model: (SqueezeNet) | Acc: 18.91%
+Round 12 | Client 11 | Model: (MLP) | Acc: 10.62%
+Round 12 | Client 12 | Model: (CNN) | Acc: 77.73%
+Round 12 | Client 13 | Model: (ResNet8) | Acc: 75.77%
+Round 12 | Client 14 | Model: (ResNet18) | Acc: 54.81%
+Round 12 | Client 15 | Model: (MobileNetV2) | Acc: 54.69%
+Round 12 | Client 16 | Model: (MobileNetV3) | Acc: 76.96%
+Round 12 | Client 17 | Model: (LeNet) | Acc: 74.80%
+Round 12 | Client 18 | Model: (AlexNet) | Acc: 11.05%
+Round 12 | Client 19 | Model: (ShuffleNet) | Acc: 79.66%
+Round 12 | Client 20 | Model: (SqueezeNet) | Acc: 34.23%
+Round 12 | Client 22 | Model: (MLP) | Acc: 5.86%
+Round 12 | Client 23 | Model: (CNN) | Acc: 46.64%
+Round 12 | Client 24 | Model: (ResNet8) | Acc: 55.27%
+Round 12 | Client 25 | Model: (ResNet18) | Acc: 6.49%
+Round 12 | Client 26 | Model: (MobileNetV2) | Acc: 5.07%
+Round 12 | Client 27 | Model: (MobileNetV3) | Acc: 33.64%
+Round 12 | Client 28 | Model: (LeNet) | Acc: 5.93%
+Round 12 | Client 29 | Model: (AlexNet) | Acc: 2.72%
+Round 12 | Client 30 | Model: (ShuffleNet) | Acc: 42.56%
+Round 12 | Client 31 | Model: (SqueezeNet) | Acc: 4.72%
+[Server] Aggregating by Dataset Name ...
+[Server] Training Feature-Based Global Generator...
+[Server] Global Inference Model Acc (MNIST) (Round 12): 98.94% (Tested on 9095 samples)
+[Server] Global Inference Model Acc (FashionMNIST) (Round 12): 87.64% (Tested on 9100 samples)
+[Server] Global Inference Model Acc (EMNIST) (Round 12): 78.46% (Tested on 105779 samples)
+[Server] Global Inference Model Acc (Mix) (Round 12): 80.63% (Tested on 123974 samples)
+Selected client ids: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29]
+--- Round 13 ---
+Round 13 | Client 0 | Model: (MLP) | Acc: 11.34%
+Round 13 | Client 1 | Model: (CNN) | Acc: 95.24%
+Round 13 | Client 2 | Model: (ResNet8) | Acc: 94.56%
+Round 13 | Client 3 | Model: (ResNet18) | Acc: 94.80%
+Round 13 | Client 4 | Model: (MobileNetV2) | Acc: 11.67%
+Round 13 | Client 5 | Model: (MobileNetV3) | Acc: 83.05%
+Round 13 | Client 6 | Model: (LeNet) | Acc: 93.76%
+Round 13 | Client 7 | Model: (AlexNet) | Acc: 12.63%
+Round 13 | Client 8 | Model: (ShuffleNet) | Acc: 48.00%
+Round 13 | Client 9 | Model: (SqueezeNet) | Acc: 41.09%
+Round 13 | Client 11 | Model: (MLP) | Acc: 10.62%
+Round 13 | Client 12 | Model: (CNN) | Acc: 79.46%
+Round 13 | Client 13 | Model: (ResNet8) | Acc: 75.67%
+Round 13 | Client 14 | Model: (ResNet18) | Acc: 52.82%
+Round 13 | Client 15 | Model: (MobileNetV2) | Acc: 64.75%
+Round 13 | Client 16 | Model: (MobileNetV3) | Acc: 76.96%
+Round 13 | Client 17 | Model: (LeNet) | Acc: 68.78%
+Round 13 | Client 18 | Model: (AlexNet) | Acc: 11.05%
+Round 13 | Client 19 | Model: (ShuffleNet) | Acc: 77.97%
+Round 13 | Client 20 | Model: (SqueezeNet) | Acc: 11.24%
+Round 13 | Client 22 | Model: (MLP) | Acc: 5.86%
+Round 13 | Client 23 | Model: (CNN) | Acc: 48.95%
+Round 13 | Client 24 | Model: (ResNet8) | Acc: 53.34%
+Round 13 | Client 25 | Model: (ResNet18) | Acc: 6.49%
+Round 13 | Client 26 | Model: (MobileNetV2) | Acc: 5.07%
+Round 13 | Client 27 | Model: (MobileNetV3) | Acc: 32.86%
+Round 13 | Client 28 | Model: (LeNet) | Acc: 5.93%
+Round 13 | Client 29 | Model: (AlexNet) | Acc: 3.27%
+Round 13 | Client 30 | Model: (ShuffleNet) | Acc: 41.97%
+Round 13 | Client 31 | Model: (SqueezeNet) | Acc: 4.72%
+[Server] Aggregating by Dataset Name ...
+[Server] Training Feature-Based Global Generator...
+[Server] Global Inference Model Acc (MNIST) (Round 13): 98.56% (Tested on 9095 samples)
+[Server] Global Inference Model Acc (FashionMNIST) (Round 13): 85.99% (Tested on 9100 samples)
+[Server] Global Inference Model Acc (EMNIST) (Round 13): 80.58% (Tested on 105779 samples)
+[Server] Global Inference Model Acc (Mix) (Round 13): 82.30% (Tested on 123974 samples)
+Selected client ids: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29]
+--- Round 14 ---
+Round 14 | Client 0 | Model: (MLP) | Acc: 11.34%
+Round 14 | Client 1 | Model: (CNN) | Acc: 96.46%
+Round 14 | Client 2 | Model: (ResNet8) | Acc: 95.13%
+Round 14 | Client 3 | Model: (ResNet18) | Acc: 93.33%
+Round 14 | Client 4 | Model: (MobileNetV2) | Acc: 11.67%
+Round 14 | Client 5 | Model: (MobileNetV3) | Acc: 85.06%
+Round 14 | Client 6 | Model: (LeNet) | Acc: 95.62%
+Round 14 | Client 7 | Model: (AlexNet) | Acc: 12.63%
+Round 14 | Client 8 | Model: (ShuffleNet) | Acc: 48.55%
+Round 14 | Client 9 | Model: (SqueezeNet) | Acc: 45.46%
+Round 14 | Client 11 | Model: (MLP) | Acc: 10.62%
+Round 14 | Client 12 | Model: (CNN) | Acc: 79.57%
+Round 14 | Client 13 | Model: (ResNet8) | Acc: 76.09%
+Round 14 | Client 14 | Model: (ResNet18) | Acc: 69.28%
+Round 14 | Client 15 | Model: (MobileNetV2) | Acc: 37.40%
+Round 14 | Client 16 | Model: (MobileNetV3) | Acc: 77.49%
+Round 14 | Client 17 | Model: (LeNet) | Acc: 75.14%
+Round 14 | Client 18 | Model: (AlexNet) | Acc: 11.05%
+Round 14 | Client 19 | Model: (ShuffleNet) | Acc: 78.87%
+Round 14 | Client 20 | Model: (SqueezeNet) | Acc: 11.24%
+Round 14 | Client 22 | Model: (MLP) | Acc: 5.86%
+Round 14 | Client 23 | Model: (CNN) | Acc: 47.50%
+Round 14 | Client 24 | Model: (ResNet8) | Acc: 54.60%
+Round 14 | Client 25 | Model: (ResNet18) | Acc: 6.49%
+Round 14 | Client 26 | Model: (MobileNetV2) | Acc: 5.29%
+Round 14 | Client 27 | Model: (MobileNetV3) | Acc: 35.75%
+Round 14 | Client 28 | Model: (LeNet) | Acc: 5.93%
+Round 14 | Client 29 | Model: (AlexNet) | Acc: 2.86%
+Round 14 | Client 30 | Model: (ShuffleNet) | Acc: 43.78%
+Round 14 | Client 31 | Model: (SqueezeNet) | Acc: 4.72%
+[Server] Aggregating by Dataset Name ...
+[Server] Training Feature-Based Global Generator...
+[Server] Global Inference Model Acc (MNIST) (Round 14): 98.98% (Tested on 9095 samples)
+[Server] Global Inference Model Acc (FashionMNIST) (Round 14): 87.29% (Tested on 9100 samples)
+[Server] Global Inference Model Acc (EMNIST) (Round 14): 82.09% (Tested on 105779 samples)
+[Server] Global Inference Model Acc (Mix) (Round 14): 83.71% (Tested on 123974 samples)
+Selected client ids: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29]
+--- Round 15 ---
+Round 15 | Client 0 | Model: (MLP) | Acc: 11.34%
+Round 15 | Client 1 | Model: (CNN) | Acc: 96.12%
+Round 15 | Client 2 | Model: (ResNet8) | Acc: 95.24%
+Round 15 | Client 3 | Model: (ResNet18) | Acc: 95.14%
+Round 15 | Client 4 | Model: (MobileNetV2) | Acc: 11.67%
+Round 15 | Client 5 | Model: (MobileNetV3) | Acc: 85.95%
+Round 15 | Client 6 | Model: (LeNet) | Acc: 96.06%
+Round 15 | Client 7 | Model: (AlexNet) | Acc: 12.63%
+Round 15 | Client 8 | Model: (ShuffleNet) | Acc: 56.12%
+Round 15 | Client 9 | Model: (SqueezeNet) | Acc: 46.78%
+Round 15 | Client 11 | Model: (MLP) | Acc: 10.62%
+Round 15 | Client 12 | Model: (CNN) | Acc: 79.24%
+Round 15 | Client 13 | Model: (ResNet8) | Acc: 71.61%
+Round 15 | Client 14 | Model: (ResNet18) | Acc: 72.71%
+Round 15 | Client 15 | Model: (MobileNetV2) | Acc: 41.69%
+Round 15 | Client 16 | Model: (MobileNetV3) | Acc: 76.85%
+Round 15 | Client 17 | Model: (LeNet) | Acc: 76.25%
+Round 15 | Client 18 | Model: (AlexNet) | Acc: 11.27%
+Round 15 | Client 19 | Model: (ShuffleNet) | Acc: 79.44%
+Round 15 | Client 20 | Model: (SqueezeNet) | Acc: 11.24%
+Round 15 | Client 22 | Model: (MLP) | Acc: 5.86%
+Round 15 | Client 23 | Model: (CNN) | Acc: 49.99%
+Round 15 | Client 24 | Model: (ResNet8) | Acc: 54.15%
+Round 15 | Client 25 | Model: (ResNet18) | Acc: 6.49%
+Round 15 | Client 26 | Model: (MobileNetV2) | Acc: 5.29%
+Round 15 | Client 27 | Model: (MobileNetV3) | Acc: 35.46%
+Round 15 | Client 28 | Model: (LeNet) | Acc: 5.93%
+Round 15 | Client 29 | Model: (AlexNet) | Acc: 2.86%
+Round 15 | Client 30 | Model: (ShuffleNet) | Acc: 33.19%
+Round 15 | Client 31 | Model: (SqueezeNet) | Acc: 4.72%
+[Server] Aggregating by Dataset Name ...
+[Server] Training Feature-Based Global Generator...
+[Server] Global Inference Model Acc (MNIST) (Round 15): 99.02% (Tested on 9095 samples)
+[Server] Global Inference Model Acc (FashionMNIST) (Round 15): 88.75% (Tested on 9100 samples)
+[Server] Global Inference Model Acc (EMNIST) (Round 15): 77.49% (Tested on 105779 samples)
+[Server] Global Inference Model Acc (Mix) (Round 15): 79.90% (Tested on 123974 samples)
+Selected client ids: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29]
+--- Round 16 ---
+Round 16 | Client 0 | Model: (MLP) | Acc: 11.34%
+Round 16 | Client 1 | Model: (CNN) | Acc: 96.46%
+Round 16 | Client 2 | Model: (ResNet8) | Acc: 95.24%
+Round 16 | Client 3 | Model: (ResNet18) | Acc: 86.20%
+Round 16 | Client 4 | Model: (MobileNetV2) | Acc: 11.67%
+Round 16 | Client 5 | Model: (MobileNetV3) | Acc: 86.73%
+Round 16 | Client 6 | Model: (LeNet) | Acc: 96.39%
+Round 16 | Client 7 | Model: (AlexNet) | Acc: 12.63%
+Round 16 | Client 8 | Model: (ShuffleNet) | Acc: 44.32%
+Round 16 | Client 9 | Model: (SqueezeNet) | Acc: 26.78%
+Round 16 | Client 11 | Model: (MLP) | Acc: 11.30%
+Round 16 | Client 12 | Model: (CNN) | Acc: 80.32%
+Round 16 | Client 13 | Model: (ResNet8) | Acc: 77.91%
+Round 16 | Client 14 | Model: (ResNet18) | Acc: 68.62%
+Round 16 | Client 15 | Model: (MobileNetV2) | Acc: 35.37%
+Round 16 | Client 16 | Model: (MobileNetV3) | Acc: 78.14%
+Round 16 | Client 17 | Model: (LeNet) | Acc: 76.37%
+Round 16 | Client 18 | Model: (AlexNet) | Acc: 11.27%
+Round 16 | Client 19 | Model: (ShuffleNet) | Acc: 78.19%
+Round 16 | Client 20 | Model: (SqueezeNet) | Acc: 11.24%
+Round 16 | Client 22 | Model: (MLP) | Acc: 5.86%
+Round 16 | Client 23 | Model: (CNN) | Acc: 51.26%
+Round 16 | Client 24 | Model: (ResNet8) | Acc: 53.97%
+Round 16 | Client 25 | Model: (ResNet18) | Acc: 6.49%
+Round 16 | Client 26 | Model: (MobileNetV2) | Acc: 5.29%
+Round 16 | Client 27 | Model: (MobileNetV3) | Acc: 36.58%
+Round 16 | Client 28 | Model: (LeNet) | Acc: 5.93%
+Round 16 | Client 29 | Model: (AlexNet) | Acc: 3.27%
+Round 16 | Client 30 | Model: (ShuffleNet) | Acc: 38.86%
+Round 16 | Client 31 | Model: (SqueezeNet) | Acc: 4.72%
+[Server] Aggregating by Dataset Name ...
+[Server] Training Feature-Based Global Generator...
+[Server] Global Inference Model Acc (MNIST) (Round 16): 98.93% (Tested on 9095 samples)
+[Server] Global Inference Model Acc (FashionMNIST) (Round 16): 89.26% (Tested on 9100 samples)
+[Server] Global Inference Model Acc (EMNIST) (Round 16): 79.94% (Tested on 105779 samples)
+[Server] Global Inference Model Acc (Mix) (Round 16): 82.02% (Tested on 123974 samples)
+Selected client ids: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29]
+--- Round 17 ---
+Round 17 | Client 0 | Model: (MLP) | Acc: 11.34%
+Round 17 | Client 1 | Model: (CNN) | Acc: 96.79%
+Round 17 | Client 2 | Model: (ResNet8) | Acc: 95.58%
+Round 17 | Client 3 | Model: (ResNet18) | Acc: 94.80%
+Round 17 | Client 4 | Model: (MobileNetV2) | Acc: 11.67%
+Round 17 | Client 5 | Model: (MobileNetV3) | Acc: 87.51%
+Round 17 | Client 6 | Model: (LeNet) | Acc: 95.95%
+Round 17 | Client 7 | Model: (AlexNet) | Acc: 12.63%
+Round 17 | Client 8 | Model: (ShuffleNet) | Acc: 59.13%
+Round 17 | Client 9 | Model: (SqueezeNet) | Acc: 31.80%
+Round 17 | Client 11 | Model: (MLP) | Acc: 11.30%
+Round 17 | Client 12 | Model: (CNN) | Acc: 80.86%
+Round 17 | Client 13 | Model: (ResNet8) | Acc: 78.87%
+Round 17 | Client 14 | Model: (ResNet18) | Acc: 73.81%
+Round 17 | Client 15 | Model: (MobileNetV2) | Acc: 39.66%
+Round 17 | Client 16 | Model: (MobileNetV3) | Acc: 77.92%
+Round 17 | Client 17 | Model: (LeNet) | Acc: 74.14%
+Round 17 | Client 18 | Model: (AlexNet) | Acc: 11.27%
+Round 17 | Client 19 | Model: (ShuffleNet) | Acc: 79.32%
+Round 17 | Client 20 | Model: (SqueezeNet) | Acc: 11.24%
+Round 17 | Client 22 | Model: (MLP) | Acc: 5.86%
+Round 17 | Client 23 | Model: (CNN) | Acc: 50.15%
+Round 17 | Client 24 | Model: (ResNet8) | Acc: 55.79%
+Round 17 | Client 25 | Model: (ResNet18) | Acc: 6.49%
+Round 17 | Client 26 | Model: (MobileNetV2) | Acc: 5.29%
+Round 17 | Client 27 | Model: (MobileNetV3) | Acc: 36.47%
+Round 17 | Client 28 | Model: (LeNet) | Acc: 5.93%
+Round 17 | Client 29 | Model: (AlexNet) | Acc: 2.86%
+Round 17 | Client 30 | Model: (ShuffleNet) | Acc: 39.18%
+Round 17 | Client 31 | Model: (SqueezeNet) | Acc: 4.72%
+[Server] Aggregating by Dataset Name ...
+[Server] Training Feature-Based Global Generator...
+[Server] Global Inference Model Acc (MNIST) (Round 17): 99.29% (Tested on 9095 samples)
+[Server] Global Inference Model Acc (FashionMNIST) (Round 17): 87.84% (Tested on 9100 samples)
+[Server] Global Inference Model Acc (EMNIST) (Round 17): 79.56% (Tested on 105779 samples)
+[Server] Global Inference Model Acc (Mix) (Round 17): 81.62% (Tested on 123974 samples)
+Selected client ids: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29]
+--- Round 18 ---
+Round 18 | Client 0 | Model: (MLP) | Acc: 11.34%
+Round 18 | Client 1 | Model: (CNN) | Acc: 97.01%
+Round 18 | Client 2 | Model: (ResNet8) | Acc: 95.70%
+Round 18 | Client 3 | Model: (ResNet18) | Acc: 95.25%
+Round 18 | Client 4 | Model: (MobileNetV2) | Acc: 11.67%
+Round 18 | Client 5 | Model: (MobileNetV3) | Acc: 87.63%
+Round 18 | Client 6 | Model: (LeNet) | Acc: 96.39%
+Round 18 | Client 7 | Model: (AlexNet) | Acc: 12.63%
+Round 18 | Client 8 | Model: (ShuffleNet) | Acc: 44.32%
+Round 18 | Client 9 | Model: (SqueezeNet) | Acc: 36.50%
+Round 18 | Client 11 | Model: (MLP) | Acc: 11.30%
+Round 18 | Client 12 | Model: (CNN) | Acc: 81.62%
+Round 18 | Client 13 | Model: (ResNet8) | Acc: 79.51%
+Round 18 | Client 14 | Model: (ResNet18) | Acc: 71.93%
+Round 18 | Client 15 | Model: (MobileNetV2) | Acc: 52.43%
+Round 18 | Client 16 | Model: (MobileNetV3) | Acc: 77.60%
+Round 18 | Client 17 | Model: (LeNet) | Acc: 76.81%
+Round 18 | Client 18 | Model: (AlexNet) | Acc: 11.27%
+Round 18 | Client 19 | Model: (ShuffleNet) | Acc: 78.19%
+Round 18 | Client 20 | Model: (SqueezeNet) | Acc: 15.26%
+Round 18 | Client 22 | Model: (MLP) | Acc: 5.86%
+Round 18 | Client 23 | Model: (CNN) | Acc: 49.79%
+Round 18 | Client 24 | Model: (ResNet8) | Acc: 57.25%
+Round 18 | Client 25 | Model: (ResNet18) | Acc: 6.49%
+Round 18 | Client 26 | Model: (MobileNetV2) | Acc: 5.82%
+Round 18 | Client 27 | Model: (MobileNetV3) | Acc: 37.86%
+Round 18 | Client 28 | Model: (LeNet) | Acc: 5.93%
+Round 18 | Client 29 | Model: (AlexNet) | Acc: 2.72%
+Round 18 | Client 30 | Model: (ShuffleNet) | Acc: 40.61%
+Round 18 | Client 31 | Model: (SqueezeNet) | Acc: 5.79%
+[Server] Aggregating by Dataset Name ...
+[Server] Training Feature-Based Global Generator...
+[Server] Global Inference Model Acc (MNIST) (Round 18): 99.12% (Tested on 9095 samples)
+[Server] Global Inference Model Acc (FashionMNIST) (Round 18): 88.77% (Tested on 9100 samples)
+[Server] Global Inference Model Acc (EMNIST) (Round 18): 79.98% (Tested on 105779 samples)
+[Server] Global Inference Model Acc (Mix) (Round 18): 82.03% (Tested on 123974 samples)
+Selected client ids: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29]
+--- Round 19 ---
+Round 19 | Client 0 | Model: (MLP) | Acc: 11.34%
+Round 19 | Client 1 | Model: (CNN) | Acc: 97.12%
+Round 19 | Client 2 | Model: (ResNet8) | Acc: 96.26%
+Round 19 | Client 3 | Model: (ResNet18) | Acc: 96.38%
+Round 19 | Client 4 | Model: (MobileNetV2) | Acc: 11.67%
+Round 19 | Client 5 | Model: (MobileNetV3) | Acc: 88.52%
+Round 19 | Client 6 | Model: (LeNet) | Acc: 96.06%
+Round 19 | Client 7 | Model: (AlexNet) | Acc: 12.63%
+Round 19 | Client 8 | Model: (ShuffleNet) | Acc: 56.35%
+Round 19 | Client 9 | Model: (SqueezeNet) | Acc: 19.13%
+Round 19 | Client 11 | Model: (MLP) | Acc: 11.30%
+Round 19 | Client 12 | Model: (CNN) | Acc: 80.54%
+Round 19 | Client 13 | Model: (ResNet8) | Acc: 79.83%
+Round 19 | Client 14 | Model: (ResNet18) | Acc: 73.81%
+Round 19 | Client 15 | Model: (MobileNetV2) | Acc: 51.41%
+Round 19 | Client 16 | Model: (MobileNetV3) | Acc: 78.78%
+Round 19 | Client 17 | Model: (LeNet) | Acc: 76.59%
+Round 19 | Client 18 | Model: (AlexNet) | Acc: 11.27%
+Round 19 | Client 19 | Model: (ShuffleNet) | Acc: 80.45%
+Round 19 | Client 20 | Model: (SqueezeNet) | Acc: 30.93%
+Round 19 | Client 22 | Model: (MLP) | Acc: 5.86%
+Round 19 | Client 23 | Model: (CNN) | Acc: 50.08%
+Round 19 | Client 24 | Model: (ResNet8) | Acc: 55.68%
+Round 19 | Client 25 | Model: (ResNet18) | Acc: 6.49%
+Round 19 | Client 26 | Model: (MobileNetV2) | Acc: 5.82%
+Round 19 | Client 27 | Model: (MobileNetV3) | Acc: 35.70%
+Round 19 | Client 28 | Model: (LeNet) | Acc: 5.93%
+Round 19 | Client 29 | Model: (AlexNet) | Acc: 2.72%
+Round 19 | Client 30 | Model: (ShuffleNet) | Acc: 41.21%
+Round 19 | Client 31 | Model: (SqueezeNet) | Acc: 5.79%
+[Server] Aggregating by Dataset Name ...
+[Server] Training Feature-Based Global Generator...
+[Server] Global Inference Model Acc (MNIST) (Round 19): 99.23% (Tested on 9095 samples)
+[Server] Global Inference Model Acc (FashionMNIST) (Round 19): 87.56% (Tested on 9100 samples)
+[Server] Global Inference Model Acc (EMNIST) (Round 19): 78.73% (Tested on 105779 samples)
+[Server] Global Inference Model Acc (Mix) (Round 19): 80.88% (Tested on 123974 samples)
+Selected client ids: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29]
+--- Round 20 ---
+Round 20 | Client 0 | Model: (MLP) | Acc: 11.34%
+Round 20 | Client 1 | Model: (CNN) | Acc: 97.01%
+Round 20 | Client 2 | Model: (ResNet8) | Acc: 95.81%
+Round 20 | Client 3 | Model: (ResNet18) | Acc: 95.14%
+Round 20 | Client 4 | Model: (MobileNetV2) | Acc: 11.67%
+Round 20 | Client 5 | Model: (MobileNetV3) | Acc: 88.18%
+Round 20 | Client 6 | Model: (LeNet) | Acc: 96.72%
+Round 20 | Client 7 | Model: (AlexNet) | Acc: 12.63%
+Round 20 | Client 8 | Model: (ShuffleNet) | Acc: 62.03%
+Round 20 | Client 9 | Model: (SqueezeNet) | Acc: 22.95%
+Round 20 | Client 11 | Model: (MLP) | Acc: 11.30%
+Round 20 | Client 12 | Model: (CNN) | Acc: 80.76%
+Round 20 | Client 13 | Model: (ResNet8) | Acc: 80.26%
+Round 20 | Client 14 | Model: (ResNet18) | Acc: 75.91%
+Round 20 | Client 15 | Model: (MobileNetV2) | Acc: 50.51%
+Round 20 | Client 16 | Model: (MobileNetV3) | Acc: 78.78%
+Round 20 | Client 17 | Model: (LeNet) | Acc: 76.14%
+Round 20 | Client 18 | Model: (AlexNet) | Acc: 11.27%
+Round 20 | Client 19 | Model: (ShuffleNet) | Acc: 79.21%
+Round 20 | Client 20 | Model: (SqueezeNet) | Acc: 22.78%
+Round 20 | Client 22 | Model: (MLP) | Acc: 5.86%
+Round 20 | Client 23 | Model: (CNN) | Acc: 51.26%
+Round 20 | Client 24 | Model: (ResNet8) | Acc: 56.13%
+Round 20 | Client 25 | Model: (ResNet18) | Acc: 6.49%
+Round 20 | Client 26 | Model: (MobileNetV2) | Acc: 5.82%
+Round 20 | Client 27 | Model: (MobileNetV3) | Acc: 38.79%
+Round 20 | Client 28 | Model: (LeNet) | Acc: 5.93%
+Round 20 | Client 29 | Model: (AlexNet) | Acc: 2.72%
+Round 20 | Client 30 | Model: (ShuffleNet) | Acc: 41.37%
+Round 20 | Client 31 | Model: (SqueezeNet) | Acc: 5.79%
+[Server] Aggregating by Dataset Name ...
+[Server] Training Feature-Based Global Generator...
+[Server] Global Inference Model Acc (MNIST) (Round 20): 99.40% (Tested on 9095 samples)
+[Server] Global Inference Model Acc (FashionMNIST) (Round 20): 89.26% (Tested on 9100 samples)
+[Server] Global Inference Model Acc (EMNIST) (Round 20): 78.79% (Tested on 105779 samples)
+[Server] Global Inference Model Acc (Mix) (Round 20): 81.07% (Tested on 123974 samples)
+Selected client ids: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29]
+--- Round 21 ---
+Round 21 | Client 0 | Model: (MLP) | Acc: 11.34%
+Round 21 | Client 1 | Model: (CNN) | Acc: 97.01%
+Round 21 | Client 2 | Model: (ResNet8) | Acc: 96.15%
+Round 21 | Client 3 | Model: (ResNet18) | Acc: 96.95%
+Round 21 | Client 4 | Model: (MobileNetV2) | Acc: 11.67%
+Round 21 | Client 5 | Model: (MobileNetV3) | Acc: 89.19%
+Round 21 | Client 6 | Model: (LeNet) | Acc: 96.83%
+Round 21 | Client 7 | Model: (AlexNet) | Acc: 12.63%
+Round 21 | Client 8 | Model: (ShuffleNet) | Acc: 60.02%
+Round 21 | Client 9 | Model: (SqueezeNet) | Acc: 30.38%
+Round 21 | Client 11 | Model: (MLP) | Acc: 11.30%
+Round 21 | Client 12 | Model: (CNN) | Acc: 81.08%
+Round 21 | Client 13 | Model: (ResNet8) | Acc: 82.39%
+Round 21 | Client 14 | Model: (ResNet18) | Acc: 74.59%
+Round 21 | Client 15 | Model: (MobileNetV2) | Acc: 48.36%
+Round 21 | Client 16 | Model: (MobileNetV3) | Acc: 78.24%
+Round 21 | Client 17 | Model: (LeNet) | Acc: 75.92%
+Round 21 | Client 18 | Model: (AlexNet) | Acc: 11.27%
+Round 21 | Client 19 | Model: (ShuffleNet) | Acc: 80.79%
+Round 21 | Client 20 | Model: (SqueezeNet) | Acc: 38.45%
+Round 21 | Client 22 | Model: (MLP) | Acc: 5.86%
+Round 21 | Client 23 | Model: (CNN) | Acc: 50.43%
+Round 21 | Client 24 | Model: (ResNet8) | Acc: 56.04%
+Round 21 | Client 25 | Model: (ResNet18) | Acc: 6.49%
+Round 21 | Client 26 | Model: (MobileNetV2) | Acc: 5.82%
+Round 21 | Client 27 | Model: (MobileNetV3) | Acc: 38.88%
+Round 21 | Client 28 | Model: (LeNet) | Acc: 5.93%
+Round 21 | Client 29 | Model: (AlexNet) | Acc: 2.86%
+Round 21 | Client 30 | Model: (ShuffleNet) | Acc: 38.47%
+Round 21 | Client 31 | Model: (SqueezeNet) | Acc: 5.84%
+[Server] Aggregating by Dataset Name ...
+[Server] Training Feature-Based Global Generator...
+[Server] Global Inference Model Acc (MNIST) (Round 21): 98.87% (Tested on 9095 samples)
+[Server] Global Inference Model Acc (FashionMNIST) (Round 21): 88.95% (Tested on 9100 samples)
+[Server] Global Inference Model Acc (EMNIST) (Round 21): 80.08% (Tested on 105779 samples)
+[Server] Global Inference Model Acc (Mix) (Round 21): 82.11% (Tested on 123974 samples)
+Selected client ids: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29]
+--- Round 22 ---
+Round 22 | Client 0 | Model: (MLP) | Acc: 11.34%
+Round 22 | Client 1 | Model: (CNN) | Acc: 97.01%
+Round 22 | Client 2 | Model: (ResNet8) | Acc: 96.15%
+Round 22 | Client 3 | Model: (ResNet18) | Acc: 97.29%
+Round 22 | Client 4 | Model: (MobileNetV2) | Acc: 11.67%
+Round 22 | Client 5 | Model: (MobileNetV3) | Acc: 88.63%
+Round 22 | Client 6 | Model: (LeNet) | Acc: 97.05%
+Round 22 | Client 7 | Model: (AlexNet) | Acc: 12.63%
+Round 22 | Client 8 | Model: (ShuffleNet) | Acc: 60.69%
+Round 22 | Client 9 | Model: (SqueezeNet) | Acc: 34.64%
+Round 22 | Client 11 | Model: (MLP) | Acc: 11.30%
+Round 22 | Client 12 | Model: (CNN) | Acc: 81.08%
+Round 22 | Client 13 | Model: (ResNet8) | Acc: 82.39%
+Round 22 | Client 14 | Model: (ResNet18) | Acc: 77.24%
+Round 22 | Client 15 | Model: (MobileNetV2) | Acc: 53.67%
+Round 22 | Client 16 | Model: (MobileNetV3) | Acc: 78.78%
+Round 22 | Client 17 | Model: (LeNet) | Acc: 77.15%
+Round 22 | Client 18 | Model: (AlexNet) | Acc: 11.27%
+Round 22 | Client 19 | Model: (ShuffleNet) | Acc: 81.47%
+Round 22 | Client 20 | Model: (SqueezeNet) | Acc: 11.24%
+Round 22 | Client 22 | Model: (MLP) | Acc: 5.86%
+Round 22 | Client 23 | Model: (CNN) | Acc: 50.53%
+Round 22 | Client 24 | Model: (ResNet8) | Acc: 58.07%
+Round 22 | Client 25 | Model: (ResNet18) | Acc: 6.49%
+Round 22 | Client 26 | Model: (MobileNetV2) | Acc: 5.82%
+Round 22 | Client 27 | Model: (MobileNetV3) | Acc: 38.91%
+Round 22 | Client 28 | Model: (LeNet) | Acc: 5.93%
+Round 22 | Client 29 | Model: (AlexNet) | Acc: 3.27%
+Round 22 | Client 30 | Model: (ShuffleNet) | Acc: 41.42%
+Round 22 | Client 31 | Model: (SqueezeNet) | Acc: 5.79%
+[Server] Aggregating by Dataset Name ...
+[Server] Training Feature-Based Global Generator...
+[Server] Global Inference Model Acc (MNIST) (Round 22): 99.09% (Tested on 9095 samples)
+[Server] Global Inference Model Acc (FashionMNIST) (Round 22): 89.63% (Tested on 9100 samples)
+[Server] Global Inference Model Acc (EMNIST) (Round 22): 79.80% (Tested on 105779 samples)
+[Server] Global Inference Model Acc (Mix) (Round 22): 81.94% (Tested on 123974 samples)
+Selected client ids: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29]
+--- Round 23 ---
+Round 23 | Client 0 | Model: (MLP) | Acc: 11.34%
+Round 23 | Client 1 | Model: (CNN) | Acc: 96.79%
+Round 23 | Client 2 | Model: (ResNet8) | Acc: 96.38%
+Round 23 | Client 3 | Model: (ResNet18) | Acc: 97.29%
+Round 23 | Client 4 | Model: (MobileNetV2) | Acc: 11.67%
+Round 23 | Client 5 | Model: (MobileNetV3) | Acc: 89.63%
+Round 23 | Client 6 | Model: (LeNet) | Acc: 96.83%
+Round 23 | Client 7 | Model: (AlexNet) | Acc: 12.63%
+Round 23 | Client 8 | Model: (ShuffleNet) | Acc: 73.61%
+Round 23 | Client 9 | Model: (SqueezeNet) | Acc: 40.98%
+Round 23 | Client 11 | Model: (MLP) | Acc: 11.30%
+Round 23 | Client 12 | Model: (CNN) | Acc: 81.95%
+Round 23 | Client 13 | Model: (ResNet8) | Acc: 83.88%
+Round 23 | Client 14 | Model: (ResNet18) | Acc: 75.58%
+Round 23 | Client 15 | Model: (MobileNetV2) | Acc: 50.62%
+Round 23 | Client 16 | Model: (MobileNetV3) | Acc: 78.24%
+Round 23 | Client 17 | Model: (LeNet) | Acc: 78.04%
+Round 23 | Client 18 | Model: (AlexNet) | Acc: 11.27%
+Round 23 | Client 19 | Model: (ShuffleNet) | Acc: 79.55%
+Round 23 | Client 20 | Model: (SqueezeNet) | Acc: 11.24%
+Round 23 | Client 22 | Model: (MLP) | Acc: 5.86%
+Round 23 | Client 23 | Model: (CNN) | Acc: 50.02%
+Round 23 | Client 24 | Model: (ResNet8) | Acc: 55.88%
+Round 23 | Client 25 | Model: (ResNet18) | Acc: 6.49%
+Round 23 | Client 26 | Model: (MobileNetV2) | Acc: 5.82%
+Round 23 | Client 27 | Model: (MobileNetV3) | Acc: 38.71%
+Round 23 | Client 28 | Model: (LeNet) | Acc: 5.93%
+Round 23 | Client 29 | Model: (AlexNet) | Acc: 2.86%
+Round 23 | Client 30 | Model: (ShuffleNet) | Acc: 36.61%
+Round 23 | Client 31 | Model: (SqueezeNet) | Acc: 5.79%
+[Server] Aggregating by Dataset Name ...
+[Server] Training Feature-Based Global Generator...
+[Server] Global Inference Model Acc (MNIST) (Round 23): 99.31% (Tested on 9095 samples)
+[Server] Global Inference Model Acc (FashionMNIST) (Round 23): 89.27% (Tested on 9100 samples)
+[Server] Global Inference Model Acc (EMNIST) (Round 23): 80.95% (Tested on 105779 samples)
+[Server] Global Inference Model Acc (Mix) (Round 23): 82.91% (Tested on 123974 samples)
+Selected client ids: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29]
+--- Round 24 ---
+Round 24 | Client 0 | Model: (MLP) | Acc: 11.34%
+Round 24 | Client 1 | Model: (CNN) | Acc: 96.90%
+Round 24 | Client 2 | Model: (ResNet8) | Acc: 96.04%
+Round 24 | Client 3 | Model: (ResNet18) | Acc: 96.83%
+Round 24 | Client 4 | Model: (MobileNetV2) | Acc: 11.67%
+Round 24 | Client 5 | Model: (MobileNetV3) | Acc: 90.75%
+Round 24 | Client 6 | Model: (LeNet) | Acc: 97.16%
+Round 24 | Client 7 | Model: (AlexNet) | Acc: 12.63%
+Round 24 | Client 8 | Model: (ShuffleNet) | Acc: 71.60%
+Round 24 | Client 9 | Model: (SqueezeNet) | Acc: 17.16%
+Round 24 | Client 11 | Model: (MLP) | Acc: 11.30%
+Round 24 | Client 12 | Model: (CNN) | Acc: 81.51%
+Round 24 | Client 13 | Model: (ResNet8) | Acc: 83.03%
+Round 24 | Client 14 | Model: (ResNet18) | Acc: 74.81%
+Round 24 | Client 15 | Model: (MobileNetV2) | Acc: 39.66%
+Round 24 | Client 16 | Model: (MobileNetV3) | Acc: 79.31%
+Round 24 | Client 17 | Model: (LeNet) | Acc: 77.26%
+Round 24 | Client 18 | Model: (AlexNet) | Acc: 11.27%
+Round 24 | Client 19 | Model: (ShuffleNet) | Acc: 81.13%
+Round 24 | Client 20 | Model: (SqueezeNet) | Acc: 44.02%
+Round 24 | Client 22 | Model: (MLP) | Acc: 5.86%
+Round 24 | Client 23 | Model: (CNN) | Acc: 51.90%
+Round 24 | Client 24 | Model: (ResNet8) | Acc: 57.80%
+Round 24 | Client 25 | Model: (ResNet18) | Acc: 6.49%
+Round 24 | Client 26 | Model: (MobileNetV2) | Acc: 5.82%
+Round 24 | Client 27 | Model: (MobileNetV3) | Acc: 39.91%
+Round 24 | Client 28 | Model: (LeNet) | Acc: 5.93%
+Round 24 | Client 29 | Model: (AlexNet) | Acc: 2.72%
+Round 24 | Client 30 | Model: (ShuffleNet) | Acc: 38.03%
+Round 24 | Client 31 | Model: (SqueezeNet) | Acc: 5.79%
+[Server] Aggregating by Dataset Name ...
+[Server] Training Feature-Based Global Generator...
+[Server] Global Inference Model Acc (MNIST) (Round 24): 99.16% (Tested on 9095 samples)
+[Server] Global Inference Model Acc (FashionMNIST) (Round 24): 90.12% (Tested on 9100 samples)
+[Server] Global Inference Model Acc (EMNIST) (Round 24): 79.92% (Tested on 105779 samples)
+[Server] Global Inference Model Acc (Mix) (Round 24): 82.08% (Tested on 123974 samples)
+Selected client ids: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29]
+--- Round 25 ---
+Round 25 | Client 0 | Model: (MLP) | Acc: 11.34%
+Round 25 | Client 1 | Model: (CNN) | Acc: 96.68%
+Round 25 | Client 2 | Model: (ResNet8) | Acc: 96.60%
+Round 25 | Client 3 | Model: (ResNet18) | Acc: 97.74%
+Round 25 | Client 4 | Model: (MobileNetV2) | Acc: 11.67%
+Round 25 | Client 5 | Model: (MobileNetV3) | Acc: 90.86%
+Round 25 | Client 6 | Model: (LeNet) | Acc: 97.16%
+Round 25 | Client 7 | Model: (AlexNet) | Acc: 12.63%
+Round 25 | Client 8 | Model: (ShuffleNet) | Acc: 63.14%
+Round 25 | Client 9 | Model: (SqueezeNet) | Acc: 32.57%
+Round 25 | Client 11 | Model: (MLP) | Acc: 11.30%
+Round 25 | Client 12 | Model: (CNN) | Acc: 81.41%
+Round 25 | Client 13 | Model: (ResNet8) | Acc: 83.99%
+Round 25 | Client 14 | Model: (ResNet18) | Acc: 77.46%
+Round 25 | Client 15 | Model: (MobileNetV2) | Acc: 50.28%
+Round 25 | Client 16 | Model: (MobileNetV3) | Acc: 79.64%
+Round 25 | Client 17 | Model: (LeNet) | Acc: 77.37%
+Round 25 | Client 18 | Model: (AlexNet) | Acc: 11.27%
+Round 25 | Client 19 | Model: (ShuffleNet) | Acc: 81.81%
+Round 25 | Client 20 | Model: (SqueezeNet) | Acc: 43.71%
+Round 25 | Client 22 | Model: (MLP) | Acc: 5.86%
+Round 25 | Client 23 | Model: (CNN) | Acc: 52.32%
+Round 25 | Client 24 | Model: (ResNet8) | Acc: 57.28%
+Round 25 | Client 25 | Model: (ResNet18) | Acc: 6.49%
+Round 25 | Client 26 | Model: (MobileNetV2) | Acc: 5.82%
+Round 25 | Client 27 | Model: (MobileNetV3) | Acc: 39.40%
+Round 25 | Client 28 | Model: (LeNet) | Acc: 5.93%
+Round 25 | Client 29 | Model: (AlexNet) | Acc: 2.72%
+Round 25 | Client 30 | Model: (ShuffleNet) | Acc: 40.24%
+Round 25 | Client 31 | Model: (SqueezeNet) | Acc: 5.84%
+[Server] Aggregating by Dataset Name ...
+[Server] Training Feature-Based Global Generator...
+[Server] Global Inference Model Acc (MNIST) (Round 25): 99.23% (Tested on 9095 samples)
+[Server] Global Inference Model Acc (FashionMNIST) (Round 25): 90.02% (Tested on 9100 samples)
+[Server] Global Inference Model Acc (EMNIST) (Round 25): 81.47% (Tested on 105779 samples)
+[Server] Global Inference Model Acc (Mix) (Round 25): 83.40% (Tested on 123974 samples)
+Selected client ids: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29]
+--- Round 26 ---
+Round 26 | Client 0 | Model: (MLP) | Acc: 11.34%
+Round 26 | Client 1 | Model: (CNN) | Acc: 97.01%
+Round 26 | Client 2 | Model: (ResNet8) | Acc: 96.83%
+Round 26 | Client 3 | Model: (ResNet18) | Acc: 97.85%
+Round 26 | Client 4 | Model: (MobileNetV2) | Acc: 11.67%
+Round 26 | Client 5 | Model: (MobileNetV3) | Acc: 90.75%
+Round 26 | Client 6 | Model: (LeNet) | Acc: 97.16%
+Round 26 | Client 7 | Model: (AlexNet) | Acc: 12.63%
+Round 26 | Client 8 | Model: (ShuffleNet) | Acc: 69.27%
+Round 26 | Client 9 | Model: (SqueezeNet) | Acc: 48.63%
+Round 26 | Client 11 | Model: (MLP) | Acc: 11.30%
+Round 26 | Client 12 | Model: (CNN) | Acc: 81.84%
+Round 26 | Client 13 | Model: (ResNet8) | Acc: 84.42%
+Round 26 | Client 14 | Model: (ResNet18) | Acc: 77.24%
+Round 26 | Client 15 | Model: (MobileNetV2) | Acc: 62.94%
+Round 26 | Client 16 | Model: (MobileNetV3) | Acc: 79.96%
+Round 26 | Client 17 | Model: (LeNet) | Acc: 77.48%
+Round 26 | Client 18 | Model: (AlexNet) | Acc: 11.27%
+Round 26 | Client 19 | Model: (ShuffleNet) | Acc: 81.13%
+Round 26 | Client 20 | Model: (SqueezeNet) | Acc: 11.24%
+Round 26 | Client 22 | Model: (MLP) | Acc: 5.86%
+Round 26 | Client 23 | Model: (CNN) | Acc: 50.81%
+Round 26 | Client 24 | Model: (ResNet8) | Acc: 58.10%
+Round 26 | Client 25 | Model: (ResNet18) | Acc: 6.49%
+Round 26 | Client 26 | Model: (MobileNetV2) | Acc: 5.82%
+Round 26 | Client 27 | Model: (MobileNetV3) | Acc: 39.08%
+Round 26 | Client 28 | Model: (LeNet) | Acc: 5.93%
+Round 26 | Client 29 | Model: (AlexNet) | Acc: 3.27%
+Round 26 | Client 30 | Model: (ShuffleNet) | Acc: 39.59%
+Round 26 | Client 31 | Model: (SqueezeNet) | Acc: 5.79%
+[Server] Aggregating by Dataset Name ...
+[Server] Training Feature-Based Global Generator...
+[Server] Global Inference Model Acc (MNIST) (Round 26): 99.23% (Tested on 9095 samples)
+[Server] Global Inference Model Acc (FashionMNIST) (Round 26): 89.98% (Tested on 9100 samples)
+[Server] Global Inference Model Acc (EMNIST) (Round 26): 81.90% (Tested on 105779 samples)
+[Server] Global Inference Model Acc (Mix) (Round 26): 83.76% (Tested on 123974 samples)
+Selected client ids: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29]
+--- Round 27 ---
+Round 27 | Client 0 | Model: (MLP) | Acc: 11.34%
+Round 27 | Client 1 | Model: (CNN) | Acc: 97.12%
+Round 27 | Client 2 | Model: (ResNet8) | Acc: 96.94%
+Round 27 | Client 3 | Model: (ResNet18) | Acc: 97.29%
+Round 27 | Client 4 | Model: (MobileNetV2) | Acc: 11.67%
+Round 27 | Client 5 | Model: (MobileNetV3) | Acc: 90.75%
+Round 27 | Client 6 | Model: (LeNet) | Acc: 97.26%
+Round 27 | Client 7 | Model: (AlexNet) | Acc: 12.63%
+Round 27 | Client 8 | Model: (ShuffleNet) | Acc: 72.61%
+Round 27 | Client 9 | Model: (SqueezeNet) | Acc: 39.78%
+Round 27 | Client 11 | Model: (MLP) | Acc: 11.30%
+Round 27 | Client 12 | Model: (CNN) | Acc: 82.05%
+Round 27 | Client 13 | Model: (ResNet8) | Acc: 84.31%
+Round 27 | Client 14 | Model: (ResNet18) | Acc: 77.57%
+Round 27 | Client 15 | Model: (MobileNetV2) | Acc: 64.97%
+Round 27 | Client 16 | Model: (MobileNetV3) | Acc: 80.06%
+Round 27 | Client 17 | Model: (LeNet) | Acc: 76.59%
+Round 27 | Client 18 | Model: (AlexNet) | Acc: 11.27%
+Round 27 | Client 19 | Model: (ShuffleNet) | Acc: 82.49%
+Round 27 | Client 20 | Model: (SqueezeNet) | Acc: 11.24%
+Round 27 | Client 22 | Model: (MLP) | Acc: 5.86%
+Round 27 | Client 23 | Model: (CNN) | Acc: 53.72%
+Round 27 | Client 24 | Model: (ResNet8) | Acc: 58.43%
+Round 27 | Client 25 | Model: (ResNet18) | Acc: 6.49%
+Round 27 | Client 26 | Model: (MobileNetV2) | Acc: 5.82%
+Round 27 | Client 27 | Model: (MobileNetV3) | Acc: 40.33%
+Round 27 | Client 28 | Model: (LeNet) | Acc: 5.93%
+Round 27 | Client 29 | Model: (AlexNet) | Acc: 2.72%
+Round 27 | Client 30 | Model: (ShuffleNet) | Acc: 40.08%
+Round 27 | Client 31 | Model: (SqueezeNet) | Acc: 5.79%
+[Server] Aggregating by Dataset Name ...
+[Server] Training Feature-Based Global Generator...
+[Server] Global Inference Model Acc (MNIST) (Round 27): 98.91% (Tested on 9095 samples)
+[Server] Global Inference Model Acc (FashionMNIST) (Round 27): 90.15% (Tested on 9100 samples)
+[Server] Global Inference Model Acc (EMNIST) (Round 27): 81.37% (Tested on 105779 samples)
+[Server] Global Inference Model Acc (Mix) (Round 27): 83.30% (Tested on 123974 samples)
+Selected client ids: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29]
+--- Round 28 ---
+Round 28 | Client 0 | Model: (MLP) | Acc: 11.34%
+Round 28 | Client 1 | Model: (CNN) | Acc: 97.12%
+Round 28 | Client 2 | Model: (ResNet8) | Acc: 96.49%
+Round 28 | Client 3 | Model: (ResNet18) | Acc: 97.51%
+Round 28 | Client 4 | Model: (MobileNetV2) | Acc: 11.67%
+Round 28 | Client 5 | Model: (MobileNetV3) | Acc: 91.53%
+Round 28 | Client 6 | Model: (LeNet) | Acc: 96.94%
+Round 28 | Client 7 | Model: (AlexNet) | Acc: 12.63%
+Round 28 | Client 8 | Model: (ShuffleNet) | Acc: 74.39%
+Round 28 | Client 9 | Model: (SqueezeNet) | Acc: 12.68%
+Round 28 | Client 11 | Model: (MLP) | Acc: 11.30%
+Round 28 | Client 12 | Model: (CNN) | Acc: 82.16%
+Round 28 | Client 13 | Model: (ResNet8) | Acc: 84.74%
+Round 28 | Client 14 | Model: (ResNet18) | Acc: 77.79%
+Round 28 | Client 15 | Model: (MobileNetV2) | Acc: 52.88%
+Round 28 | Client 16 | Model: (MobileNetV3) | Acc: 80.39%
+Round 28 | Client 17 | Model: (LeNet) | Acc: 78.71%
+Round 28 | Client 18 | Model: (AlexNet) | Acc: 11.27%
+Round 28 | Client 19 | Model: (ShuffleNet) | Acc: 83.95%
+Round 28 | Client 20 | Model: (SqueezeNet) | Acc: 11.24%
+Round 28 | Client 22 | Model: (MLP) | Acc: 5.86%
+Round 28 | Client 23 | Model: (CNN) | Acc: 53.42%
+Round 28 | Client 24 | Model: (ResNet8) | Acc: 58.51%
+Round 28 | Client 25 | Model: (ResNet18) | Acc: 6.49%
+Round 28 | Client 26 | Model: (MobileNetV2) | Acc: 5.82%
+Round 28 | Client 27 | Model: (MobileNetV3) | Acc: 41.63%
+Round 28 | Client 28 | Model: (LeNet) | Acc: 5.93%
+Round 28 | Client 29 | Model: (AlexNet) | Acc: 3.27%
+Round 28 | Client 30 | Model: (ShuffleNet) | Acc: 42.05%
+Round 28 | Client 31 | Model: (SqueezeNet) | Acc: 5.84%
+[Server] Aggregating by Dataset Name ...
+[Server] Training Feature-Based Global Generator...
+[Server] Global Inference Model Acc (MNIST) (Round 28): 99.29% (Tested on 9095 samples)
+[Server] Global Inference Model Acc (FashionMNIST) (Round 28): 90.34% (Tested on 9100 samples)
+[Server] Global Inference Model Acc (EMNIST) (Round 28): 82.48% (Tested on 105779 samples)
+[Server] Global Inference Model Acc (Mix) (Round 28): 84.29% (Tested on 123974 samples)
+Selected client ids: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29]
+--- Round 29 ---
+Round 29 | Client 0 | Model: (MLP) | Acc: 11.34%
+Round 29 | Client 1 | Model: (CNN) | Acc: 97.34%
+Round 29 | Client 2 | Model: (ResNet8) | Acc: 96.83%
+Round 29 | Client 3 | Model: (ResNet18) | Acc: 97.85%
+Round 29 | Client 4 | Model: (MobileNetV2) | Acc: 30.73%
+Round 29 | Client 5 | Model: (MobileNetV3) | Acc: 91.19%
+Round 29 | Client 6 | Model: (LeNet) | Acc: 97.05%
+Round 29 | Client 7 | Model: (AlexNet) | Acc: 12.63%
+Round 29 | Client 8 | Model: (ShuffleNet) | Acc: 68.37%
+Round 29 | Client 9 | Model: (SqueezeNet) | Acc: 49.29%
+Round 29 | Client 11 | Model: (MLP) | Acc: 11.30%
+Round 29 | Client 12 | Model: (CNN) | Acc: 82.49%
+Round 29 | Client 13 | Model: (ResNet8) | Acc: 84.74%
+Round 29 | Client 14 | Model: (ResNet18) | Acc: 78.90%
+Round 29 | Client 15 | Model: (MobileNetV2) | Acc: 68.14%
+Round 29 | Client 16 | Model: (MobileNetV3) | Acc: 80.49%
+Round 29 | Client 17 | Model: (LeNet) | Acc: 77.59%
+Round 29 | Client 18 | Model: (AlexNet) | Acc: 11.27%
+Round 29 | Client 19 | Model: (ShuffleNet) | Acc: 83.50%
+Round 29 | Client 20 | Model: (SqueezeNet) | Acc: 11.24%
+Round 29 | Client 22 | Model: (MLP) | Acc: 5.86%
+Round 29 | Client 23 | Model: (CNN) | Acc: 51.89%
+Round 29 | Client 24 | Model: (ResNet8) | Acc: 58.82%
+Round 29 | Client 25 | Model: (ResNet18) | Acc: 6.49%
+Round 29 | Client 26 | Model: (MobileNetV2) | Acc: 5.82%
+Round 29 | Client 27 | Model: (MobileNetV3) | Acc: 41.35%
+Round 29 | Client 28 | Model: (LeNet) | Acc: 5.93%
+Round 29 | Client 29 | Model: (AlexNet) | Acc: 2.86%
+Round 29 | Client 30 | Model: (ShuffleNet) | Acc: 42.25%
+Round 29 | Client 31 | Model: (SqueezeNet) | Acc: 5.79%
+[Server] Aggregating by Dataset Name ...
+[Server] Training Feature-Based Global Generator...
+[Server] Global Inference Model Acc (MNIST) (Round 29): 99.35% (Tested on 9095 samples)
+[Server] Global Inference Model Acc (FashionMNIST) (Round 29): 90.92% (Tested on 9100 samples)
+[Server] Global Inference Model Acc (EMNIST) (Round 29): 83.52% (Tested on 105779 samples)
+[Server] Global Inference Model Acc (Mix) (Round 29): 85.23% (Tested on 123974 samples)
+Selected client ids: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29]
+--- Round 30 ---
+Round 30 | Client 0 | Model: (MLP) | Acc: 11.34%
+Round 30 | Client 1 | Model: (CNN) | Acc: 97.23%
+Round 30 | Client 2 | Model: (ResNet8) | Acc: 96.94%
+Round 30 | Client 3 | Model: (ResNet18) | Acc: 97.96%
+Round 30 | Client 4 | Model: (MobileNetV2) | Acc: 20.02%
+Round 30 | Client 5 | Model: (MobileNetV3) | Acc: 91.64%
+Round 30 | Client 6 | Model: (LeNet) | Acc: 97.05%
+Round 30 | Client 7 | Model: (AlexNet) | Acc: 12.63%
+Round 30 | Client 8 | Model: (ShuffleNet) | Acc: 77.39%
+Round 30 | Client 9 | Model: (SqueezeNet) | Acc: 35.41%
+Round 30 | Client 11 | Model: (MLP) | Acc: 11.30%
+Round 30 | Client 12 | Model: (CNN) | Acc: 82.59%
+Round 30 | Client 13 | Model: (ResNet8) | Acc: 84.95%
+Round 30 | Client 14 | Model: (ResNet18) | Acc: 79.34%
+Round 30 | Client 15 | Model: (MobileNetV2) | Acc: 66.33%
+Round 30 | Client 16 | Model: (MobileNetV3) | Acc: 80.71%
+Round 30 | Client 17 | Model: (LeNet) | Acc: 77.93%
+Round 30 | Client 18 | Model: (AlexNet) | Acc: 11.27%
+Round 30 | Client 19 | Model: (ShuffleNet) | Acc: 82.60%
+Round 30 | Client 20 | Model: (SqueezeNet) | Acc: 11.24%
+Round 30 | Client 22 | Model: (MLP) | Acc: 5.86%
+Round 30 | Client 23 | Model: (CNN) | Acc: 51.82%
+Round 30 | Client 24 | Model: (ResNet8) | Acc: 58.96%
+Round 30 | Client 25 | Model: (ResNet18) | Acc: 6.49%
+Round 30 | Client 26 | Model: (MobileNetV2) | Acc: 5.82%
+Round 30 | Client 27 | Model: (MobileNetV3) | Acc: 42.29%
+Round 30 | Client 28 | Model: (LeNet) | Acc: 5.83%
+Round 30 | Client 29 | Model: (AlexNet) | Acc: 2.72%
+Round 30 | Client 30 | Model: (ShuffleNet) | Acc: 42.62%
+Round 30 | Client 31 | Model: (SqueezeNet) | Acc: 5.79%
+[Server] Aggregating by Dataset Name ...
+[Server] Training Feature-Based Global Generator...
+[Server] Global Inference Model Acc (MNIST) (Round 30): 99.38% (Tested on 9095 samples)
+[Server] Global Inference Model Acc (FashionMNIST) (Round 30): 90.48% (Tested on 9100 samples)
+[Server] Global Inference Model Acc (EMNIST) (Round 30): 82.75% (Tested on 105779 samples)
+[Server] Global Inference Model Acc (Mix) (Round 30): 84.53% (Tested on 123974 samples)
+Saving UDON Server Checkpoints ...
+[Server] All clients saved in logs/2026-05-12_12-45-34/FedTED_dir/clients_last_round_checkpoints/
+==============================    Finished. Total Time: 4:29:03    ==============================

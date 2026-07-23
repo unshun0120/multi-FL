@@ -1,5 +1,5 @@
 """
-Server for GeFL DDPM baseline
+Server for GeFL DDPM baseline total gan
 """
 
 import torch
@@ -22,7 +22,7 @@ from label_mapping.label_mapping_utils import (
     label_mapping, evaluate_mapping_results, 
     feature_bi_direction_label_mapping, single_direction_label_mapping,
     get_gen_images, global_to_local_mapping, clear_image_caches,
-    image_cosine_similarity_mapping,
+    image_cosine_similarity_mapping, missing_link_label_mapping
 )
 from utils.nets import ResNet, BasicBlock
 
@@ -51,8 +51,8 @@ class Server(BaseServer):
 
             self.aggregate()
 
-            # if r+1 == 40:
-            #     self.save_model() 
+            # if (r+1) % 5 == 0:
+            #     self.save_model(r+1) 
 
         self.save_model()
         # plot_accuracy_curves(self.dataset_acc_history, self.logger.log_dir, self.args, self.global_rounds, self.dirichlet_alpha)
@@ -144,6 +144,7 @@ class Server(BaseServer):
             use_new_ent = self.exp_conf.get('use_new_entropy_method', False)
             entropy_ratio = self.exp_conf.get('entropy_ratio', 1.0) 
             cs_threshold = self.exp_conf.get('cs_threshold', 1.0) 
+            missing_threshold = self.exp_conf.get('missing_threshold', 1.0)
 
             mapping = None
 
@@ -198,6 +199,20 @@ class Server(BaseServer):
                     label_space_meta=dataset_label_space_meta,
                     cs_threshold=cs_threshold,
                     logger=self.logger,
+                    args=self.args,
+                    gen_dict=generators
+                )
+                global_map = global_to_local_mapping(mapping, logger=self.logger, label_space_meta=dataset_label_space_meta)
+                self.local_id_to_global_id = mapping
+
+            elif self.args.label_mapping == 'missing_link':
+                mapping = missing_link_label_mapping(
+                    get_images_func=get_gen_images,
+                    dataset_ids=active_datasets,
+                    clients_dict=dataset_clients_dict,
+                    label_space_meta=dataset_label_space_meta,
+                    missing_threshold=missing_threshold,
+                    logger=self.logger, 
                     args=self.args,
                     gen_dict=generators
                 )
@@ -327,7 +342,7 @@ class Server(BaseServer):
         return avg_params
 
 
-    def save_model(self, fname='checkpoints.pth'):
+    def save_model(self, global_round=0, fname='checkpoints.pth'):
         self.logger.log("Saving checkpoints ...")
 
         dataset_classifiers = {}
@@ -361,11 +376,11 @@ class Server(BaseServer):
             },
         }
 
-        server_save_path = os.path.join(self.logger.log_dir, 'server_'+fname)
+        server_save_path = os.path.join(self.logger.log_dir, 'server_'+'checkpoints'+f'_{global_round}.pth')
         torch.save(checkpoint, server_save_path)
         self.logger.log(f"[Server] Checkpoint saved to {server_save_path}")
 
-        gen_dir = os.path.join(self.logger.log_dir, 'global_gans')
+        gen_dir = os.path.join(self.logger.log_dir, f'global_gans_{global_round}')
         os.makedirs(gen_dir, exist_ok=True)
         
         for d_name in self.global_gen_states.keys():
@@ -376,7 +391,7 @@ class Server(BaseServer):
             torch.save(gan_checkpoint, gan_save_path)
             self.logger.log(f"[Server] Global GAN for {d_name} saved to {gan_save_path}")
 
-        clients_dir = os.path.join(self.logger.log_dir, f'clients_last_round_checkpoints')
+        clients_dir = os.path.join(self.logger.log_dir, f'clients_round_{global_round}_checkpoints')
         os.makedirs(clients_dir, exist_ok=True)
 
         for client in self.clients:

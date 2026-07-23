@@ -40,7 +40,6 @@ class Server(Node):
         self.metric_type = exp_conf.get('metric_type', 'accuracy')
         self.global_feature_dim = exp_conf.get('global_feature_dim', 256)
         self.index_matching = exp_conf.get('index_matching', 'ours')
-        self.aggregate_method = exp_conf.get('aggregate_method', 'dataset_name')
 
         self.global_model_epochs = exp_conf.get('global_model_epochs', 1) 
         self.global_model_optim_name =  exp_conf.get('global_model_optim', 'Adam')
@@ -483,7 +482,7 @@ class Server(Node):
         for d_name, accs in dataset_accs.items():
             self.dataset_acc_history[d_name].append(np.mean(accs) * 100.0)
     
-    def test_global_inference_model(self):
+    def test_global_inference_model(self, epoch=None):
         if self.model is None:
             return
         
@@ -555,8 +554,25 @@ class Server(Node):
             with open(csv_path, mode='a', newline='') as f:
                 writer = csv.writer(f)
                 if not file_exists:
-                    writer.writerow(["Round", "Accuracy"])
-                writer.writerow([self.glob_iter + 1, round(acc, 2)])
+                    #writer.writerow(["Round", "Accuracy"])
+                    writer.writerow(["Round", "Epoch", "Accuracy"])
+                #writer.writerow([self.glob_iter + 1, round(acc, 2)])
+                writer.writerow([
+                    self.glob_iter + 1,
+                    epoch,
+                    round(acc, 2)
+                ])
+
+        # with open(csv_path_mix, mode='a', newline='') as f:
+        #     writer = csv.writer(f)
+        #     if not file_exists_mix:
+        #         writer.writerow(["Round", "Epoch", "Accuracy"])
+
+        #     writer.writerow([
+        #         self.glob_iter + 1,
+        #         epoch,
+        #         round(mix_acc, 2)
+        #     ])
 
         mix_acc = (total_correct / total_samples) * 100.0 if total_samples > 0 else 0.0
         self.logger.log(f"[Server] Global Inference Model Acc (Mix) (Round {self.glob_iter + 1}): {mix_acc:.2f}% (Tested on {total_samples} samples)")
@@ -567,9 +583,14 @@ class Server(Node):
         with open(csv_path_mix, mode='a', newline='') as f:
             writer = csv.writer(f)
             if not file_exists_mix:
-                writer.writerow(["Round", "Accuracy"])
-            writer.writerow([self.glob_iter + 1, round(mix_acc, 2)])
-
+                #writer.writerow(["Round", "Accuracy"])
+                writer.writerow(["Round", "Epoch", "Accuracy"])
+            #writer.writerow([self.glob_iter + 1, round(mix_acc, 2)])
+            writer.writerow([
+                self.glob_iter + 1,
+                epoch,
+                round(mix_acc, 2)
+            ])
 
         csv_path_class = os.path.join(self.logger.log_dir, "global_model_class_acc.csv")
         file_exists_class = os.path.isfile(csv_path_class)

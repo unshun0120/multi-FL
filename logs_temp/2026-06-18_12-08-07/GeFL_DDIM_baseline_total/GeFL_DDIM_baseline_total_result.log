@@ -1,0 +1,843 @@
+Time: 2026-06-18 12:08:07
+Log Dir: logs/2026-06-18_12-08-07/GeFL_DDIM_baseline_total
+================================================================================
+
+==============================        Args        ==============================
+  exp_timestamp: None
+  exp_conf: ./configs/het-iid-exp.yaml
+  device: cuda:1
+  seed: 15698
+  algorithm: GeFL_DDIM_baseline_total
+  num_new_clients: 1
+  num_train_mnist: 10
+  num_train_emnist: 10
+  num_train_fashionmnist: 0
+  num_train_cifar10: 0
+  num_train_cifar100: 0
+  num_train_usps: 0
+  label_mapping: independent
+================================================================================
+==============================    Exp Configs     ==============================
+exp_name: model-heterogeneity
+heterogeneous: true
+dirichlet_alpha: 100
+global_rounds: 30
+local_epochs: 1
+local_loss_fn: CrossEntropyLoss
+local_optim: Adam
+local_lr: 0.001
+batch_size: 64
+sample_frac: 1.0
+test_interval: 1
+metric_type: accuracy
+global_feature_dim: 256
+optim: Adam
+optim_lr: 0.001
+global_gen_epochs: 10
+gen_noise_dim: 128
+gen_optim: Adam
+gen_optim_lr: 0.001
+global_feat_gen_epochs: 10
+feat_gen_noise_dim: 128
+feat_gen_optim: Adam
+feat_gen_optim_lr: 0.001
+feat_gen_div_beta: 1.0
+public_data_ratio: 0.05
+start_mapping_epoch: 20
+gen_observer_weight: 0.0
+index_matching: ddpm
+aggregate_method: dataset_name
+use_new_entropy_method: true
+entropy_ratio: 0.7
+cs_threshold: 0.9
+global_model_epochs: 5
+global_model_optim: Adam
+global_model_optim_lr: 0.001
+global_samples_per_class: 64
+
+================================================================================
+
+==================================================
+Start 30 rounds training by GeFL_DDIM_baseline_total
+Selected client ids: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19]
+--- Round 1 ---
+Client 0 (MNIST) | Target Loss: 1.0155 | DDIM Loss: 0.1122
+Client 1 (MNIST) | Target Loss: 1.4477 | DDIM Loss: 0.1043
+Client 2 (MNIST) | Target Loss: 0.8633 | DDIM Loss: 0.1018
+Client 3 (MNIST) | Target Loss: 0.4429 | DDIM Loss: 0.1068
+Client 4 (MNIST) | Target Loss: 1.6371 | DDIM Loss: 0.1010
+Client 5 (MNIST) | Target Loss: 1.7502 | DDIM Loss: 0.1055
+Client 6 (MNIST) | Target Loss: 1.4889 | DDIM Loss: 0.1008
+Client 7 (MNIST) | Target Loss: 1.3619 | DDIM Loss: 0.0997
+Client 8 (MNIST) | Target Loss: 1.7075 | DDIM Loss: 0.1094
+Client 9 (MNIST) | Target Loss: 1.9422 | DDIM Loss: 0.1039
+Client 11 (EMNIST) | Target Loss: 1.2016 | DDIM Loss: 0.0270
+Client 12 (EMNIST) | Target Loss: 1.3124 | DDIM Loss: 0.0272
+Client 13 (EMNIST) | Target Loss: 0.9189 | DDIM Loss: 0.0264
+Client 14 (EMNIST) | Target Loss: 0.7588 | DDIM Loss: 0.0260
+Client 15 (EMNIST) | Target Loss: 1.4689 | DDIM Loss: 0.0295
+Client 16 (EMNIST) | Target Loss: 2.0775 | DDIM Loss: 0.0257
+Client 17 (EMNIST) | Target Loss: 1.2556 | DDIM Loss: 0.0264
+Client 18 (EMNIST) | Target Loss: 1.1952 | DDIM Loss: 0.0271
+Client 19 (EMNIST) | Target Loss: 1.6406 | DDIM Loss: 0.0264
+Client 20 (EMNIST) | Target Loss: 1.8232 | DDIM Loss: 0.0266
+Selected client ids: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19]
+--- Round 2 ---
+Client 0 (MNIST) | Target Loss: 0.4496 | DDIM Loss: 0.0592
+Client 1 (MNIST) | Target Loss: 0.4311 | DDIM Loss: 0.0587
+Client 2 (MNIST) | Target Loss: 0.1827 | DDIM Loss: 0.0591
+Client 3 (MNIST) | Target Loss: 0.1337 | DDIM Loss: 0.0609
+Client 4 (MNIST) | Target Loss: 0.6157 | DDIM Loss: 0.0581
+Client 5 (MNIST) | Target Loss: 1.2103 | DDIM Loss: 0.0582
+Client 6 (MNIST) | Target Loss: 0.4911 | DDIM Loss: 0.0578
+Client 7 (MNIST) | Target Loss: 0.3115 | DDIM Loss: 0.0569
+Client 8 (MNIST) | Target Loss: 0.9241 | DDIM Loss: 0.0639
+Client 9 (MNIST) | Target Loss: 1.0822 | DDIM Loss: 0.0587
+Client 11 (EMNIST) | Target Loss: 0.7355 | DDIM Loss: 0.0180
+Client 12 (EMNIST) | Target Loss: 0.6721 | DDIM Loss: 0.0176
+Client 13 (EMNIST) | Target Loss: 0.5012 | DDIM Loss: 0.0180
+Client 14 (EMNIST) | Target Loss: 0.4680 | DDIM Loss: 0.0170
+Client 15 (EMNIST) | Target Loss: 0.7542 | DDIM Loss: 0.0180
+Client 16 (EMNIST) | Target Loss: 1.2621 | DDIM Loss: 0.0176
+Client 17 (EMNIST) | Target Loss: 0.6135 | DDIM Loss: 0.0176
+Client 18 (EMNIST) | Target Loss: 0.4916 | DDIM Loss: 0.0177
+Client 19 (EMNIST) | Target Loss: 0.8284 | DDIM Loss: 0.0172
+Client 20 (EMNIST) | Target Loss: 0.8532 | DDIM Loss: 0.0177
+Selected client ids: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19]
+--- Round 3 ---
+Client 0 (MNIST) | Target Loss: 0.3223 | DDIM Loss: 0.0233
+Client 1 (MNIST) | Target Loss: 0.2271 | DDIM Loss: 0.0230
+Client 2 (MNIST) | Target Loss: 0.1255 | DDIM Loss: 0.0234
+Client 3 (MNIST) | Target Loss: 0.1161 | DDIM Loss: 0.0235
+Client 4 (MNIST) | Target Loss: 0.3632 | DDIM Loss: 0.0228
+Client 5 (MNIST) | Target Loss: 0.9963 | DDIM Loss: 0.0232
+Client 6 (MNIST) | Target Loss: 0.2708 | DDIM Loss: 0.0231
+Client 7 (MNIST) | Target Loss: 0.1791 | DDIM Loss: 0.0226
+Client 8 (MNIST) | Target Loss: 0.5564 | DDIM Loss: 0.0237
+Client 9 (MNIST) | Target Loss: 0.6832 | DDIM Loss: 0.0231
+Client 11 (EMNIST) | Target Loss: 0.6418 | DDIM Loss: 0.0122
+Client 12 (EMNIST) | Target Loss: 0.5737 | DDIM Loss: 0.0122
+Client 13 (EMNIST) | Target Loss: 0.4480 | DDIM Loss: 0.0122
+Client 14 (EMNIST) | Target Loss: 0.4233 | DDIM Loss: 0.0123
+Client 15 (EMNIST) | Target Loss: 0.6441 | DDIM Loss: 0.0122
+Client 16 (EMNIST) | Target Loss: 1.0098 | DDIM Loss: 0.0122
+Client 17 (EMNIST) | Target Loss: 0.5239 | DDIM Loss: 0.0123
+Client 18 (EMNIST) | Target Loss: 0.4358 | DDIM Loss: 0.0124
+Client 19 (EMNIST) | Target Loss: 0.6839 | DDIM Loss: 0.0122
+Client 20 (EMNIST) | Target Loss: 0.6949 | DDIM Loss: 0.0122
+Selected client ids: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19]
+--- Round 4 ---
+Client 0 (MNIST) | Target Loss: 0.2672 | DDIM Loss: 0.0191
+Client 1 (MNIST) | Target Loss: 0.1530 | DDIM Loss: 0.0186
+Client 2 (MNIST) | Target Loss: 0.0958 | DDIM Loss: 0.0188
+Client 3 (MNIST) | Target Loss: 0.1054 | DDIM Loss: 0.0190
+Client 4 (MNIST) | Target Loss: 0.2470 | DDIM Loss: 0.0185
+Client 5 (MNIST) | Target Loss: 0.8483 | DDIM Loss: 0.0195
+Client 6 (MNIST) | Target Loss: 0.1864 | DDIM Loss: 0.0185
+Client 7 (MNIST) | Target Loss: 0.1120 | DDIM Loss: 0.0184
+Client 8 (MNIST) | Target Loss: 0.5879 | DDIM Loss: 0.0225
+Client 9 (MNIST) | Target Loss: 0.5023 | DDIM Loss: 0.0181
+Client 11 (EMNIST) | Target Loss: 0.5867 | DDIM Loss: 0.0101
+Client 12 (EMNIST) | Target Loss: 0.5286 | DDIM Loss: 0.0100
+Client 13 (EMNIST) | Target Loss: 0.4187 | DDIM Loss: 0.0100
+Client 14 (EMNIST) | Target Loss: 0.3955 | DDIM Loss: 0.0100
+Client 15 (EMNIST) | Target Loss: 0.6002 | DDIM Loss: 0.0100
+Client 16 (EMNIST) | Target Loss: 0.8744 | DDIM Loss: 0.0099
+Client 17 (EMNIST) | Target Loss: 0.4800 | DDIM Loss: 0.0100
+Client 18 (EMNIST) | Target Loss: 0.4021 | DDIM Loss: 0.0100
+Client 19 (EMNIST) | Target Loss: 0.6161 | DDIM Loss: 0.0100
+Client 20 (EMNIST) | Target Loss: 0.6294 | DDIM Loss: 0.0100
+Selected client ids: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19]
+--- Round 5 ---
+Client 0 (MNIST) | Target Loss: 0.2176 | DDIM Loss: 0.0163
+Client 1 (MNIST) | Target Loss: 0.1203 | DDIM Loss: 0.0159
+Client 2 (MNIST) | Target Loss: 0.0697 | DDIM Loss: 0.0167
+Client 3 (MNIST) | Target Loss: 0.0792 | DDIM Loss: 0.0163
+Client 4 (MNIST) | Target Loss: 0.1962 | DDIM Loss: 0.0168
+Client 5 (MNIST) | Target Loss: 0.7234 | DDIM Loss: 0.0162
+Client 6 (MNIST) | Target Loss: 0.1562 | DDIM Loss: 0.0165
+Client 7 (MNIST) | Target Loss: 0.0978 | DDIM Loss: 0.0165
+Client 8 (MNIST) | Target Loss: 0.3742 | DDIM Loss: 0.0169
+Client 9 (MNIST) | Target Loss: 0.3464 | DDIM Loss: 0.0169
+Client 11 (EMNIST) | Target Loss: 0.5440 | DDIM Loss: 0.0092
+Client 12 (EMNIST) | Target Loss: 0.4966 | DDIM Loss: 0.0091
+Client 13 (EMNIST) | Target Loss: 0.3964 | DDIM Loss: 0.0092
+Client 14 (EMNIST) | Target Loss: 0.3789 | DDIM Loss: 0.0091
+Client 15 (EMNIST) | Target Loss: 0.5606 | DDIM Loss: 0.0091
+Client 16 (EMNIST) | Target Loss: 0.8068 | DDIM Loss: 0.0091
+Client 17 (EMNIST) | Target Loss: 0.4509 | DDIM Loss: 0.0091
+Client 18 (EMNIST) | Target Loss: 0.3796 | DDIM Loss: 0.0092
+Client 19 (EMNIST) | Target Loss: 0.5756 | DDIM Loss: 0.0092
+Client 20 (EMNIST) | Target Loss: 0.5964 | DDIM Loss: 0.0092
+Selected client ids: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19]
+--- Round 6 ---
+Client 0 (MNIST) | Target Loss: 0.1963 | DDIM Loss: 0.0150
+Client 1 (MNIST) | Target Loss: 0.0969 | DDIM Loss: 0.0151
+Client 2 (MNIST) | Target Loss: 0.0510 | DDIM Loss: 0.0151
+Client 3 (MNIST) | Target Loss: 0.0980 | DDIM Loss: 0.0154
+Client 4 (MNIST) | Target Loss: 0.1825 | DDIM Loss: 0.0147
+Client 5 (MNIST) | Target Loss: 0.6448 | DDIM Loss: 0.0156
+Client 6 (MNIST) | Target Loss: 0.1223 | DDIM Loss: 0.0149
+Client 7 (MNIST) | Target Loss: 0.0872 | DDIM Loss: 0.0152
+Client 8 (MNIST) | Target Loss: 0.3013 | DDIM Loss: 0.0179
+Client 9 (MNIST) | Target Loss: 0.2724 | DDIM Loss: 0.0147
+Client 11 (EMNIST) | Target Loss: 0.5191 | DDIM Loss: 0.0088
+Client 12 (EMNIST) | Target Loss: 0.4735 | DDIM Loss: 0.0087
+Client 13 (EMNIST) | Target Loss: 0.3781 | DDIM Loss: 0.0088
+Client 14 (EMNIST) | Target Loss: 0.3594 | DDIM Loss: 0.0088
+Client 15 (EMNIST) | Target Loss: 0.5365 | DDIM Loss: 0.0088
+Client 16 (EMNIST) | Target Loss: 0.7533 | DDIM Loss: 0.0087
+Client 17 (EMNIST) | Target Loss: 0.4314 | DDIM Loss: 0.0087
+Client 18 (EMNIST) | Target Loss: 0.3547 | DDIM Loss: 0.0088
+Client 19 (EMNIST) | Target Loss: 0.5448 | DDIM Loss: 0.0087
+Client 20 (EMNIST) | Target Loss: 0.5559 | DDIM Loss: 0.0088
+Selected client ids: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19]
+--- Round 7 ---
+Client 0 (MNIST) | Target Loss: 0.1672 | DDIM Loss: 0.0139
+Client 1 (MNIST) | Target Loss: 0.0869 | DDIM Loss: 0.0139
+Client 2 (MNIST) | Target Loss: 0.0399 | DDIM Loss: 0.0138
+Client 3 (MNIST) | Target Loss: 0.0402 | DDIM Loss: 0.0140
+Client 4 (MNIST) | Target Loss: 0.1811 | DDIM Loss: 0.0138
+Client 5 (MNIST) | Target Loss: 0.5941 | DDIM Loss: 0.0136
+Client 6 (MNIST) | Target Loss: 0.0991 | DDIM Loss: 0.0140
+Client 7 (MNIST) | Target Loss: 0.0704 | DDIM Loss: 0.0135
+Client 8 (MNIST) | Target Loss: 0.9649 | DDIM Loss: 0.0136
+Client 9 (MNIST) | Target Loss: 0.2248 | DDIM Loss: 0.0141
+Client 11 (EMNIST) | Target Loss: 0.4978 | DDIM Loss: 0.0086
+Client 12 (EMNIST) | Target Loss: 0.4547 | DDIM Loss: 0.0085
+Client 13 (EMNIST) | Target Loss: 0.3595 | DDIM Loss: 0.0085
+Client 14 (EMNIST) | Target Loss: 0.3406 | DDIM Loss: 0.0084
+Client 15 (EMNIST) | Target Loss: 0.5142 | DDIM Loss: 0.0085
+Client 16 (EMNIST) | Target Loss: 0.7204 | DDIM Loss: 0.0084
+Client 17 (EMNIST) | Target Loss: 0.4156 | DDIM Loss: 0.0085
+Client 18 (EMNIST) | Target Loss: 0.3361 | DDIM Loss: 0.0085
+Client 19 (EMNIST) | Target Loss: 0.5260 | DDIM Loss: 0.0085
+Client 20 (EMNIST) | Target Loss: 0.5422 | DDIM Loss: 0.0086
+Selected client ids: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19]
+--- Round 8 ---
+Client 0 (MNIST) | Target Loss: 0.1625 | DDIM Loss: 0.0128
+Client 1 (MNIST) | Target Loss: 0.0748 | DDIM Loss: 0.0126
+Client 2 (MNIST) | Target Loss: 0.0483 | DDIM Loss: 0.0130
+Client 3 (MNIST) | Target Loss: 0.0488 | DDIM Loss: 0.0137
+Client 4 (MNIST) | Target Loss: 0.1702 | DDIM Loss: 0.0130
+Client 5 (MNIST) | Target Loss: 0.5291 | DDIM Loss: 0.0135
+Client 6 (MNIST) | Target Loss: 0.0845 | DDIM Loss: 0.0130
+Client 7 (MNIST) | Target Loss: 0.0493 | DDIM Loss: 0.0129
+Client 8 (MNIST) | Target Loss: 0.7114 | DDIM Loss: 0.0132
+Client 9 (MNIST) | Target Loss: 0.2026 | DDIM Loss: 0.0133
+Client 11 (EMNIST) | Target Loss: 0.4768 | DDIM Loss: 0.0083
+Client 12 (EMNIST) | Target Loss: 0.4401 | DDIM Loss: 0.0083
+Client 13 (EMNIST) | Target Loss: 0.3475 | DDIM Loss: 0.0083
+Client 14 (EMNIST) | Target Loss: 0.3248 | DDIM Loss: 0.0083
+Client 15 (EMNIST) | Target Loss: 0.4912 | DDIM Loss: 0.0083
+Client 16 (EMNIST) | Target Loss: 0.6933 | DDIM Loss: 0.0083
+Client 17 (EMNIST) | Target Loss: 0.4033 | DDIM Loss: 0.0082
+Client 18 (EMNIST) | Target Loss: 0.3184 | DDIM Loss: 0.0083
+Client 19 (EMNIST) | Target Loss: 0.5052 | DDIM Loss: 0.0083
+Client 20 (EMNIST) | Target Loss: 0.5257 | DDIM Loss: 0.0083
+Selected client ids: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19]
+--- Round 9 ---
+Client 0 (MNIST) | Target Loss: 0.1522 | DDIM Loss: 0.0123
+Client 1 (MNIST) | Target Loss: 0.0609 | DDIM Loss: 0.0121
+Client 2 (MNIST) | Target Loss: 0.0502 | DDIM Loss: 0.0122
+Client 3 (MNIST) | Target Loss: 0.0725 | DDIM Loss: 0.0123
+Client 4 (MNIST) | Target Loss: 0.1159 | DDIM Loss: 0.0127
+Client 5 (MNIST) | Target Loss: 0.4943 | DDIM Loss: 0.0121
+Client 6 (MNIST) | Target Loss: 0.0735 | DDIM Loss: 0.0123
+Client 7 (MNIST) | Target Loss: 0.0312 | DDIM Loss: 0.0128
+Client 8 (MNIST) | Target Loss: 0.6226 | DDIM Loss: 0.0145
+Client 9 (MNIST) | Target Loss: 0.1966 | DDIM Loss: 0.0122
+Client 11 (EMNIST) | Target Loss: 0.4613 | DDIM Loss: 0.0082
+Client 12 (EMNIST) | Target Loss: 0.4296 | DDIM Loss: 0.0081
+Client 13 (EMNIST) | Target Loss: 0.3345 | DDIM Loss: 0.0082
+Client 14 (EMNIST) | Target Loss: 0.3138 | DDIM Loss: 0.0081
+Client 15 (EMNIST) | Target Loss: 0.4751 | DDIM Loss: 0.0081
+Client 16 (EMNIST) | Target Loss: 0.6691 | DDIM Loss: 0.0082
+Client 17 (EMNIST) | Target Loss: 0.3899 | DDIM Loss: 0.0082
+Client 18 (EMNIST) | Target Loss: 0.3019 | DDIM Loss: 0.0082
+Client 19 (EMNIST) | Target Loss: 0.4863 | DDIM Loss: 0.0082
+Client 20 (EMNIST) | Target Loss: 0.5145 | DDIM Loss: 0.0082
+Selected client ids: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19]
+--- Round 10 ---
+Client 0 (MNIST) | Target Loss: 0.1286 | DDIM Loss: 0.0119
+Client 1 (MNIST) | Target Loss: 0.0359 | DDIM Loss: 0.0118
+Client 2 (MNIST) | Target Loss: 0.0339 | DDIM Loss: 0.0118
+Client 3 (MNIST) | Target Loss: 0.0278 | DDIM Loss: 0.0122
+Client 4 (MNIST) | Target Loss: 0.1402 | DDIM Loss: 0.0118
+Client 5 (MNIST) | Target Loss: 0.4627 | DDIM Loss: 0.0140
+Client 6 (MNIST) | Target Loss: 0.0678 | DDIM Loss: 0.0118
+Client 7 (MNIST) | Target Loss: 0.0486 | DDIM Loss: 0.0119
+Client 8 (MNIST) | Target Loss: 0.5727 | DDIM Loss: 0.0155
+Client 9 (MNIST) | Target Loss: 0.1210 | DDIM Loss: 0.0118
+Client 11 (EMNIST) | Target Loss: 0.4467 | DDIM Loss: 0.0081
+Client 12 (EMNIST) | Target Loss: 0.4166 | DDIM Loss: 0.0081
+Client 13 (EMNIST) | Target Loss: 0.3196 | DDIM Loss: 0.0080
+Client 14 (EMNIST) | Target Loss: 0.3008 | DDIM Loss: 0.0081
+Client 15 (EMNIST) | Target Loss: 0.4646 | DDIM Loss: 0.0080
+Client 16 (EMNIST) | Target Loss: 0.6472 | DDIM Loss: 0.0081
+Client 17 (EMNIST) | Target Loss: 0.3790 | DDIM Loss: 0.0081
+Client 18 (EMNIST) | Target Loss: 0.2857 | DDIM Loss: 0.0080
+Client 19 (EMNIST) | Target Loss: 0.4711 | DDIM Loss: 0.0081
+Client 20 (EMNIST) | Target Loss: 0.4960 | DDIM Loss: 0.0081
+Selected client ids: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19]
+--- Round 11 ---
+Client 0 (MNIST) | Target Loss: 0.1425 | DDIM Loss: 0.0114
+Client 1 (MNIST) | Target Loss: 0.0388 | DDIM Loss: 0.0112
+Client 2 (MNIST) | Target Loss: 0.0138 | DDIM Loss: 0.0115
+Client 3 (MNIST) | Target Loss: 0.0210 | DDIM Loss: 0.0112
+Client 4 (MNIST) | Target Loss: 0.1202 | DDIM Loss: 0.0114
+Client 5 (MNIST) | Target Loss: 0.4209 | DDIM Loss: 0.0115
+Client 6 (MNIST) | Target Loss: 0.0595 | DDIM Loss: 0.0115
+Client 7 (MNIST) | Target Loss: 0.0230 | DDIM Loss: 0.0113
+Client 8 (MNIST) | Target Loss: 0.4602 | DDIM Loss: 0.0114
+Client 9 (MNIST) | Target Loss: 0.1624 | DDIM Loss: 0.0114
+Client 11 (EMNIST) | Target Loss: 0.4390 | DDIM Loss: 0.0080
+Client 12 (EMNIST) | Target Loss: 0.4074 | DDIM Loss: 0.0079
+Client 13 (EMNIST) | Target Loss: 0.3064 | DDIM Loss: 0.0080
+Client 14 (EMNIST) | Target Loss: 0.2866 | DDIM Loss: 0.0079
+Client 15 (EMNIST) | Target Loss: 0.4482 | DDIM Loss: 0.0079
+Client 16 (EMNIST) | Target Loss: 0.6334 | DDIM Loss: 0.0080
+Client 17 (EMNIST) | Target Loss: 0.3693 | DDIM Loss: 0.0080
+Client 18 (EMNIST) | Target Loss: 0.2681 | DDIM Loss: 0.0079
+Client 19 (EMNIST) | Target Loss: 0.4602 | DDIM Loss: 0.0080
+Client 20 (EMNIST) | Target Loss: 0.4920 | DDIM Loss: 0.0080
+Selected client ids: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19]
+--- Round 12 ---
+Client 0 (MNIST) | Target Loss: 0.1161 | DDIM Loss: 0.0113
+Client 1 (MNIST) | Target Loss: 0.0475 | DDIM Loss: 0.0111
+Client 2 (MNIST) | Target Loss: 0.0216 | DDIM Loss: 0.0112
+Client 3 (MNIST) | Target Loss: 0.0208 | DDIM Loss: 0.0114
+Client 4 (MNIST) | Target Loss: 0.1025 | DDIM Loss: 0.0113
+Client 5 (MNIST) | Target Loss: 0.3918 | DDIM Loss: 0.0110
+Client 6 (MNIST) | Target Loss: 0.0560 | DDIM Loss: 0.0109
+Client 7 (MNIST) | Target Loss: 0.0404 | DDIM Loss: 0.0110
+Client 8 (MNIST) | Target Loss: 0.3982 | DDIM Loss: 0.0133
+Client 9 (MNIST) | Target Loss: 0.0966 | DDIM Loss: 0.0112
+Client 11 (EMNIST) | Target Loss: 0.4281 | DDIM Loss: 0.0079
+Client 12 (EMNIST) | Target Loss: 0.3967 | DDIM Loss: 0.0078
+Client 13 (EMNIST) | Target Loss: 0.2947 | DDIM Loss: 0.0079
+Client 14 (EMNIST) | Target Loss: 0.2725 | DDIM Loss: 0.0078
+Client 15 (EMNIST) | Target Loss: 0.4393 | DDIM Loss: 0.0078
+Client 16 (EMNIST) | Target Loss: 0.6187 | DDIM Loss: 0.0078
+Client 17 (EMNIST) | Target Loss: 0.3601 | DDIM Loss: 0.0079
+Client 18 (EMNIST) | Target Loss: 0.2559 | DDIM Loss: 0.0078
+Client 19 (EMNIST) | Target Loss: 0.4507 | DDIM Loss: 0.0079
+Client 20 (EMNIST) | Target Loss: 0.4799 | DDIM Loss: 0.0079
+Selected client ids: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19]
+--- Round 13 ---
+Client 0 (MNIST) | Target Loss: 0.0947 | DDIM Loss: 0.0108
+Client 1 (MNIST) | Target Loss: 0.0261 | DDIM Loss: 0.0104
+Client 2 (MNIST) | Target Loss: 0.0154 | DDIM Loss: 0.0106
+Client 3 (MNIST) | Target Loss: 0.0138 | DDIM Loss: 0.0109
+Client 4 (MNIST) | Target Loss: 0.1010 | DDIM Loss: 0.0109
+Client 5 (MNIST) | Target Loss: 0.3301 | DDIM Loss: 0.0106
+Client 6 (MNIST) | Target Loss: 0.0427 | DDIM Loss: 0.0108
+Client 7 (MNIST) | Target Loss: 0.0271 | DDIM Loss: 0.0110
+Client 8 (MNIST) | Target Loss: 0.3593 | DDIM Loss: 0.0104
+Client 9 (MNIST) | Target Loss: 0.1034 | DDIM Loss: 0.0107
+Client 11 (EMNIST) | Target Loss: 0.4199 | DDIM Loss: 0.0078
+Client 12 (EMNIST) | Target Loss: 0.3888 | DDIM Loss: 0.0078
+Client 13 (EMNIST) | Target Loss: 0.2806 | DDIM Loss: 0.0078
+Client 14 (EMNIST) | Target Loss: 0.2578 | DDIM Loss: 0.0078
+Client 15 (EMNIST) | Target Loss: 0.4290 | DDIM Loss: 0.0078
+Client 16 (EMNIST) | Target Loss: 0.5978 | DDIM Loss: 0.0077
+Client 17 (EMNIST) | Target Loss: 0.3537 | DDIM Loss: 0.0078
+Client 18 (EMNIST) | Target Loss: 0.2427 | DDIM Loss: 0.0078
+Client 19 (EMNIST) | Target Loss: 0.4375 | DDIM Loss: 0.0078
+Client 20 (EMNIST) | Target Loss: 0.4671 | DDIM Loss: 0.0078
+Selected client ids: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19]
+--- Round 14 ---
+Client 0 (MNIST) | Target Loss: 0.0848 | DDIM Loss: 0.0106
+Client 1 (MNIST) | Target Loss: 0.0324 | DDIM Loss: 0.0108
+Client 2 (MNIST) | Target Loss: 0.0138 | DDIM Loss: 0.0104
+Client 3 (MNIST) | Target Loss: 0.0381 | DDIM Loss: 0.0103
+Client 4 (MNIST) | Target Loss: 0.1028 | DDIM Loss: 0.0104
+Client 5 (MNIST) | Target Loss: 0.3170 | DDIM Loss: 0.0130
+Client 6 (MNIST) | Target Loss: 0.0401 | DDIM Loss: 0.0105
+Client 7 (MNIST) | Target Loss: 0.0216 | DDIM Loss: 0.0104
+Client 8 (MNIST) | Target Loss: 0.5174 | DDIM Loss: 0.0103
+Client 9 (MNIST) | Target Loss: 0.0789 | DDIM Loss: 0.0103
+Client 11 (EMNIST) | Target Loss: 0.4111 | DDIM Loss: 0.0078
+Client 12 (EMNIST) | Target Loss: 0.3828 | DDIM Loss: 0.0078
+Client 13 (EMNIST) | Target Loss: 0.2680 | DDIM Loss: 0.0078
+Client 14 (EMNIST) | Target Loss: 0.2464 | DDIM Loss: 0.0077
+Client 15 (EMNIST) | Target Loss: 0.4183 | DDIM Loss: 0.0078
+Client 16 (EMNIST) | Target Loss: 0.5885 | DDIM Loss: 0.0077
+Client 17 (EMNIST) | Target Loss: 0.3454 | DDIM Loss: 0.0077
+Client 18 (EMNIST) | Target Loss: 0.2314 | DDIM Loss: 0.0077
+Client 19 (EMNIST) | Target Loss: 0.4247 | DDIM Loss: 0.0077
+Client 20 (EMNIST) | Target Loss: 0.4724 | DDIM Loss: 0.0078
+Selected client ids: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19]
+--- Round 15 ---
+Client 0 (MNIST) | Target Loss: 0.0802 | DDIM Loss: 0.0102
+Client 1 (MNIST) | Target Loss: 0.0220 | DDIM Loss: 0.0099
+Client 2 (MNIST) | Target Loss: 0.0077 | DDIM Loss: 0.0102
+Client 3 (MNIST) | Target Loss: 0.0655 | DDIM Loss: 0.0106
+Client 4 (MNIST) | Target Loss: 0.0981 | DDIM Loss: 0.0106
+Client 5 (MNIST) | Target Loss: 0.3200 | DDIM Loss: 0.0100
+Client 6 (MNIST) | Target Loss: 0.0383 | DDIM Loss: 0.0102
+Client 7 (MNIST) | Target Loss: 0.0276 | DDIM Loss: 0.0103
+Client 8 (MNIST) | Target Loss: 0.9499 | DDIM Loss: 0.0101
+Client 9 (MNIST) | Target Loss: 0.0642 | DDIM Loss: 0.0102
+Client 11 (EMNIST) | Target Loss: 0.4053 | DDIM Loss: 0.0077
+Client 12 (EMNIST) | Target Loss: 0.3749 | DDIM Loss: 0.0077
+Client 13 (EMNIST) | Target Loss: 0.2525 | DDIM Loss: 0.0077
+Client 14 (EMNIST) | Target Loss: 0.2282 | DDIM Loss: 0.0077
+Client 15 (EMNIST) | Target Loss: 0.4120 | DDIM Loss: 0.0077
+Client 16 (EMNIST) | Target Loss: 0.5812 | DDIM Loss: 0.0077
+Client 17 (EMNIST) | Target Loss: 0.3382 | DDIM Loss: 0.0077
+Client 18 (EMNIST) | Target Loss: 0.2142 | DDIM Loss: 0.0077
+Client 19 (EMNIST) | Target Loss: 0.4247 | DDIM Loss: 0.0077
+Client 20 (EMNIST) | Target Loss: 0.4585 | DDIM Loss: 0.0077
+Selected client ids: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19]
+--- Round 16 ---
+Client 0 (MNIST) | Target Loss: 0.0929 | DDIM Loss: 0.0100
+Client 1 (MNIST) | Target Loss: 0.0185 | DDIM Loss: 0.0100
+Client 2 (MNIST) | Target Loss: 0.0046 | DDIM Loss: 0.0102
+Client 3 (MNIST) | Target Loss: 0.0620 | DDIM Loss: 0.0103
+Client 4 (MNIST) | Target Loss: 0.0686 | DDIM Loss: 0.0103
+Client 5 (MNIST) | Target Loss: 0.3512 | DDIM Loss: 0.0101
+Client 6 (MNIST) | Target Loss: 0.0323 | DDIM Loss: 0.0104
+Client 7 (MNIST) | Target Loss: 0.0162 | DDIM Loss: 0.0100
+Client 8 (MNIST) | Target Loss: 0.6858 | DDIM Loss: 0.0108
+Client 9 (MNIST) | Target Loss: 0.0795 | DDIM Loss: 0.0102
+Client 11 (EMNIST) | Target Loss: 0.3967 | DDIM Loss: 0.0076
+Client 12 (EMNIST) | Target Loss: 0.3708 | DDIM Loss: 0.0076
+Client 13 (EMNIST) | Target Loss: 0.2371 | DDIM Loss: 0.0077
+Client 14 (EMNIST) | Target Loss: 0.2106 | DDIM Loss: 0.0076
+Client 15 (EMNIST) | Target Loss: 0.4016 | DDIM Loss: 0.0076
+Client 16 (EMNIST) | Target Loss: 0.5692 | DDIM Loss: 0.0076
+Client 17 (EMNIST) | Target Loss: 0.3315 | DDIM Loss: 0.0076
+Client 18 (EMNIST) | Target Loss: 0.2050 | DDIM Loss: 0.0076
+Client 19 (EMNIST) | Target Loss: 0.4107 | DDIM Loss: 0.0077
+Client 20 (EMNIST) | Target Loss: 0.4529 | DDIM Loss: 0.0077
+Selected client ids: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19]
+--- Round 17 ---
+Client 0 (MNIST) | Target Loss: 0.0673 | DDIM Loss: 0.0101
+Client 1 (MNIST) | Target Loss: 0.0128 | DDIM Loss: 0.0099
+Client 2 (MNIST) | Target Loss: 0.0118 | DDIM Loss: 0.0101
+Client 3 (MNIST) | Target Loss: 0.0155 | DDIM Loss: 0.0106
+Client 4 (MNIST) | Target Loss: 0.0732 | DDIM Loss: 0.0097
+Client 5 (MNIST) | Target Loss: 0.3201 | DDIM Loss: 0.0099
+Client 6 (MNIST) | Target Loss: 0.0289 | DDIM Loss: 0.0098
+Client 7 (MNIST) | Target Loss: 0.0418 | DDIM Loss: 0.0100
+Client 8 (MNIST) | Target Loss: 0.5843 | DDIM Loss: 0.0117
+Client 9 (MNIST) | Target Loss: 0.1142 | DDIM Loss: 0.0102
+Client 11 (EMNIST) | Target Loss: 0.3903 | DDIM Loss: 0.0076
+Client 12 (EMNIST) | Target Loss: 0.3614 | DDIM Loss: 0.0076
+Client 13 (EMNIST) | Target Loss: 0.2251 | DDIM Loss: 0.0076
+Client 14 (EMNIST) | Target Loss: 0.1961 | DDIM Loss: 0.0076
+Client 15 (EMNIST) | Target Loss: 0.3979 | DDIM Loss: 0.0075
+Client 16 (EMNIST) | Target Loss: 0.5563 | DDIM Loss: 0.0075
+Client 17 (EMNIST) | Target Loss: 0.3249 | DDIM Loss: 0.0076
+Client 18 (EMNIST) | Target Loss: 0.1907 | DDIM Loss: 0.0076
+Client 19 (EMNIST) | Target Loss: 0.4058 | DDIM Loss: 0.0076
+Client 20 (EMNIST) | Target Loss: 0.4505 | DDIM Loss: 0.0076
+Selected client ids: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19]
+--- Round 18 ---
+Client 0 (MNIST) | Target Loss: 0.0894 | DDIM Loss: 0.0097
+Client 1 (MNIST) | Target Loss: 0.0146 | DDIM Loss: 0.0097
+Client 2 (MNIST) | Target Loss: 0.0368 | DDIM Loss: 0.0098
+Client 3 (MNIST) | Target Loss: 0.0117 | DDIM Loss: 0.0098
+Client 4 (MNIST) | Target Loss: 0.0707 | DDIM Loss: 0.0097
+Client 5 (MNIST) | Target Loss: 0.2710 | DDIM Loss: 0.0094
+Client 6 (MNIST) | Target Loss: 0.0359 | DDIM Loss: 0.0097
+Client 7 (MNIST) | Target Loss: 0.0063 | DDIM Loss: 0.0098
+Client 8 (MNIST) | Target Loss: 0.4943 | DDIM Loss: 0.0102
+Client 9 (MNIST) | Target Loss: 0.0831 | DDIM Loss: 0.0099
+Client 11 (EMNIST) | Target Loss: 0.3932 | DDIM Loss: 0.0076
+Client 12 (EMNIST) | Target Loss: 0.3577 | DDIM Loss: 0.0075
+Client 13 (EMNIST) | Target Loss: 0.2107 | DDIM Loss: 0.0075
+Client 14 (EMNIST) | Target Loss: 0.1760 | DDIM Loss: 0.0075
+Client 15 (EMNIST) | Target Loss: 0.3929 | DDIM Loss: 0.0075
+Client 16 (EMNIST) | Target Loss: 0.5450 | DDIM Loss: 0.0075
+Client 17 (EMNIST) | Target Loss: 0.3211 | DDIM Loss: 0.0076
+Client 18 (EMNIST) | Target Loss: 0.1804 | DDIM Loss: 0.0075
+Client 19 (EMNIST) | Target Loss: 0.4000 | DDIM Loss: 0.0076
+Client 20 (EMNIST) | Target Loss: 0.4420 | DDIM Loss: 0.0076
+Selected client ids: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19]
+--- Round 19 ---
+Client 0 (MNIST) | Target Loss: 0.0629 | DDIM Loss: 0.0097
+Client 1 (MNIST) | Target Loss: 0.0269 | DDIM Loss: 0.0095
+Client 2 (MNIST) | Target Loss: 0.0372 | DDIM Loss: 0.0096
+Client 3 (MNIST) | Target Loss: 0.0058 | DDIM Loss: 0.0098
+Client 4 (MNIST) | Target Loss: 0.0554 | DDIM Loss: 0.0095
+Client 5 (MNIST) | Target Loss: 0.2962 | DDIM Loss: 0.0097
+Client 6 (MNIST) | Target Loss: 0.0253 | DDIM Loss: 0.0098
+Client 7 (MNIST) | Target Loss: 0.0012 | DDIM Loss: 0.0095
+Client 8 (MNIST) | Target Loss: 1.1931 | DDIM Loss: 0.0099
+Client 9 (MNIST) | Target Loss: 0.0589 | DDIM Loss: 0.0096
+Client 11 (EMNIST) | Target Loss: 0.3796 | DDIM Loss: 0.0075
+Client 12 (EMNIST) | Target Loss: 0.3504 | DDIM Loss: 0.0074
+Client 13 (EMNIST) | Target Loss: 0.1922 | DDIM Loss: 0.0075
+Client 14 (EMNIST) | Target Loss: 0.1600 | DDIM Loss: 0.0075
+Client 15 (EMNIST) | Target Loss: 0.3855 | DDIM Loss: 0.0075
+Client 16 (EMNIST) | Target Loss: 0.5364 | DDIM Loss: 0.0075
+Client 17 (EMNIST) | Target Loss: 0.3129 | DDIM Loss: 0.0075
+Client 18 (EMNIST) | Target Loss: 0.1753 | DDIM Loss: 0.0075
+Client 19 (EMNIST) | Target Loss: 0.3922 | DDIM Loss: 0.0075
+Client 20 (EMNIST) | Target Loss: 0.4405 | DDIM Loss: 0.0075
+Selected client ids: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19]
+--- Round 20 ---
+Client 0 (MNIST) | Target Loss: 0.0731 | DDIM Loss: 0.0097
+Client 1 (MNIST) | Target Loss: 0.0176 | DDIM Loss: 0.0093
+Client 2 (MNIST) | Target Loss: 0.0201 | DDIM Loss: 0.0097
+Client 3 (MNIST) | Target Loss: 0.0048 | DDIM Loss: 0.0099
+Client 4 (MNIST) | Target Loss: 0.0607 | DDIM Loss: 0.0095
+Client 5 (MNIST) | Target Loss: 0.2684 | DDIM Loss: 0.0100
+Client 6 (MNIST) | Target Loss: 0.0283 | DDIM Loss: 0.0092
+Client 7 (MNIST) | Target Loss: 0.0002 | DDIM Loss: 0.0094
+Client 8 (MNIST) | Target Loss: 0.8605 | DDIM Loss: 0.0095
+Client 9 (MNIST) | Target Loss: 0.0744 | DDIM Loss: 0.0093
+Client 11 (EMNIST) | Target Loss: 0.3839 | DDIM Loss: 0.0075
+Client 12 (EMNIST) | Target Loss: 0.3451 | DDIM Loss: 0.0074
+Client 13 (EMNIST) | Target Loss: 0.1805 | DDIM Loss: 0.0075
+Client 14 (EMNIST) | Target Loss: 0.1386 | DDIM Loss: 0.0074
+Client 15 (EMNIST) | Target Loss: 0.3753 | DDIM Loss: 0.0074
+Client 16 (EMNIST) | Target Loss: 0.5287 | DDIM Loss: 0.0074
+Client 17 (EMNIST) | Target Loss: 0.3101 | DDIM Loss: 0.0075
+Client 18 (EMNIST) | Target Loss: 0.1634 | DDIM Loss: 0.0074
+Client 19 (EMNIST) | Target Loss: 0.3846 | DDIM Loss: 0.0074
+Client 20 (EMNIST) | Target Loss: 0.4375 | DDIM Loss: 0.0074
+[Server] Performing Independent Label Mapping (All Different)...
+
+==================================================
+Label Mapping Summary:
+Global ID = 0  | from: MNIST: '0'
+Global ID = 1  | from: MNIST: '1'
+Global ID = 2  | from: MNIST: '2'
+Global ID = 3  | from: MNIST: '3'
+Global ID = 4  | from: MNIST: '4'
+Global ID = 5  | from: MNIST: '5'
+Global ID = 6  | from: MNIST: '6'
+Global ID = 7  | from: MNIST: '7'
+Global ID = 8  | from: MNIST: '8'
+Global ID = 9  | from: MNIST: '9'
+Global ID = 10 | from: EMNIST: '0'
+Global ID = 11 | from: EMNIST: '1'
+Global ID = 12 | from: EMNIST: '2'
+Global ID = 13 | from: EMNIST: '3'
+Global ID = 14 | from: EMNIST: '4'
+Global ID = 15 | from: EMNIST: '5'
+Global ID = 16 | from: EMNIST: '6'
+Global ID = 17 | from: EMNIST: '7'
+Global ID = 18 | from: EMNIST: '8'
+Global ID = 19 | from: EMNIST: '9'
+Global ID = 20 | from: EMNIST: 'A'
+Global ID = 21 | from: EMNIST: 'B'
+Global ID = 22 | from: EMNIST: 'C'
+Global ID = 23 | from: EMNIST: 'D'
+Global ID = 24 | from: EMNIST: 'E'
+Global ID = 25 | from: EMNIST: 'F'
+Global ID = 26 | from: EMNIST: 'G'
+Global ID = 27 | from: EMNIST: 'H'
+Global ID = 28 | from: EMNIST: 'I'
+Global ID = 29 | from: EMNIST: 'J'
+Global ID = 30 | from: EMNIST: 'K'
+Global ID = 31 | from: EMNIST: 'L'
+Global ID = 32 | from: EMNIST: 'M'
+Global ID = 33 | from: EMNIST: 'N'
+Global ID = 34 | from: EMNIST: 'O'
+Global ID = 35 | from: EMNIST: 'P'
+Global ID = 36 | from: EMNIST: 'Q'
+Global ID = 37 | from: EMNIST: 'R'
+Global ID = 38 | from: EMNIST: 'S'
+Global ID = 39 | from: EMNIST: 'T'
+Global ID = 40 | from: EMNIST: 'U'
+Global ID = 41 | from: EMNIST: 'V'
+Global ID = 42 | from: EMNIST: 'W'
+Global ID = 43 | from: EMNIST: 'X'
+Global ID = 44 | from: EMNIST: 'Y'
+Global ID = 45 | from: EMNIST: 'Z'
+Global ID = 46 | from: EMNIST: 'a'
+Global ID = 47 | from: EMNIST: 'b'
+Global ID = 48 | from: EMNIST: 'c'
+Global ID = 49 | from: EMNIST: 'd'
+Global ID = 50 | from: EMNIST: 'e'
+Global ID = 51 | from: EMNIST: 'f'
+Global ID = 52 | from: EMNIST: 'g'
+Global ID = 53 | from: EMNIST: 'h'
+Global ID = 54 | from: EMNIST: 'i'
+Global ID = 55 | from: EMNIST: 'j'
+Global ID = 56 | from: EMNIST: 'k'
+Global ID = 57 | from: EMNIST: 'l'
+Global ID = 58 | from: EMNIST: 'm'
+Global ID = 59 | from: EMNIST: 'n'
+Global ID = 60 | from: EMNIST: 'o'
+Global ID = 61 | from: EMNIST: 'p'
+Global ID = 62 | from: EMNIST: 'q'
+Global ID = 63 | from: EMNIST: 'r'
+Global ID = 64 | from: EMNIST: 's'
+Global ID = 65 | from: EMNIST: 't'
+Global ID = 66 | from: EMNIST: 'u'
+Global ID = 67 | from: EMNIST: 'v'
+Global ID = 68 | from: EMNIST: 'w'
+Global ID = 69 | from: EMNIST: 'x'
+Global ID = 70 | from: EMNIST: 'y'
+Global ID = 71 | from: EMNIST: 'z'
+==================================================
+
+Initializing Global Inference Model with 72 classes...
+Epoch 0 Loss: 3.4587
+Epoch 1 Loss: 2.1273
+Epoch 2 Loss: 1.4850
+Epoch 3 Loss: 1.1603
+Epoch 4 Loss: 0.9267
+[Server] Global Inference Model Acc (MNIST) (Round 20): 51.74% (Tested on 9095 samples)
+[Server] Global Inference Model Acc (EMNIST) (Round 20): 37.19% (Tested on 105779 samples)
+[Server] Global Inference Model Acc (Mix) (Round 20): 38.34% (Tested on 114874 samples)
+Selected client ids: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19]
+--- Round 21 ---
+Client 0 (MNIST) | Target Loss: 0.0000 | DDIM Loss: 0.0096
+Client 1 (MNIST) | Target Loss: 0.0000 | DDIM Loss: 0.0094
+Client 2 (MNIST) | Target Loss: 0.0000 | DDIM Loss: 0.0095
+Client 3 (MNIST) | Target Loss: 0.0000 | DDIM Loss: 0.0106
+Client 4 (MNIST) | Target Loss: 0.0000 | DDIM Loss: 0.0096
+Client 5 (MNIST) | Target Loss: 0.0000 | DDIM Loss: 0.0096
+Client 6 (MNIST) | Target Loss: 0.0000 | DDIM Loss: 0.0095
+Client 7 (MNIST) | Target Loss: 0.0000 | DDIM Loss: 0.0095
+Client 8 (MNIST) | Target Loss: 0.0000 | DDIM Loss: 0.0091
+Client 9 (MNIST) | Target Loss: 0.0000 | DDIM Loss: 0.0093
+Client 11 (EMNIST) | Target Loss: 0.0000 | DDIM Loss: 0.0074
+Client 12 (EMNIST) | Target Loss: 0.0000 | DDIM Loss: 0.0074
+Client 13 (EMNIST) | Target Loss: 0.0000 | DDIM Loss: 0.0074
+Client 14 (EMNIST) | Target Loss: 0.0000 | DDIM Loss: 0.0074
+Client 15 (EMNIST) | Target Loss: 0.0000 | DDIM Loss: 0.0074
+Client 16 (EMNIST) | Target Loss: 0.0000 | DDIM Loss: 0.0074
+Client 17 (EMNIST) | Target Loss: 0.0000 | DDIM Loss: 0.0074
+Client 18 (EMNIST) | Target Loss: 0.0000 | DDIM Loss: 0.0074
+Client 19 (EMNIST) | Target Loss: 0.0000 | DDIM Loss: 0.0074
+Client 20 (EMNIST) | Target Loss: 0.0000 | DDIM Loss: 0.0075
+Epoch 0 Loss: 1.2163
+Epoch 1 Loss: 0.8355
+Epoch 2 Loss: 0.6910
+Epoch 3 Loss: 0.5776
+Epoch 4 Loss: 0.4307
+[Server] Global Inference Model Acc (MNIST) (Round 21): 1.61% (Tested on 9095 samples)
+[Server] Global Inference Model Acc (EMNIST) (Round 21): 40.13% (Tested on 105779 samples)
+[Server] Global Inference Model Acc (Mix) (Round 21): 37.08% (Tested on 114874 samples)
+Selected client ids: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19]
+--- Round 22 ---
+Client 0 (MNIST) | Target Loss: 0.0000 | DDIM Loss: 0.0092
+Client 1 (MNIST) | Target Loss: 0.0000 | DDIM Loss: 0.0094
+Client 2 (MNIST) | Target Loss: 0.0000 | DDIM Loss: 0.0095
+Client 3 (MNIST) | Target Loss: 0.0000 | DDIM Loss: 0.0090
+Client 4 (MNIST) | Target Loss: 0.0000 | DDIM Loss: 0.0095
+Client 5 (MNIST) | Target Loss: 0.0000 | DDIM Loss: 0.0094
+Client 6 (MNIST) | Target Loss: 0.0000 | DDIM Loss: 0.0093
+Client 7 (MNIST) | Target Loss: 0.0000 | DDIM Loss: 0.0092
+Client 8 (MNIST) | Target Loss: 0.0000 | DDIM Loss: 0.0096
+Client 9 (MNIST) | Target Loss: 0.0000 | DDIM Loss: 0.0095
+Client 11 (EMNIST) | Target Loss: 0.0000 | DDIM Loss: 0.0074
+Client 12 (EMNIST) | Target Loss: 0.0000 | DDIM Loss: 0.0074
+Client 13 (EMNIST) | Target Loss: 0.0000 | DDIM Loss: 0.0074
+Client 14 (EMNIST) | Target Loss: 0.0000 | DDIM Loss: 0.0073
+Client 15 (EMNIST) | Target Loss: 0.0000 | DDIM Loss: 0.0073
+Client 16 (EMNIST) | Target Loss: 0.0000 | DDIM Loss: 0.0073
+Client 17 (EMNIST) | Target Loss: 0.0000 | DDIM Loss: 0.0074
+Client 18 (EMNIST) | Target Loss: 0.0000 | DDIM Loss: 0.0074
+Client 19 (EMNIST) | Target Loss: 0.0000 | DDIM Loss: 0.0074
+Client 20 (EMNIST) | Target Loss: 0.0000 | DDIM Loss: 0.0074
+Epoch 0 Loss: 1.1359
+Epoch 1 Loss: 0.7107
+Epoch 2 Loss: 0.5380
+Epoch 3 Loss: 0.4392
+Epoch 4 Loss: 0.3514
+[Server] Global Inference Model Acc (MNIST) (Round 22): 3.17% (Tested on 9095 samples)
+[Server] Global Inference Model Acc (EMNIST) (Round 22): 44.85% (Tested on 105779 samples)
+[Server] Global Inference Model Acc (Mix) (Round 22): 41.55% (Tested on 114874 samples)
+Selected client ids: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19]
+--- Round 23 ---
+Client 0 (MNIST) | Target Loss: 0.0000 | DDIM Loss: 0.0089
+Client 1 (MNIST) | Target Loss: 0.0000 | DDIM Loss: 0.0091
+Client 2 (MNIST) | Target Loss: 0.0000 | DDIM Loss: 0.0091
+Client 3 (MNIST) | Target Loss: 0.0000 | DDIM Loss: 0.0092
+Client 4 (MNIST) | Target Loss: 0.0000 | DDIM Loss: 0.0092
+Client 5 (MNIST) | Target Loss: 0.0000 | DDIM Loss: 0.0119
+Client 6 (MNIST) | Target Loss: 0.0000 | DDIM Loss: 0.0093
+Client 7 (MNIST) | Target Loss: 0.0000 | DDIM Loss: 0.0090
+Client 8 (MNIST) | Target Loss: 0.0000 | DDIM Loss: 0.0092
+Client 9 (MNIST) | Target Loss: 0.0000 | DDIM Loss: 0.0094
+Client 11 (EMNIST) | Target Loss: 0.0000 | DDIM Loss: 0.0074
+Client 12 (EMNIST) | Target Loss: 0.0000 | DDIM Loss: 0.0073
+Client 13 (EMNIST) | Target Loss: 0.0000 | DDIM Loss: 0.0074
+Client 14 (EMNIST) | Target Loss: 0.0000 | DDIM Loss: 0.0073
+Client 15 (EMNIST) | Target Loss: 0.0000 | DDIM Loss: 0.0073
+Client 16 (EMNIST) | Target Loss: 0.0000 | DDIM Loss: 0.0073
+Client 17 (EMNIST) | Target Loss: 0.0000 | DDIM Loss: 0.0074
+Client 18 (EMNIST) | Target Loss: 0.0000 | DDIM Loss: 0.0073
+Client 19 (EMNIST) | Target Loss: 0.0000 | DDIM Loss: 0.0073
+Client 20 (EMNIST) | Target Loss: 0.0000 | DDIM Loss: 0.0074
+Epoch 0 Loss: 0.9020
+Epoch 1 Loss: 0.5211
+Epoch 2 Loss: 0.3867
+Epoch 3 Loss: 0.2949
+Epoch 4 Loss: 0.2640
+[Server] Global Inference Model Acc (MNIST) (Round 23): 8.26% (Tested on 9095 samples)
+[Server] Global Inference Model Acc (EMNIST) (Round 23): 46.78% (Tested on 105779 samples)
+[Server] Global Inference Model Acc (Mix) (Round 23): 43.73% (Tested on 114874 samples)
+Selected client ids: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19]
+--- Round 24 ---
+Client 0 (MNIST) | Target Loss: 0.0000 | DDIM Loss: 0.0089
+Client 1 (MNIST) | Target Loss: 0.0000 | DDIM Loss: 0.0094
+Client 2 (MNIST) | Target Loss: 0.0000 | DDIM Loss: 0.0092
+Client 3 (MNIST) | Target Loss: 0.0000 | DDIM Loss: 0.0095
+Client 4 (MNIST) | Target Loss: 0.0000 | DDIM Loss: 0.0093
+Client 5 (MNIST) | Target Loss: 0.0000 | DDIM Loss: 0.0089
+Client 6 (MNIST) | Target Loss: 0.0000 | DDIM Loss: 0.0092
+Client 7 (MNIST) | Target Loss: 0.0000 | DDIM Loss: 0.0089
+Client 8 (MNIST) | Target Loss: 0.0000 | DDIM Loss: 0.0094
+Client 9 (MNIST) | Target Loss: 0.0000 | DDIM Loss: 0.0090
+Client 11 (EMNIST) | Target Loss: 0.0000 | DDIM Loss: 0.0073
+Client 12 (EMNIST) | Target Loss: 0.0000 | DDIM Loss: 0.0073
+Client 13 (EMNIST) | Target Loss: 0.0000 | DDIM Loss: 0.0073
+Client 14 (EMNIST) | Target Loss: 0.0000 | DDIM Loss: 0.0073
+Client 15 (EMNIST) | Target Loss: 0.0000 | DDIM Loss: 0.0073
+Client 16 (EMNIST) | Target Loss: 0.0000 | DDIM Loss: 0.0073
+Client 17 (EMNIST) | Target Loss: 0.0000 | DDIM Loss: 0.0073
+Client 18 (EMNIST) | Target Loss: 0.0000 | DDIM Loss: 0.0073
+Client 19 (EMNIST) | Target Loss: 0.0000 | DDIM Loss: 0.0073
+Client 20 (EMNIST) | Target Loss: 0.0000 | DDIM Loss: 0.0074
+Epoch 0 Loss: 0.9883
+Epoch 1 Loss: 0.5643
+Epoch 2 Loss: 0.3752
+Epoch 3 Loss: 0.2729
+Epoch 4 Loss: 0.1976
+[Server] Global Inference Model Acc (MNIST) (Round 24): 27.58% (Tested on 9095 samples)
+[Server] Global Inference Model Acc (EMNIST) (Round 24): 46.38% (Tested on 105779 samples)
+[Server] Global Inference Model Acc (Mix) (Round 24): 44.89% (Tested on 114874 samples)
+Selected client ids: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19]
+--- Round 25 ---
+Client 0 (MNIST) | Target Loss: 0.0000 | DDIM Loss: 0.0091
+Client 1 (MNIST) | Target Loss: 0.0000 | DDIM Loss: 0.0090
+Client 2 (MNIST) | Target Loss: 0.0000 | DDIM Loss: 0.0089
+Client 3 (MNIST) | Target Loss: 0.0000 | DDIM Loss: 0.0090
+Client 4 (MNIST) | Target Loss: 0.0000 | DDIM Loss: 0.0090
+Client 5 (MNIST) | Target Loss: 0.0000 | DDIM Loss: 0.0088
+Client 6 (MNIST) | Target Loss: 0.0000 | DDIM Loss: 0.0090
+Client 7 (MNIST) | Target Loss: 0.0000 | DDIM Loss: 0.0092
+Client 8 (MNIST) | Target Loss: 0.0000 | DDIM Loss: 0.0092
+Client 9 (MNIST) | Target Loss: 0.0000 | DDIM Loss: 0.0089
+Client 11 (EMNIST) | Target Loss: 0.0000 | DDIM Loss: 0.0073
+Client 12 (EMNIST) | Target Loss: 0.0000 | DDIM Loss: 0.0072
+Client 13 (EMNIST) | Target Loss: 0.0000 | DDIM Loss: 0.0073
+Client 14 (EMNIST) | Target Loss: 0.0000 | DDIM Loss: 0.0073
+Client 15 (EMNIST) | Target Loss: 0.0000 | DDIM Loss: 0.0072
+Client 16 (EMNIST) | Target Loss: 0.0000 | DDIM Loss: 0.0073
+Client 17 (EMNIST) | Target Loss: 0.0000 | DDIM Loss: 0.0073
+Client 18 (EMNIST) | Target Loss: 0.0000 | DDIM Loss: 0.0073
+Client 19 (EMNIST) | Target Loss: 0.0000 | DDIM Loss: 0.0073
+Client 20 (EMNIST) | Target Loss: 0.0000 | DDIM Loss: 0.0073
+Epoch 0 Loss: 0.9670
+Epoch 1 Loss: 0.5085
+Epoch 2 Loss: 0.3512
+Epoch 3 Loss: 0.2461
+Epoch 4 Loss: 0.1610
+[Server] Global Inference Model Acc (MNIST) (Round 25): 17.95% (Tested on 9095 samples)
+[Server] Global Inference Model Acc (EMNIST) (Round 25): 44.21% (Tested on 105779 samples)
+[Server] Global Inference Model Acc (Mix) (Round 25): 42.13% (Tested on 114874 samples)
+Selected client ids: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19]
+--- Round 26 ---
+Client 0 (MNIST) | Target Loss: 0.0000 | DDIM Loss: 0.0088
+Client 1 (MNIST) | Target Loss: 0.0000 | DDIM Loss: 0.0088
+Client 2 (MNIST) | Target Loss: 0.0000 | DDIM Loss: 0.0091
+Client 3 (MNIST) | Target Loss: 0.0000 | DDIM Loss: 0.0090
+Client 4 (MNIST) | Target Loss: 0.0000 | DDIM Loss: 0.0091
+Client 5 (MNIST) | Target Loss: 0.0000 | DDIM Loss: 0.0089
+Client 6 (MNIST) | Target Loss: 0.0000 | DDIM Loss: 0.0089
+Client 7 (MNIST) | Target Loss: 0.0000 | DDIM Loss: 0.0090
+Client 8 (MNIST) | Target Loss: 0.0000 | DDIM Loss: 0.0093
+Client 9 (MNIST) | Target Loss: 0.0000 | DDIM Loss: 0.0090
+Client 11 (EMNIST) | Target Loss: 0.0000 | DDIM Loss: 0.0073
+Client 12 (EMNIST) | Target Loss: 0.0000 | DDIM Loss: 0.0072
+Client 13 (EMNIST) | Target Loss: 0.0000 | DDIM Loss: 0.0073
+Client 14 (EMNIST) | Target Loss: 0.0000 | DDIM Loss: 0.0072
+Client 15 (EMNIST) | Target Loss: 0.0000 | DDIM Loss: 0.0072
+Client 16 (EMNIST) | Target Loss: 0.0000 | DDIM Loss: 0.0072
+Client 17 (EMNIST) | Target Loss: 0.0000 | DDIM Loss: 0.0072
+Client 18 (EMNIST) | Target Loss: 0.0000 | DDIM Loss: 0.0073
+Client 19 (EMNIST) | Target Loss: 0.0000 | DDIM Loss: 0.0072
+Client 20 (EMNIST) | Target Loss: 0.0000 | DDIM Loss: 0.0073
+Epoch 0 Loss: 0.9432
+Epoch 1 Loss: 0.4771
+Epoch 2 Loss: 0.3222
+Epoch 3 Loss: 0.2081
+Epoch 4 Loss: 0.1534
+[Server] Global Inference Model Acc (MNIST) (Round 26): 85.94% (Tested on 9095 samples)
+[Server] Global Inference Model Acc (EMNIST) (Round 26): 23.41% (Tested on 105779 samples)
+[Server] Global Inference Model Acc (Mix) (Round 26): 28.36% (Tested on 114874 samples)
+Selected client ids: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19]
+--- Round 27 ---
+Client 0 (MNIST) | Target Loss: 0.0000 | DDIM Loss: 0.0090
+Client 1 (MNIST) | Target Loss: 0.0000 | DDIM Loss: 0.0087
+Client 2 (MNIST) | Target Loss: 0.0000 | DDIM Loss: 0.0088
+Client 3 (MNIST) | Target Loss: 0.0000 | DDIM Loss: 0.0090
+Client 4 (MNIST) | Target Loss: 0.0000 | DDIM Loss: 0.0090
+Client 5 (MNIST) | Target Loss: 0.0000 | DDIM Loss: 0.0089
+Client 6 (MNIST) | Target Loss: 0.0000 | DDIM Loss: 0.0086
+Client 7 (MNIST) | Target Loss: 0.0000 | DDIM Loss: 0.0088
+Client 8 (MNIST) | Target Loss: 0.0000 | DDIM Loss: 0.0092
+Client 9 (MNIST) | Target Loss: 0.0000 | DDIM Loss: 0.0092
+Client 11 (EMNIST) | Target Loss: 0.0000 | DDIM Loss: 0.0072
+Client 12 (EMNIST) | Target Loss: 0.0000 | DDIM Loss: 0.0072
+Client 13 (EMNIST) | Target Loss: 0.0000 | DDIM Loss: 0.0072
+Client 14 (EMNIST) | Target Loss: 0.0000 | DDIM Loss: 0.0072
+Client 15 (EMNIST) | Target Loss: 0.0000 | DDIM Loss: 0.0072
+Client 16 (EMNIST) | Target Loss: 0.0000 | DDIM Loss: 0.0072
+Client 17 (EMNIST) | Target Loss: 0.0000 | DDIM Loss: 0.0072
+Client 18 (EMNIST) | Target Loss: 0.0000 | DDIM Loss: 0.0072
+Client 19 (EMNIST) | Target Loss: 0.0000 | DDIM Loss: 0.0072
+Client 20 (EMNIST) | Target Loss: 0.0000 | DDIM Loss: 0.0073
+Epoch 0 Loss: 0.9001
+Epoch 1 Loss: 0.4408
+Epoch 2 Loss: 0.2877
+Epoch 3 Loss: 0.1972
+Epoch 4 Loss: 0.1444
+[Server] Global Inference Model Acc (MNIST) (Round 27): 60.42% (Tested on 9095 samples)
+[Server] Global Inference Model Acc (EMNIST) (Round 27): 44.85% (Tested on 105779 samples)
+[Server] Global Inference Model Acc (Mix) (Round 27): 46.09% (Tested on 114874 samples)
+Selected client ids: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19]
+--- Round 28 ---
+Client 0 (MNIST) | Target Loss: 0.0000 | DDIM Loss: 0.0091
+Client 1 (MNIST) | Target Loss: 0.0000 | DDIM Loss: 0.0088
+Client 2 (MNIST) | Target Loss: 0.0000 | DDIM Loss: 0.0089
+Client 3 (MNIST) | Target Loss: 0.0000 | DDIM Loss: 0.0089
+Client 4 (MNIST) | Target Loss: 0.0000 | DDIM Loss: 0.0087
+Client 5 (MNIST) | Target Loss: 0.0000 | DDIM Loss: 0.0088
+Client 6 (MNIST) | Target Loss: 0.0000 | DDIM Loss: 0.0086
+Client 7 (MNIST) | Target Loss: 0.0000 | DDIM Loss: 0.0087
+Client 8 (MNIST) | Target Loss: 0.0000 | DDIM Loss: 0.0091
+Client 9 (MNIST) | Target Loss: 0.0000 | DDIM Loss: 0.0086
+Client 11 (EMNIST) | Target Loss: 0.0000 | DDIM Loss: 0.0072
+Client 12 (EMNIST) | Target Loss: 0.0000 | DDIM Loss: 0.0071
+Client 13 (EMNIST) | Target Loss: 0.0000 | DDIM Loss: 0.0072
+Client 14 (EMNIST) | Target Loss: 0.0000 | DDIM Loss: 0.0072
+Client 15 (EMNIST) | Target Loss: 0.0000 | DDIM Loss: 0.0072
+Client 16 (EMNIST) | Target Loss: 0.0000 | DDIM Loss: 0.0072
+Client 17 (EMNIST) | Target Loss: 0.0000 | DDIM Loss: 0.0072
+Client 18 (EMNIST) | Target Loss: 0.0000 | DDIM Loss: 0.0072
+Client 19 (EMNIST) | Target Loss: 0.0000 | DDIM Loss: 0.0072
+Client 20 (EMNIST) | Target Loss: 0.0000 | DDIM Loss: 0.0072
+Epoch 0 Loss: 0.9490
+Epoch 1 Loss: 0.4469
+Epoch 2 Loss: 0.2899
+Epoch 3 Loss: 0.1861
+Epoch 4 Loss: 0.1093
+[Server] Global Inference Model Acc (MNIST) (Round 28): 39.85% (Tested on 9095 samples)
+[Server] Global Inference Model Acc (EMNIST) (Round 28): 47.04% (Tested on 105779 samples)
+[Server] Global Inference Model Acc (Mix) (Round 28): 46.47% (Tested on 114874 samples)
+Selected client ids: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19]
+--- Round 29 ---
+Client 0 (MNIST) | Target Loss: 0.0000 | DDIM Loss: 0.0086
+Client 1 (MNIST) | Target Loss: 0.0000 | DDIM Loss: 0.0087
+Client 2 (MNIST) | Target Loss: 0.0000 | DDIM Loss: 0.0090
+Client 3 (MNIST) | Target Loss: 0.0000 | DDIM Loss: 0.0093
+Client 4 (MNIST) | Target Loss: 0.0000 | DDIM Loss: 0.0086
+Client 5 (MNIST) | Target Loss: 0.0000 | DDIM Loss: 0.0087
+Client 6 (MNIST) | Target Loss: 0.0000 | DDIM Loss: 0.0087
+Client 7 (MNIST) | Target Loss: 0.0000 | DDIM Loss: 0.0088
+Client 8 (MNIST) | Target Loss: 0.0000 | DDIM Loss: 0.0091
+Client 9 (MNIST) | Target Loss: 0.0000 | DDIM Loss: 0.0088
+Client 11 (EMNIST) | Target Loss: 0.0000 | DDIM Loss: 0.0072
+Client 12 (EMNIST) | Target Loss: 0.0000 | DDIM Loss: 0.0071
+Client 13 (EMNIST) | Target Loss: 0.0000 | DDIM Loss: 0.0072

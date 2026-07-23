@@ -37,7 +37,27 @@ class Server(Base_Server):
         self.diversity_loss = Gen_DiversityLoss(metric='l1')
 
     def aggregate(self):
-        super().aggregate()
+        self.logger.log("[Server] Aggregating by Dataset Name ...")
+        groups = defaultdict(list)
+        for client in self.selected_clients:
+            d_name = client.dataset_name  
+            client.group_name = d_name
+            groups[d_name].append(client)
+
+            if d_name not in self.label_space_meta:
+                self.label_space_meta[d_name] = client.class_name_set
+
+        print(f"[Server] Aggregating from {len(self.selected_clients)} clients (grouped by {len(groups)} datasets)...") 
+
+        if (self.glob_iter + 1) == self.start_mapping_epoch: 
+            if self.args.label_mapping == 'class_name':
+                self.class_name_label_mapping()
+            elif self.args.label_mapping == 'real_image':
+                self.real_img_label_mapping()
+            elif self.args.label_mapping == 'independent':
+                self.independent_label_mapping()
+            elif self.args.label_mapping == 'identical':
+                self.identical_label_mapping()
 
         if (self.glob_iter + 1) >= self.start_mapping_epoch:
             self.train_generator()

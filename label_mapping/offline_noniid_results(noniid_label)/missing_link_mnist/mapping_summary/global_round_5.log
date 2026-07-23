@@ -1,0 +1,188 @@
+
+##################################################
+Entropy Ratio = 0.1
+##################################################
+
+==================================================
+Label Mapping Summary:
+Global ID = 0  | from: client_6: '7', client_7: '7', client_8: '7'
+Global ID = 3  | from: client_2: '9', client_4: '4', client_5: '9', client_6: '4', client_7: '4', client_8: '4', client_9: '9'
+Global ID = 4  | from: client_0: '2', client_1: '5', client_4: '5', client_5: '2', client_6: '5', client_8: '2', client_9: '5'
+Global ID = 5  | from: client_1: '6', client_3: '6', client_4: '6', client_7: '6', client_8: '6', client_9: '6'
+Global ID = 6  | from: client_2: '3', client_4: '3', client_7: '3'
+Global ID = 7  | from: client_3: '1', client_4: '8', client_5: '1', client_8: '1'
+Global ID = 8  | from: client_8: '0'
+==================================================
+
+
+##################################################
+Entropy Ratio = 0.2
+##################################################
+
+==================================================
+Label Mapping Summary:
+Global ID = 0  | from: client_6: '7', client_7: '7', client_8: '7'
+Global ID = 3  | from: client_2: '9', client_4: '4', client_5: '9', client_6: '4', client_7: '4', client_8: '4', client_9: '9'
+Global ID = 4  | from: client_0: '2', client_1: '5', client_4: '5', client_5: '2', client_6: '5', client_8: '2', client_9: '5'
+Global ID = 5  | from: client_1: '6', client_3: '6', client_4: '6', client_7: '6', client_8: '6', client_9: '6'
+Global ID = 6  | from: client_2: '3', client_4: '3', client_7: '3'
+Global ID = 7  | from: client_3: '1', client_4: '8', client_5: '1', client_8: '1'
+Global ID = 8  | from: client_8: '0'
+==================================================
+
+
+##################################################
+Entropy Ratio = 0.3
+##################################################
+
+==================================================
+Label Mapping Summary:
+Global ID = 0  | from: client_6: '7', client_7: '7', client_8: '7'
+Global ID = 3  | from: client_2: '9', client_4: '4', client_5: '9', client_6: '4', client_7: '4', client_8: '4', client_9: '9'
+Global ID = 4  | from: client_0: '2', client_1: '5', client_4: '5', client_5: '2', client_6: '5', client_8: '2', client_9: '5'
+Global ID = 5  | from: client_1: '6', client_3: '6', client_4: '6', client_7: '6', client_8: '6', client_9: '6'
+Global ID = 6  | from: client_2: '3', client_4: '3', client_7: '3'
+Global ID = 7  | from: client_3: '1', client_4: '8', client_5: '1', client_8: '1'
+Global ID = 8  | from: client_8: '0'
+==================================================
+
+
+##################################################
+Entropy Ratio = 0.4
+##################################################
+
+==================================================
+Label Mapping Summary:
+Global ID = 0  | from: client_6: '7', client_7: '7', client_8: '7'
+Global ID = 3  | from: client_2: '9', client_4: '4', client_5: '9', client_6: '4', client_7: '4', client_8: '4', client_9: '9'
+Global ID = 4  | from: client_0: '2', client_1: '5', client_4: '5', client_5: '2', client_6: '5', client_8: '2', client_9: '5'
+Global ID = 5  | from: client_1: '6', client_3: '6', client_4: '6', client_7: '6', client_8: '6', client_9: '6'
+Global ID = 6  | from: client_2: '3', client_4: '3', client_7: '3'
+Global ID = 7  | from: client_3: '1', client_4: '8', client_5: '1', client_8: '1'
+Global ID = 8  | from: client_8: '0'
+==================================================
+
+
+##################################################
+Entropy Ratio = 0.5
+##################################################
+
+==================================================
+Label Mapping Summary:
+Global ID = 0  | from: client_6: '7', client_7: '7', client_8: '7'
+Global ID = 3  | from: client_2: '9', client_4: '4', client_5: '9', client_6: '4', client_7: '4', client_8: '4', client_9: '9'
+Global ID = 4  | from: client_0: '2', client_1: '5', client_4: '5', client_5: '2', client_6: '5', client_8: '2', client_9: '5'
+Global ID = 5  | from: client_1: '6', client_3: '6', client_4: '6', client_7: '6', client_8: '6', client_9: '6'
+Global ID = 6  | from: client_2: '3', client_4: '3', client_7: '3'
+Global ID = 7  | from: client_3: '1', client_4: '8', client_5: '1', client_8: '1'
+Global ID = 8  | from: client_8: '0'
+==================================================
+
+
+##################################################
+Entropy Ratio = 0.6
+##################################################
+
+==================================================
+Label Mapping Summary:
+Global ID = 0  | from: client_6: '7', client_7: '7', client_8: '7'
+Global ID = 3  | from: client_2: '9', client_4: '4', client_5: '9', client_6: '4', client_7: '4', client_8: '4', client_9: '9'
+Global ID = 4  | from: client_0: '2', client_1: '5', client_4: '5', client_5: '2', client_6: '5', client_8: '2', client_9: '5'
+Global ID = 5  | from: client_1: '6', client_3: '6', client_4: '6', client_7: '6', client_8: '6', client_9: '6'
+Global ID = 6  | from: client_2: '3', client_4: '3', client_7: '3'
+Global ID = 7  | from: client_3: '1', client_4: '8', client_5: '1', client_8: '1'
+Global ID = 8  | from: client_8: '0'
+==================================================
+
+
+##################################################
+Entropy Ratio = 0.7
+##################################################
+
+==================================================
+Label Mapping Summary:
+Global ID = 0  | from: client_6: '7', client_7: '7', client_8: '7'
+Global ID = 3  | from: client_2: '9', client_4: '4', client_5: '9', client_6: '4', client_7: '4', client_8: '4', client_9: '9'
+Global ID = 4  | from: client_0: '2', client_1: '5', client_4: '5', client_5: '2', client_6: '5', client_8: '2', client_9: '5'
+Global ID = 5  | from: client_1: '6', client_3: '6', client_4: '6', client_7: '6', client_8: '6', client_9: '6'
+Global ID = 6  | from: client_2: '3', client_4: '3', client_7: '3'
+Global ID = 7  | from: client_3: '1', client_5: '1', client_8: '1'
+Global ID = 8  | from: client_4: '8'
+Global ID = 9  | from: client_8: '0'
+==================================================
+
+
+##################################################
+Entropy Ratio = 0.8
+##################################################
+
+==================================================
+Label Mapping Summary:
+Global ID = 0  | from: client_6: '7', client_7: '7', client_8: '7'
+Global ID = 3  | from: client_2: '9', client_4: '4', client_5: '9', client_6: '4', client_7: '4', client_8: '4', client_9: '9'
+Global ID = 4  | from: client_0: '2', client_1: '5', client_4: '5', client_5: '2', client_6: '5', client_8: '2', client_9: '5'
+Global ID = 5  | from: client_1: '6', client_3: '6', client_4: '6', client_7: '6', client_8: '6', client_9: '6'
+Global ID = 6  | from: client_2: '3', client_4: '3', client_7: '3'
+Global ID = 7  | from: client_3: '1', client_5: '1', client_8: '1'
+Global ID = 8  | from: client_4: '8'
+Global ID = 9  | from: client_8: '0'
+==================================================
+
+
+##################################################
+Entropy Ratio = 0.9
+##################################################
+
+==================================================
+Label Mapping Summary:
+Global ID = 0  | from: client_6: '7', client_7: '7', client_8: '7'
+Global ID = 1  | from: client_2: '9', client_5: '9', client_9: '9'
+Global ID = 3  | from: client_4: '4', client_6: '4', client_7: '4', client_8: '4'
+Global ID = 4  | from: client_0: '2', client_1: '5', client_4: '5', client_5: '2', client_6: '5', client_8: '2', client_9: '5'
+Global ID = 5  | from: client_1: '6', client_3: '6', client_4: '6', client_7: '6', client_8: '6', client_9: '6'
+Global ID = 6  | from: client_2: '3', client_4: '3', client_7: '3'
+Global ID = 7  | from: client_3: '1', client_5: '1', client_8: '1'
+Global ID = 8  | from: client_4: '8'
+Global ID = 9  | from: client_8: '0'
+==================================================
+
+
+##################################################
+Entropy Ratio = 1.0
+##################################################
+
+==================================================
+Label Mapping Summary:
+Global ID = 0  | from: client_0: '2'
+Global ID = 1  | from: client_1: '5'
+Global ID = 2  | from: client_1: '6'
+Global ID = 3  | from: client_2: '3'
+Global ID = 4  | from: client_2: '9'
+Global ID = 5  | from: client_3: '1'
+Global ID = 6  | from: client_3: '6'
+Global ID = 7  | from: client_4: '3'
+Global ID = 8  | from: client_4: '4'
+Global ID = 9  | from: client_4: '5'
+Global ID = 10 | from: client_4: '6'
+Global ID = 11 | from: client_4: '8'
+Global ID = 12 | from: client_5: '1'
+Global ID = 13 | from: client_5: '2'
+Global ID = 14 | from: client_5: '9'
+Global ID = 15 | from: client_6: '4'
+Global ID = 16 | from: client_6: '5'
+Global ID = 17 | from: client_6: '7'
+Global ID = 18 | from: client_7: '3'
+Global ID = 19 | from: client_7: '4'
+Global ID = 20 | from: client_7: '6'
+Global ID = 21 | from: client_7: '7'
+Global ID = 22 | from: client_8: '0'
+Global ID = 23 | from: client_8: '1'
+Global ID = 24 | from: client_8: '2'
+Global ID = 25 | from: client_8: '4'
+Global ID = 26 | from: client_8: '6'
+Global ID = 27 | from: client_8: '7'
+Global ID = 28 | from: client_9: '5'
+Global ID = 29 | from: client_9: '6'
+Global ID = 30 | from: client_9: '9'
+==================================================
+

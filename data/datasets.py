@@ -6,7 +6,7 @@ import numpy as np
 from collections import Counter, defaultdict
 from torchvision import datasets, transforms
 from torch.utils.data import Dataset, ConcatDataset, DataLoader, Subset
-from data.dirichlet_noniid import partition_data
+from data.dirichlet_noniid import partition_data, partition_data_noniid_label
 
 class Global_Dataset(Dataset):
     def __init__(self, dataset, mapping):
@@ -242,22 +242,26 @@ def load_partitioned_datasets(args, DATA_ROOT, **exp_conf):
             args.seed 
         )
 
+        if args.noniid_partition == "noniid_label":
+            cache_dir = os.path.dirname(cache_path)
+            cache_name = f"{d_name}_C{n_clients}_New{args.num_new_clients}_noniid_label_alpha{str(dirichlet_alpha).replace('.', 'p')}_seed{args.seed}.json"
+            cache_path = os.path.join(cache_dir, cache_name)
+
         if os.path.exists(cache_path):
             print(f"Found existing split for {d_name}, loading from {cache_path}")
             with open(cache_path, "r") as f:
                 cached = json.load(f)
+
             # json 會把 key 變成字串所以要轉回 int
             train_idcs = {int(k): v for k, v in cached["train"].items()}
             test_idcs  = {int(k): v for k, v in cached["test"].items()}
         else:
             print(f"No existing split for {d_name}, generating new partition...")
-            train_idcs, test_idcs = partition_data(
-                train_labels_for_split, 
-                test_labels_for_split, 
-                alpha=dirichlet_alpha, 
-                total_clients=n_clients, 
-                num_new_clients=args.num_new_clients
-            )
+            if args.noniid_partition == "dirichlet":
+                train_idcs, test_idcs = partition_data(train_labels_for_split, test_labels_for_split, alpha=dirichlet_alpha, total_clients=n_clients, num_new_clients=args.num_new_clients)
+            elif args.noniid_partition == "noniid_label":
+                train_idcs, test_idcs = partition_data_noniid_label(train_labels_for_split, test_labels_for_split, alpha=dirichlet_alpha, total_clients=n_clients, num_new_clients=args.num_new_clients)
+
             # 把用這次參數切的資料集存在 json
             to_save = {
                 "train": train_idcs,

@@ -130,6 +130,25 @@ class Server(BaseServer):
                         drop_prob=0.1
                     ).to(self.device)
 
+                    # nn_model = ContextUnet(
+                    #     in_channels=self.exp_conf.get('channels', 3),
+                    #     n_feat=self.exp_conf.get('n_feat', 64),
+                    #     n_classes=len(self.label_space_meta[d_name]),
+                    #     norm_type="instance",
+                    #     dropout_p=0.10,
+                    #     down1_skip_scale=0.25,
+                    #     out_skip_scale=0.0,
+                    # )
+            
+                    # ddpm = DDPM(
+                    #     nn_model=nn_model,
+                    #     betas=(1e-4, 0.02),
+                    #     n_T=1000,
+                    #     device=self.device,
+                    #     drop_prob=0.30,
+                    #     target_lowres=16,
+                    # ).to(self.device)
+
                     ddpm.load_state_dict(self.global_ddpm_states[d_name])
                     ddpm.eval()
                     ddpm_dict[d_name] = ddpm
@@ -247,6 +266,26 @@ class Server(BaseServer):
             gen = DDPM(
                 nn_model=nn_model, betas=(1e-4, 0.02), n_T=1000, device=self.device, drop_prob=0.1
             ).to(self.device)
+
+            # nn_model = ContextUnet(
+            #     in_channels=self.exp_conf.get('channels', 3),
+            #     n_feat=self.exp_conf.get('n_feat', 64),
+            #     n_classes=len(self.label_space_meta[d_name]),
+            #     norm_type="instance",
+            #     dropout_p=0.10,
+            #     down1_skip_scale=0.25,
+            #     out_skip_scale=0.0,
+            # )
+    
+            # gen = DDPM(
+            #     nn_model=nn_model,
+            #     betas=(1e-4, 0.02),
+            #     n_T=1000,
+            #     device=self.device,
+            #     drop_prob=0.30,
+            #     target_lowres=16,
+            # ).to(self.device)
+
             gen.load_state_dict(state_dict)
             gen.eval()
             generators[d_name] = gen
@@ -270,7 +309,18 @@ class Server(BaseServer):
                                           device=self.device, 
                                           guide_w=self.exp_conf.get("ddpm_guide_w", 0.0),
                                           label=local_id)
-                    x_gen = torch.clamp(x_gen, -1.0, 1.0)
+
+                    # x_gen, _ = gen.sample(
+                    #     n_sample=self.global_samples_per_class,
+                    #     size=img_size,
+                    #     device=self.device,
+                    #     guide_w=0.0,
+                    #     label=local_id,
+                    #     init_noise_scale=0.75,
+                    #     reverse_noise_scale=0.25,
+                    # )
+                    
+                    # x_gen = torch.clamp(x_gen, -1.0, 1.0)
 
                 for i in range(self.global_samples_per_class):
                     dataset_x.append(x_gen[i].cpu())

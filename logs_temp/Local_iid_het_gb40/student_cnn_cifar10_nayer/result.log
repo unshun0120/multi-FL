@@ -1,0 +1,167 @@
+Time: 2026-04-17 23:26:27
+Log Dir: /home/unshun/multi-FL/logs/Local_iid_het_gb40/new_client_2026-04-17_23-26-27/
+================================================================================Loading checkpoints from logs/Local_iid_het_gb40/Local/
+Method selected: NAYER
+Loaded SqueezeNet for CIFAR10 from client_model_CIFAR10_c31_SqueezeNet.pth
+Loaded MLP for CIFAR10 from client_model_CIFAR10_c22_MLP.pth
+Loaded ResNet8 for CIFAR10 from client_model_CIFAR10_c24_ResNet8.pth
+Loaded CNN for CIFAR10 from client_model_CIFAR10_c23_CNN.pth
+Loaded ResNet18 for CIFAR10 from client_model_CIFAR10_c25_ResNet18.pth
+Loaded MobileNetV2 for CIFAR10 from client_model_CIFAR10_c26_MobileNetV2.pth
+Loaded LeNet for CIFAR10 from client_model_CIFAR10_c28_LeNet.pth
+Loaded ShuffleNet for CIFAR10 from client_model_CIFAR10_c30_ShuffleNet.pth
+Loaded MobileNetV3 for CIFAR10 from client_model_CIFAR10_c27_MobileNetV3.pth
+Loaded AlexNet for CIFAR10 from client_model_CIFAR10_c29_AlexNet.pth
+WARNING: No models loaded for dataset: FashionMNIST.
+WARNING: No models loaded for dataset: CIFAR100.
+
+========================================
+>>> [METHOD: SYNTHETIC] Starting Synthetic Label Mapping...
+========================================
+>>> Target Methods to Run: ['NAYER']
+>>> [Syn] Loaded client data distributions directly from server checkpoint.
+
+########################################
+>>> [Syn] Running Method: NAYER
+########################################
+
+>>> Syn-NAYER Training Old Generators...
+[Testing] Training Per-Dataset Generators Offline (Old Gen Method) using NAYER...
+--- NAYER Generator Configuration ---
+    epochs: 120
+    g_loops: 2
+    g_steps: 30
+    g_life: 10
+    kd_steps: 400
+    warmup: 20
+    gwp_loops: 10
+    lr_g: 0.004
+    ce: 0.5
+    bn: 10.0
+    adv: 1.33
+    student_lr: 0.2
+------------------------------------
+    -> Loading CLIP ViT-B/32 label embeddings for 10 classes...
+    -> [Epoch 0] Student Test Accuracy for CIFAR10: 14.33%
+    -> [Epoch 1] Student Test Accuracy for CIFAR10: 14.99%
+    -> [Epoch 2] Student Test Accuracy for CIFAR10: 15.09%
+    -> [Epoch 3] Student Test Accuracy for CIFAR10: 16.86%
+    -> [Epoch 4] Student Test Accuracy for CIFAR10: 16.85%
+    -> [Epoch 5] Student Test Accuracy for CIFAR10: 15.71%
+    -> [Epoch 6] Student Test Accuracy for CIFAR10: 13.36%
+    -> [Epoch 7] Student Test Accuracy for CIFAR10: 14.52%
+    -> [Epoch 8] Student Test Accuracy for CIFAR10: 18.76%
+    -> [Epoch 9] Student Test Accuracy for CIFAR10: 16.63%
+    -> [Epoch 10] Student Test Accuracy for CIFAR10: 15.34%
+    -> [Epoch 11] Student Test Accuracy for CIFAR10: 18.96%
+    -> [Epoch 12] Student Test Accuracy for CIFAR10: 18.69%
+    -> [Epoch 13] Student Test Accuracy for CIFAR10: 18.50%
+    -> [Epoch 14] Student Test Accuracy for CIFAR10: 15.44%
+    -> [Epoch 15] Student Test Accuracy for CIFAR10: 18.51%
+    -> [Epoch 16] Student Test Accuracy for CIFAR10: 20.23%
+    -> [Epoch 17] Student Test Accuracy for CIFAR10: 19.30%
+    -> [Epoch 18] Student Test Accuracy for CIFAR10: 18.81%
+    -> [Epoch 19] Student Test Accuracy for CIFAR10: 20.30%
+    -> [Epoch 20] Student Test Accuracy for CIFAR10: 13.75%
+    -> [Epoch 21] Student Test Accuracy for CIFAR10: 12.96%
+    -> [Epoch 22] Student Test Accuracy for CIFAR10: 17.77%
+    -> [Epoch 23] Student Test Accuracy for CIFAR10: 16.68%
+    -> [Epoch 24] Student Test Accuracy for CIFAR10: 18.64%
+    -> [Epoch 25] Student Test Accuracy for CIFAR10: 20.66%
+    -> [Epoch 26] Student Test Accuracy for CIFAR10: 13.92%
+    -> [Epoch 27] Student Test Accuracy for CIFAR10: 17.59%
+    -> [Epoch 28] Student Test Accuracy for CIFAR10: 18.28%
+    -> [Epoch 29] Student Test Accuracy for CIFAR10: 23.76%
+    -> [Epoch 30] Student Test Accuracy for CIFAR10: 18.34%
+    -> [Epoch 31] Student Test Accuracy for CIFAR10: 17.64%
+    -> [Epoch 32] Student Test Accuracy for CIFAR10: 14.35%
+    -> [Epoch 33] Student Test Accuracy for CIFAR10: 17.72%
+    -> [Epoch 34] Student Test Accuracy for CIFAR10: 15.32%
+    -> [Epoch 35] Student Test Accuracy for CIFAR10: 15.99%
+    -> [Epoch 36] Student Test Accuracy for CIFAR10: 20.39%
+    -> [Epoch 37] Student Test Accuracy for CIFAR10: 21.11%
+    -> [Epoch 38] Student Test Accuracy for CIFAR10: 19.56%
+    -> [Epoch 39] Student Test Accuracy for CIFAR10: 17.18%
+    -> [Epoch 40] Student Test Accuracy for CIFAR10: 18.44%
+    -> [Epoch 41] Student Test Accuracy for CIFAR10: 20.57%
+    -> [Epoch 42] Student Test Accuracy for CIFAR10: 19.06%
+    -> [Epoch 43] Student Test Accuracy for CIFAR10: 18.69%
+    -> [Epoch 44] Student Test Accuracy for CIFAR10: 22.32%
+    -> [Epoch 45] Student Test Accuracy for CIFAR10: 21.08%
+    -> [Epoch 46] Student Test Accuracy for CIFAR10: 20.09%
+    -> [Epoch 47] Student Test Accuracy for CIFAR10: 19.98%
+    -> [Epoch 48] Student Test Accuracy for CIFAR10: 16.61%
+    -> [Epoch 49] Student Test Accuracy for CIFAR10: 21.45%
+    -> [Epoch 50] Student Test Accuracy for CIFAR10: 20.62%
+    -> [Epoch 51] Student Test Accuracy for CIFAR10: 20.51%
+    -> [Epoch 52] Student Test Accuracy for CIFAR10: 17.34%
+    -> [Epoch 53] Student Test Accuracy for CIFAR10: 19.79%
+    -> [Epoch 54] Student Test Accuracy for CIFAR10: 22.88%
+    -> [Epoch 55] Student Test Accuracy for CIFAR10: 18.19%
+    -> [Epoch 56] Student Test Accuracy for CIFAR10: 21.80%
+    -> [Epoch 57] Student Test Accuracy for CIFAR10: 19.91%
+    -> [Epoch 58] Student Test Accuracy for CIFAR10: 20.35%
+    -> [Epoch 59] Student Test Accuracy for CIFAR10: 15.19%
+    -> [Epoch 60] Student Test Accuracy for CIFAR10: 16.63%
+    -> [Epoch 61] Student Test Accuracy for CIFAR10: 21.63%
+    -> [Epoch 62] Student Test Accuracy for CIFAR10: 20.91%
+    -> [Epoch 63] Student Test Accuracy for CIFAR10: 22.99%
+    -> [Epoch 64] Student Test Accuracy for CIFAR10: 18.77%
+    -> [Epoch 65] Student Test Accuracy for CIFAR10: 19.66%
+    -> [Epoch 66] Student Test Accuracy for CIFAR10: 20.47%
+    -> [Epoch 67] Student Test Accuracy for CIFAR10: 19.75%
+    -> [Epoch 68] Student Test Accuracy for CIFAR10: 16.22%
+    -> [Epoch 69] Student Test Accuracy for CIFAR10: 17.17%
+    -> [Epoch 70] Student Test Accuracy for CIFAR10: 21.11%
+    -> [Epoch 71] Student Test Accuracy for CIFAR10: 20.56%
+    -> [Epoch 72] Student Test Accuracy for CIFAR10: 22.08%
+    -> [Epoch 73] Student Test Accuracy for CIFAR10: 20.60%
+    -> [Epoch 74] Student Test Accuracy for CIFAR10: 21.26%
+    -> [Epoch 75] Student Test Accuracy for CIFAR10: 19.48%
+    -> [Epoch 76] Student Test Accuracy for CIFAR10: 23.22%
+    -> [Epoch 77] Student Test Accuracy for CIFAR10: 20.14%
+    -> [Epoch 78] Student Test Accuracy for CIFAR10: 20.63%
+    -> [Epoch 79] Student Test Accuracy for CIFAR10: 20.65%
+    -> [Epoch 80] Student Test Accuracy for CIFAR10: 21.55%
+    -> [Epoch 81] Student Test Accuracy for CIFAR10: 24.06%
+    -> [Epoch 82] Student Test Accuracy for CIFAR10: 25.29%
+    -> [Epoch 83] Student Test Accuracy for CIFAR10: 20.79%
+    -> [Epoch 84] Student Test Accuracy for CIFAR10: 20.84%
+    -> [Epoch 85] Student Test Accuracy for CIFAR10: 21.31%
+    -> [Epoch 86] Student Test Accuracy for CIFAR10: 21.87%
+    -> [Epoch 87] Student Test Accuracy for CIFAR10: 19.78%
+    -> [Epoch 88] Student Test Accuracy for CIFAR10: 20.21%
+    -> [Epoch 89] Student Test Accuracy for CIFAR10: 19.79%
+    -> [Epoch 90] Student Test Accuracy for CIFAR10: 21.37%
+    -> [Epoch 91] Student Test Accuracy for CIFAR10: 26.34%
+    -> [Epoch 92] Student Test Accuracy for CIFAR10: 26.72%
+    -> [Epoch 93] Student Test Accuracy for CIFAR10: 20.21%
+    -> [Epoch 94] Student Test Accuracy for CIFAR10: 21.19%
+    -> [Epoch 95] Student Test Accuracy for CIFAR10: 23.18%
+    -> [Epoch 96] Student Test Accuracy for CIFAR10: 24.24%
+    -> [Epoch 97] Student Test Accuracy for CIFAR10: 23.14%
+    -> [Epoch 98] Student Test Accuracy for CIFAR10: 25.57%
+    -> [Epoch 99] Student Test Accuracy for CIFAR10: 24.53%
+    -> [Epoch 100] Student Test Accuracy for CIFAR10: 23.22%
+    -> [Epoch 101] Student Test Accuracy for CIFAR10: 23.87%
+    -> [Epoch 102] Student Test Accuracy for CIFAR10: 23.79%
+    -> [Epoch 103] Student Test Accuracy for CIFAR10: 21.16%
+    -> [Epoch 104] Student Test Accuracy for CIFAR10: 25.99%
+    -> [Epoch 105] Student Test Accuracy for CIFAR10: 21.00%
+    -> [Epoch 106] Student Test Accuracy for CIFAR10: 24.99%
+    -> [Epoch 107] Student Test Accuracy for CIFAR10: 22.03%
+    -> [Epoch 108] Student Test Accuracy for CIFAR10: 22.95%
+    -> [Epoch 109] Student Test Accuracy for CIFAR10: 25.73%
+    -> [Epoch 110] Student Test Accuracy for CIFAR10: 25.34%
+    -> [Epoch 111] Student Test Accuracy for CIFAR10: 23.89%
+    -> [Epoch 112] Student Test Accuracy for CIFAR10: 24.14%
+    -> [Epoch 113] Student Test Accuracy for CIFAR10: 21.28%
+    -> [Epoch 114] Student Test Accuracy for CIFAR10: 25.05%
+    -> [Epoch 115] Student Test Accuracy for CIFAR10: 25.63%
+    -> [Epoch 116] Student Test Accuracy for CIFAR10: 26.27%
+    -> [Epoch 117] Student Test Accuracy for CIFAR10: 26.07%
+    -> [Epoch 118] Student Test Accuracy for CIFAR10: 25.82%
+    -> [Epoch 119] Student Test Accuracy for CIFAR10: 26.18%
+    Dataset [CIFAR10] Generator | Epochs: 120 | Final Loss: 124.4097
+    -> Student Accuracy per Epoch saved to /home/unshun/multi-FL/logs/Local_iid_het_gb40/new_client_2026-04-17_23-26-27/NAYER_CIFAR10_student_acc.csv
+-> [New] Gen images saved to /home/unshun/multi-FL/logs/Local_iid_het_gb40/new_client_2026-04-17_23-26-27/NAYER_CIFAR10__gen_img_old.png

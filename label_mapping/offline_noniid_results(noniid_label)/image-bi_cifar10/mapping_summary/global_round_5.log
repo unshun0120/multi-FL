@@ -1,0 +1,250 @@
+
+##################################################
+Entropy Ratio = 0.1
+##################################################
+
+==================================================
+Label Mapping Summary:
+Global ID = 0  | from: client_24: 'airplane', client_25: 'bird'
+Global ID = 1  | from: client_22: 'airplane'
+Global ID = 2  | from: client_22: 'ship'
+Global ID = 3  | from: client_22: 'truck'
+Global ID = 4  | from: client_23: 'automobile'
+Global ID = 5  | from: client_23: 'cat'
+Global ID = 6  | from: client_25: 'dog'
+Global ID = 7  | from: client_26: 'airplane'
+Global ID = 8  | from: client_26: 'deer'
+Global ID = 9  | from: client_26: 'dog'
+Global ID = 10 | from: client_26: 'frog'
+Global ID = 11 | from: client_27: 'bird'
+Global ID = 12 | from: client_27: 'cat'
+Global ID = 13 | from: client_27: 'deer'
+Global ID = 14 | from: client_27: 'frog'
+Global ID = 15 | from: client_27: 'horse'
+Global ID = 16 | from: client_27: 'truck'
+Global ID = 17 | from: client_28: 'deer'
+Global ID = 18 | from: client_28: 'dog'
+Global ID = 19 | from: client_28: 'horse'
+Global ID = 20 | from: client_29: 'cat'
+Global ID = 21 | from: client_29: 'frog'
+Global ID = 22 | from: client_29: 'ship'
+Global ID = 23 | from: client_30: 'airplane'
+Global ID = 24 | from: client_30: 'cat'
+Global ID = 25 | from: client_30: 'horse'
+Global ID = 26 | from: client_31: 'frog'
+Global ID = 27 | from: client_31: 'horse'
+Global ID = 28 | from: client_31: 'ship'
+==================================================
+
+
+##################################################
+Entropy Ratio = 0.2
+##################################################
+
+==================================================
+Label Mapping Summary:
+Global ID = 0  | from: client_24: 'airplane', client_25: 'bird'
+Global ID = 1  | from: client_22: 'airplane'
+Global ID = 2  | from: client_22: 'ship'
+Global ID = 3  | from: client_22: 'truck'
+Global ID = 4  | from: client_23: 'automobile'
+Global ID = 5  | from: client_23: 'cat'
+Global ID = 6  | from: client_25: 'dog'
+Global ID = 7  | from: client_26: 'airplane'
+Global ID = 8  | from: client_26: 'deer'
+Global ID = 9  | from: client_26: 'dog'
+Global ID = 10 | from: client_26: 'frog'
+Global ID = 11 | from: client_27: 'bird'
+Global ID = 12 | from: client_27: 'cat'
+Global ID = 13 | from: client_27: 'deer'
+Global ID = 14 | from: client_27: 'frog'
+Global ID = 15 | from: client_27: 'horse'
+Global ID = 16 | from: client_27: 'truck'
+Global ID = 17 | from: client_28: 'deer'
+Global ID = 18 | from: client_28: 'dog'
+Global ID = 19 | from: client_28: 'horse'
+Global ID = 20 | from: client_29: 'cat'
+Global ID = 21 | from: client_29: 'frog'
+Global ID = 22 | from: client_29: 'ship'
+Global ID = 23 | from: client_30: 'airplane'
+Global ID = 24 | from: client_30: 'cat'
+Global ID = 25 | from: client_30: 'horse'
+Global ID = 26 | from: client_31: 'frog'
+Global ID = 27 | from: client_31: 'horse'
+Global ID = 28 | from: client_31: 'ship'
+==================================================
+
+
+##################################################
+Entropy Ratio = 0.3
+##################################################
+
+==================================================
+Label Mapping Summary:
+Global ID = 0  | from: client_23: 'automobile', client_24: 'airplane', client_25: 'bird', client_29: 'ship', client_30: 'airplane', client_31: 'ship'
+Global ID = 1  | from: client_22: 'airplane'
+Global ID = 2  | from: client_22: 'ship'
+Global ID = 3  | from: client_22: 'truck'
+Global ID = 4  | from: client_23: 'cat'
+Global ID = 5  | from: client_25: 'dog'
+Global ID = 6  | from: client_26: 'airplane'
+Global ID = 7  | from: client_26: 'deer'
+Global ID = 8  | from: client_26: 'dog'
+Global ID = 9  | from: client_26: 'frog'
+Global ID = 10 | from: client_27: 'bird'
+Global ID = 11 | from: client_27: 'cat'
+Global ID = 12 | from: client_27: 'deer'
+Global ID = 13 | from: client_27: 'frog'
+Global ID = 14 | from: client_27: 'horse'
+Global ID = 15 | from: client_27: 'truck'
+Global ID = 16 | from: client_28: 'deer'
+Global ID = 17 | from: client_28: 'dog'
+Global ID = 18 | from: client_28: 'horse'
+Global ID = 19 | from: client_29: 'cat'
+Global ID = 20 | from: client_29: 'frog'
+Global ID = 21 | from: client_30: 'cat'
+Global ID = 22 | from: client_30: 'horse'
+Global ID = 23 | from: client_31: 'frog'
+Global ID = 24 | from: client_31: 'horse'
+==================================================
+
+
+##################################################
+Entropy Ratio = 0.4
+##################################################
+
+==================================================
+Label Mapping Summary:
+Global ID = 0  | from: client_22: 'truck', client_23: 'automobile', client_27: 'truck'
+Global ID = 1  | from: client_22: 'airplane', client_24: 'airplane', client_25: 'bird', client_26: 'airplane', client_29: 'ship', client_30: 'airplane', client_31: 'ship'
+Global ID = 2  | from: client_23: 'cat', client_25: 'dog', client_29: 'cat', client_31: 'horse'
+Global ID = 3  | from: client_28: 'deer', client_29: 'frog', client_31: 'frog'
+Global ID = 4  | from: client_22: 'ship'
+Global ID = 5  | from: client_26: 'deer'
+Global ID = 6  | from: client_26: 'dog'
+Global ID = 7  | from: client_26: 'frog'
+Global ID = 8  | from: client_27: 'bird'
+Global ID = 9  | from: client_27: 'cat'
+Global ID = 10 | from: client_27: 'deer'
+Global ID = 11 | from: client_27: 'frog'
+Global ID = 12 | from: client_27: 'horse'
+Global ID = 13 | from: client_28: 'dog'
+Global ID = 14 | from: client_28: 'horse'
+Global ID = 15 | from: client_30: 'cat'
+Global ID = 16 | from: client_30: 'horse'
+==================================================
+
+
+##################################################
+Entropy Ratio = 0.5
+##################################################
+
+==================================================
+Label Mapping Summary:
+Global ID = 0  | from: client_22: 'truck', client_23: 'automobile', client_25: 'dog', client_27: 'truck', client_28: 'horse', client_29: 'cat', client_30: 'horse', client_31: 'horse'
+Global ID = 1  | from: client_22: 'airplane', client_24: 'airplane', client_25: 'bird', client_26: 'airplane', client_30: 'airplane'
+Global ID = 2  | from: client_22: 'ship', client_29: 'ship', client_31: 'ship'
+Global ID = 3  | from: client_23: 'cat', client_26: 'deer', client_28: 'dog', client_29: 'frog', client_30: 'cat', client_31: 'frog'
+Global ID = 4  | from: client_26: 'dog'
+Global ID = 5  | from: client_26: 'frog'
+Global ID = 6  | from: client_27: 'bird'
+Global ID = 7  | from: client_27: 'cat'
+Global ID = 8  | from: client_27: 'deer'
+Global ID = 9  | from: client_27: 'frog'
+Global ID = 10 | from: client_27: 'horse'
+Global ID = 11 | from: client_28: 'deer'
+==================================================
+
+
+##################################################
+Entropy Ratio = 0.6
+##################################################
+
+==================================================
+Label Mapping Summary:
+Global ID = 0  | from: client_22: 'truck', client_23: 'automobile', client_25: 'dog', client_27: 'truck', client_28: 'horse', client_29: 'cat', client_30: 'horse', client_31: 'horse'
+Global ID = 1  | from: client_22: 'airplane', client_24: 'airplane', client_25: 'bird', client_26: 'airplane', client_30: 'airplane'
+Global ID = 2  | from: client_22: 'ship', client_29: 'ship', client_31: 'ship'
+Global ID = 3  | from: client_23: 'cat', client_26: 'deer', client_28: 'dog', client_29: 'frog', client_30: 'cat', client_31: 'frog'
+Global ID = 4  | from: client_26: 'dog'
+Global ID = 5  | from: client_26: 'frog'
+Global ID = 6  | from: client_27: 'bird'
+Global ID = 7  | from: client_27: 'cat'
+Global ID = 8  | from: client_27: 'deer'
+Global ID = 9  | from: client_27: 'frog'
+Global ID = 10 | from: client_27: 'horse'
+Global ID = 11 | from: client_28: 'deer'
+==================================================
+
+
+##################################################
+Entropy Ratio = 0.7
+##################################################
+
+==================================================
+Label Mapping Summary:
+Global ID = 0  | from: client_22: 'truck', client_23: 'automobile', client_25: 'dog', client_27: 'truck', client_28: 'horse', client_29: 'cat', client_30: 'horse', client_31: 'horse'
+Global ID = 1  | from: client_22: 'airplane', client_24: 'airplane', client_25: 'bird', client_26: 'airplane', client_27: 'bird', client_30: 'airplane'
+Global ID = 2  | from: client_22: 'ship', client_29: 'ship', client_31: 'ship'
+Global ID = 3  | from: client_23: 'cat', client_26: 'deer', client_27: 'deer', client_28: 'dog', client_29: 'frog', client_30: 'cat', client_31: 'frog'
+Global ID = 4  | from: client_27: 'frog', client_28: 'deer'
+Global ID = 5  | from: client_26: 'dog'
+Global ID = 6  | from: client_26: 'frog'
+Global ID = 7  | from: client_27: 'cat'
+Global ID = 8  | from: client_27: 'horse'
+==================================================
+
+
+##################################################
+Entropy Ratio = 0.8
+##################################################
+
+==================================================
+Label Mapping Summary:
+Global ID = 0  | from: client_22: 'truck', client_23: 'automobile', client_25: 'dog', client_27: 'truck', client_28: 'horse', client_29: 'cat', client_30: 'horse', client_31: 'horse'
+Global ID = 1  | from: client_22: 'airplane', client_24: 'airplane', client_25: 'bird', client_26: 'airplane', client_27: 'bird', client_30: 'airplane'
+Global ID = 2  | from: client_22: 'ship', client_29: 'ship', client_31: 'ship'
+Global ID = 3  | from: client_23: 'cat', client_26: 'deer', client_27: 'deer', client_28: 'dog', client_29: 'frog', client_30: 'cat', client_31: 'frog'
+Global ID = 4  | from: client_27: 'frog', client_28: 'deer'
+Global ID = 5  | from: client_26: 'dog'
+Global ID = 6  | from: client_26: 'frog'
+Global ID = 7  | from: client_27: 'cat'
+Global ID = 8  | from: client_27: 'horse'
+==================================================
+
+
+##################################################
+Entropy Ratio = 0.9
+##################################################
+
+==================================================
+Label Mapping Summary:
+Global ID = 0  | from: client_22: 'truck', client_23: 'automobile', client_25: 'dog', client_27: 'truck', client_28: 'horse', client_29: 'cat', client_30: 'horse', client_31: 'horse'
+Global ID = 1  | from: client_22: 'airplane', client_24: 'airplane', client_25: 'bird', client_26: 'airplane', client_27: 'bird', client_30: 'airplane'
+Global ID = 2  | from: client_22: 'ship', client_29: 'ship', client_31: 'ship'
+Global ID = 3  | from: client_23: 'cat', client_26: 'deer', client_27: 'deer', client_28: 'dog', client_29: 'frog', client_30: 'cat', client_31: 'frog'
+Global ID = 4  | from: client_27: 'frog', client_28: 'deer'
+Global ID = 5  | from: client_26: 'dog'
+Global ID = 6  | from: client_26: 'frog'
+Global ID = 7  | from: client_27: 'cat'
+Global ID = 8  | from: client_27: 'horse'
+==================================================
+
+
+##################################################
+Entropy Ratio = 1.0
+##################################################
+
+==================================================
+Label Mapping Summary:
+Global ID = 0  | from: client_22: 'truck', client_23: 'automobile', client_25: 'dog', client_27: 'truck', client_28: 'horse', client_29: 'cat', client_30: 'horse', client_31: 'horse'
+Global ID = 1  | from: client_22: 'airplane', client_24: 'airplane', client_25: 'bird', client_26: 'airplane', client_27: 'bird', client_30: 'airplane'
+Global ID = 2  | from: client_22: 'ship', client_29: 'ship', client_31: 'ship'
+Global ID = 3  | from: client_23: 'cat', client_26: 'deer', client_27: 'deer', client_28: 'dog', client_29: 'frog', client_30: 'cat', client_31: 'frog'
+Global ID = 4  | from: client_27: 'frog', client_28: 'deer'
+Global ID = 5  | from: client_26: 'dog'
+Global ID = 6  | from: client_26: 'frog'
+Global ID = 7  | from: client_27: 'cat'
+Global ID = 8  | from: client_27: 'horse'
+==================================================
+

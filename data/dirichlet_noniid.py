@@ -86,3 +86,62 @@ def partition_data(train_labels, test_labels, alpha, total_clients, num_new_clie
                     pass 
 
     return train_client_idcs, test_client_idcs
+
+
+def partition_data_noniid_label(train_labels, test_labels, alpha, total_clients, num_new_clients):
+    train_labels = np.asarray(train_labels)
+    test_labels = np.asarray(test_labels)
+    num_train_clients = total_clients - num_new_clients
+    classes = np.unique(train_labels)
+
+    train_client_idcs = {k: [] for k in range(total_clients)}
+    test_client_idcs = {k: [] for k in range(total_clients)}
+
+    for k in classes:
+        train_idx_k = np.where(train_labels == k)[0]
+        test_idx_k = np.where(test_labels == k)[0]
+
+        np.random.shuffle(train_idx_k)
+        np.random.shuffle(test_idx_k)
+
+        iid_ratio = num_new_clients / total_clients
+        n_iid_train = int(len(train_idx_k) * iid_ratio)
+        n_iid_test = int(len(test_idx_k) * iid_ratio)
+
+        train_idx_iid = train_idx_k[:n_iid_train]
+        test_idx_iid = test_idx_k[:n_iid_test]
+        train_idx_noniid = train_idx_k[n_iid_train:]
+        test_idx_noniid = test_idx_k[n_iid_test:]
+
+        if num_new_clients > 0:
+            train_splits_iid = np.array_split(train_idx_iid, num_new_clients)
+            test_splits_iid = np.array_split(test_idx_iid, num_new_clients)
+
+            for i in range(num_new_clients):
+                cid = num_train_clients + i
+                train_client_idcs[cid] += train_splits_iid[i].tolist()
+                test_client_idcs[cid] += test_splits_iid[i].tolist()
+
+        if num_train_clients > 0:
+            proportions = np.random.dirichlet(np.repeat(alpha, num_train_clients))
+            # owner_threshold = 1.0 / num_train_clients
+            owner_threshold = 0.05
+            owners = np.where(proportions >= owner_threshold)[0]
+
+            if len(owners) == 0:
+                owners = np.array([int(np.argmax(proportions))])
+
+            train_splits = np.array_split(train_idx_noniid, len(owners))
+            test_splits = np.array_split(test_idx_noniid, len(owners))
+
+            # print(f"Label {int(k)} | Dirichlet: {np.round(proportions, 4).tolist()} | Owners: {owners.tolist()}")
+
+            for cid, train_split, test_split in zip(owners, train_splits, test_splits):
+                train_client_idcs[int(cid)] += train_split.tolist()
+                test_client_idcs[int(cid)] += test_split.tolist()
+
+    for cid in range(total_clients):
+        np.random.shuffle(train_client_idcs[cid])
+        np.random.shuffle(test_client_idcs[cid])
+
+    return train_client_idcs, test_client_idcs

@@ -1,0 +1,1419 @@
+Time: 2026-03-26 12:18:33
+Log Dir: logs/2026-03-26_12-18-33/Local
+================================================================================
+
+==============================        Args        ==============================
+  exp_timestamp: None
+  exp_conf: ./configs/het-exp.yaml
+  device: cuda:1
+  seed: 15698
+  algorithm: Local
+  num_new_clients: 1
+  num_train_mnist: 10
+  num_train_emnist: 10
+  num_train_fashionmnist: 0
+  num_train_cifar10: 10
+  num_train_cifar100: 0
+  num_train_usps: 0
+================================================================================
+==============================    Exp Configs     ==============================
+exp_name: model-heterogeneity
+heterogeneous: false
+dirichlet_alpha: 0.1
+global_rounds: 40
+local_epochs: 1
+local_loss_fn: CrossEntropyLoss
+local_optim: Adam
+local_lr: 0.001
+batch_size: 64
+sample_frac: 1.0
+test_interval: 1
+metric_type: accuracy
+global_feature_dim: 256
+optim: Adam
+optim_lr: 0.001
+global_gen_epochs: 10
+gen_noise_dim: 128
+gen_optim: Adam
+gen_optim_lr: 0.001
+global_feat_gen_epochs: 10
+feat_gen_noise_dim: 128
+feat_gen_optim: Adam
+feat_gen_optim_lr: 0.001
+feat_gen_div_beta: 1.0
+public_data_ratio: 0.05
+start_mapping_epoch: 1
+gen_observer_weight: 1.0
+index_matching: class_name
+global_model_epochs: 15
+global_model_optim: Adam
+global_model_optim_lr: 0.001
+
+================================================================================
+
+==================================================
+Start 40 rounds training by Local
+Selected client ids: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29]
+--- Round 1 ---
+Round 1 | Client 0 | Model: (CNN) | Acc: 88.56%
+Round 1 | Client 1 | Model: (CNN) | Acc: 85.53%
+Round 1 | Client 2 | Model: (CNN) | Acc: 97.97%
+Round 1 | Client 3 | Model: (CNN) | Acc: 29.92%
+Round 1 | Client 4 | Model: (CNN) | Acc: 74.58%
+Round 1 | Client 5 | Model: (CNN) | Acc: 90.59%
+Round 1 | Client 6 | Model: (CNN) | Acc: 60.54%
+Round 1 | Client 7 | Model: (CNN) | Acc: 86.85%
+Round 1 | Client 8 | Model: (CNN) | Acc: 82.26%
+Round 1 | Client 9 | Model: (CNN) | Acc: 94.18%
+Round 1 | Client 11 | Model: (CNN) | Acc: 91.86%
+Round 1 | Client 12 | Model: (CNN) | Acc: 88.58%
+Round 1 | Client 13 | Model: (CNN) | Acc: 84.12%
+Round 1 | Client 14 | Model: (CNN) | Acc: 79.12%
+Round 1 | Client 15 | Model: (CNN) | Acc: 91.70%
+Round 1 | Client 16 | Model: (CNN) | Acc: 93.12%
+Round 1 | Client 17 | Model: (CNN) | Acc: 86.83%
+Round 1 | Client 18 | Model: (CNN) | Acc: 92.44%
+Round 1 | Client 19 | Model: (CNN) | Acc: 79.53%
+Round 1 | Client 20 | Model: (CNN) | Acc: 84.39%
+Round 1 | Client 22 | Model: (CNN) | Acc: 75.22%
+Round 1 | Client 23 | Model: (CNN) | Acc: 63.20%
+Round 1 | Client 24 | Model: (CNN) | Acc: 20.00%
+Round 1 | Client 25 | Model: (CNN) | Acc: 66.09%
+Round 1 | Client 26 | Model: (CNN) | Acc: 83.22%
+Round 1 | Client 27 | Model: (CNN) | Acc: 70.52%
+Round 1 | Client 28 | Model: (CNN) | Acc: 84.95%
+Round 1 | Client 29 | Model: (CNN) | Acc: 92.49%
+Round 1 | Client 30 | Model: (CNN) | Acc: 83.37%
+Round 1 | Client 31 | Model: (CNN) | Acc: 63.46%
+[Server] Performing Name-Based Label Mapping...
+[Server] Name-based mapping completed. Found 72 unique global classes.
+
+=========================================================================================================
+Global ID  | Class Name           | Mapped Datasets (Local ID)
+---------------------------------------------------------------------------------------------------------
+0          | 0                    | MNIST(0), EMNIST(0)
+1          | 1                    | MNIST(1), EMNIST(1)
+2          | 2                    | MNIST(2), EMNIST(2)
+3          | 3                    | MNIST(3), EMNIST(3)
+4          | 4                    | MNIST(4), EMNIST(4)
+5          | 5                    | MNIST(5), EMNIST(5)
+6          | 6                    | MNIST(6), EMNIST(6)
+7          | 7                    | MNIST(7), EMNIST(7)
+8          | 8                    | MNIST(8), EMNIST(8)
+9          | 9                    | MNIST(9), EMNIST(9)
+10         | A                    | EMNIST(10)
+11         | B                    | EMNIST(11)
+12         | C                    | EMNIST(12)
+13         | D                    | EMNIST(13)
+14         | E                    | EMNIST(14)
+15         | F                    | EMNIST(15)
+16         | G                    | EMNIST(16)
+17         | H                    | EMNIST(17)
+18         | I                    | EMNIST(18)
+19         | J                    | EMNIST(19)
+20         | K                    | EMNIST(20)
+21         | L                    | EMNIST(21)
+22         | M                    | EMNIST(22)
+23         | N                    | EMNIST(23)
+24         | O                    | EMNIST(24)
+25         | P                    | EMNIST(25)
+26         | Q                    | EMNIST(26)
+27         | R                    | EMNIST(27)
+28         | S                    | EMNIST(28)
+29         | T                    | EMNIST(29)
+30         | U                    | EMNIST(30)
+31         | V                    | EMNIST(31)
+32         | W                    | EMNIST(32)
+33         | X                    | EMNIST(33)
+34         | Y                    | EMNIST(34)
+35         | Z                    | EMNIST(35)
+36         | a                    | EMNIST(36)
+37         | airplane             | CIFAR10(0)
+38         | automobile           | CIFAR10(1)
+39         | b                    | EMNIST(37)
+40         | bird                 | CIFAR10(2)
+41         | c                    | EMNIST(38)
+42         | cat                  | CIFAR10(3)
+43         | d                    | EMNIST(39)
+44         | deer                 | CIFAR10(4)
+45         | dog                  | CIFAR10(5)
+46         | e                    | EMNIST(40)
+47         | f                    | EMNIST(41)
+48         | frog                 | CIFAR10(6)
+49         | g                    | EMNIST(42)
+50         | h                    | EMNIST(43)
+51         | horse                | CIFAR10(7)
+52         | i                    | EMNIST(44)
+53         | j                    | EMNIST(45)
+54         | k                    | EMNIST(46)
+55         | l                    | EMNIST(47)
+56         | m                    | EMNIST(48)
+57         | n                    | EMNIST(49)
+58         | o                    | EMNIST(50)
+59         | p                    | EMNIST(51)
+60         | q                    | EMNIST(52)
+61         | r                    | EMNIST(53)
+62         | s                    | EMNIST(54)
+63         | ship                 | CIFAR10(8)
+64         | t                    | EMNIST(55)
+65         | truck                | CIFAR10(9)
+66         | u                    | EMNIST(56)
+67         | v                    | EMNIST(57)
+68         | w                    | EMNIST(58)
+69         | x                    | EMNIST(59)
+70         | y                    | EMNIST(60)
+71         | z                    | EMNIST(61)
+=========================================================================================================
+
+Selected client ids: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29]
+--- Round 2 ---
+Round 2 | Client 0 | Model: (CNN) | Acc: 88.81%
+Round 2 | Client 1 | Model: (CNN) | Acc: 84.91%
+Round 2 | Client 2 | Model: (CNN) | Acc: 98.34%
+Round 2 | Client 3 | Model: (CNN) | Acc: 56.56%
+Round 2 | Client 4 | Model: (CNN) | Acc: 93.35%
+Round 2 | Client 5 | Model: (CNN) | Acc: 97.37%
+Round 2 | Client 6 | Model: (CNN) | Acc: 86.75%
+Round 2 | Client 7 | Model: (CNN) | Acc: 90.14%
+Round 2 | Client 8 | Model: (CNN) | Acc: 82.33%
+Round 2 | Client 9 | Model: (CNN) | Acc: 95.13%
+Round 2 | Client 11 | Model: (CNN) | Acc: 94.86%
+Round 2 | Client 12 | Model: (CNN) | Acc: 83.86%
+Round 2 | Client 13 | Model: (CNN) | Acc: 88.78%
+Round 2 | Client 14 | Model: (CNN) | Acc: 89.69%
+Round 2 | Client 15 | Model: (CNN) | Acc: 90.62%
+Round 2 | Client 16 | Model: (CNN) | Acc: 90.90%
+Round 2 | Client 17 | Model: (CNN) | Acc: 86.41%
+Round 2 | Client 18 | Model: (CNN) | Acc: 95.27%
+Round 2 | Client 19 | Model: (CNN) | Acc: 93.53%
+Round 2 | Client 20 | Model: (CNN) | Acc: 89.38%
+Round 2 | Client 22 | Model: (CNN) | Acc: 73.05%
+Round 2 | Client 23 | Model: (CNN) | Acc: 59.33%
+Round 2 | Client 24 | Model: (CNN) | Acc: 80.00%
+Round 2 | Client 25 | Model: (CNN) | Acc: 70.51%
+Round 2 | Client 26 | Model: (CNN) | Acc: 83.42%
+Round 2 | Client 27 | Model: (CNN) | Acc: 70.92%
+Round 2 | Client 28 | Model: (CNN) | Acc: 84.56%
+Round 2 | Client 29 | Model: (CNN) | Acc: 92.70%
+Round 2 | Client 30 | Model: (CNN) | Acc: 83.59%
+Round 2 | Client 31 | Model: (CNN) | Acc: 75.96%
+Selected client ids: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29]
+--- Round 3 ---
+Round 3 | Client 0 | Model: (CNN) | Acc: 96.02%
+Round 3 | Client 1 | Model: (CNN) | Acc: 85.22%
+Round 3 | Client 2 | Model: (CNN) | Acc: 98.15%
+Round 3 | Client 3 | Model: (CNN) | Acc: 81.15%
+Round 3 | Client 4 | Model: (CNN) | Acc: 90.46%
+Round 3 | Client 5 | Model: (CNN) | Acc: 93.76%
+Round 3 | Client 6 | Model: (CNN) | Acc: 87.65%
+Round 3 | Client 7 | Model: (CNN) | Acc: 97.17%
+Round 3 | Client 8 | Model: (CNN) | Acc: 98.72%
+Round 3 | Client 9 | Model: (CNN) | Acc: 93.35%
+Round 3 | Client 11 | Model: (CNN) | Acc: 95.56%
+Round 3 | Client 12 | Model: (CNN) | Acc: 93.58%
+Round 3 | Client 13 | Model: (CNN) | Acc: 91.06%
+Round 3 | Client 14 | Model: (CNN) | Acc: 93.94%
+Round 3 | Client 15 | Model: (CNN) | Acc: 93.47%
+Round 3 | Client 16 | Model: (CNN) | Acc: 95.30%
+Round 3 | Client 17 | Model: (CNN) | Acc: 93.39%
+Round 3 | Client 18 | Model: (CNN) | Acc: 95.69%
+Round 3 | Client 19 | Model: (CNN) | Acc: 91.01%
+Round 3 | Client 20 | Model: (CNN) | Acc: 89.05%
+Round 3 | Client 22 | Model: (CNN) | Acc: 78.92%
+Round 3 | Client 23 | Model: (CNN) | Acc: 66.13%
+Round 3 | Client 24 | Model: (CNN) | Acc: 80.00%
+Round 3 | Client 25 | Model: (CNN) | Acc: 73.58%
+Round 3 | Client 26 | Model: (CNN) | Acc: 83.91%
+Round 3 | Client 27 | Model: (CNN) | Acc: 71.39%
+Round 3 | Client 28 | Model: (CNN) | Acc: 84.68%
+Round 3 | Client 29 | Model: (CNN) | Acc: 93.56%
+Round 3 | Client 30 | Model: (CNN) | Acc: 88.03%
+Round 3 | Client 31 | Model: (CNN) | Acc: 80.45%
+Selected client ids: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29]
+--- Round 4 ---
+Round 4 | Client 0 | Model: (CNN) | Acc: 98.51%
+Round 4 | Client 1 | Model: (CNN) | Acc: 94.97%
+Round 4 | Client 2 | Model: (CNN) | Acc: 96.49%
+Round 4 | Client 3 | Model: (CNN) | Acc: 82.79%
+Round 4 | Client 4 | Model: (CNN) | Acc: 95.59%
+Round 4 | Client 5 | Model: (CNN) | Acc: 98.14%
+Round 4 | Client 6 | Model: (CNN) | Acc: 92.47%
+Round 4 | Client 7 | Model: (CNN) | Acc: 95.58%
+Round 4 | Client 8 | Model: (CNN) | Acc: 97.21%
+Round 4 | Client 9 | Model: (CNN) | Acc: 94.06%
+Round 4 | Client 11 | Model: (CNN) | Acc: 95.67%
+Round 4 | Client 12 | Model: (CNN) | Acc: 94.99%
+Round 4 | Client 13 | Model: (CNN) | Acc: 93.13%
+Round 4 | Client 14 | Model: (CNN) | Acc: 94.16%
+Round 4 | Client 15 | Model: (CNN) | Acc: 93.23%
+Round 4 | Client 16 | Model: (CNN) | Acc: 87.42%
+Round 4 | Client 17 | Model: (CNN) | Acc: 93.41%
+Round 4 | Client 18 | Model: (CNN) | Acc: 96.03%
+Round 4 | Client 19 | Model: (CNN) | Acc: 89.95%
+Round 4 | Client 20 | Model: (CNN) | Acc: 92.22%
+Round 4 | Client 22 | Model: (CNN) | Acc: 74.98%
+Round 4 | Client 23 | Model: (CNN) | Acc: 65.87%
+Round 4 | Client 24 | Model: (CNN) | Acc: 80.00%
+Round 4 | Client 25 | Model: (CNN) | Acc: 73.65%
+Round 4 | Client 26 | Model: (CNN) | Acc: 82.63%
+Round 4 | Client 27 | Model: (CNN) | Acc: 77.54%
+Round 4 | Client 28 | Model: (CNN) | Acc: 89.95%
+Round 4 | Client 29 | Model: (CNN) | Acc: 93.13%
+Round 4 | Client 30 | Model: (CNN) | Acc: 83.59%
+Round 4 | Client 31 | Model: (CNN) | Acc: 83.65%
+Selected client ids: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29]
+--- Round 5 ---
+Round 5 | Client 0 | Model: (CNN) | Acc: 98.76%
+Round 5 | Client 1 | Model: (CNN) | Acc: 97.17%
+Round 5 | Client 2 | Model: (CNN) | Acc: 98.34%
+Round 5 | Client 3 | Model: (CNN) | Acc: 95.08%
+Round 5 | Client 4 | Model: (CNN) | Acc: 91.02%
+Round 5 | Client 5 | Model: (CNN) | Acc: 97.92%
+Round 5 | Client 6 | Model: (CNN) | Acc: 87.05%
+Round 5 | Client 7 | Model: (CNN) | Acc: 93.31%
+Round 5 | Client 8 | Model: (CNN) | Acc: 98.38%
+Round 5 | Client 9 | Model: (CNN) | Acc: 91.69%
+Round 5 | Client 11 | Model: (CNN) | Acc: 95.75%
+Round 5 | Client 12 | Model: (CNN) | Acc: 94.98%
+Round 5 | Client 13 | Model: (CNN) | Acc: 93.54%
+Round 5 | Client 14 | Model: (CNN) | Acc: 91.19%
+Round 5 | Client 15 | Model: (CNN) | Acc: 93.28%
+Round 5 | Client 16 | Model: (CNN) | Acc: 96.49%
+Round 5 | Client 17 | Model: (CNN) | Acc: 93.84%
+Round 5 | Client 18 | Model: (CNN) | Acc: 95.05%
+Round 5 | Client 19 | Model: (CNN) | Acc: 92.28%
+Round 5 | Client 20 | Model: (CNN) | Acc: 90.80%
+Round 5 | Client 22 | Model: (CNN) | Acc: 81.82%
+Round 5 | Client 23 | Model: (CNN) | Acc: 70.80%
+Round 5 | Client 24 | Model: (CNN) | Acc: 80.00%
+Round 5 | Client 25 | Model: (CNN) | Acc: 75.97%
+Round 5 | Client 26 | Model: (CNN) | Acc: 82.82%
+Round 5 | Client 27 | Model: (CNN) | Acc: 78.82%
+Round 5 | Client 28 | Model: (CNN) | Acc: 83.01%
+Round 5 | Client 29 | Model: (CNN) | Acc: 92.70%
+Round 5 | Client 30 | Model: (CNN) | Acc: 89.14%
+Round 5 | Client 31 | Model: (CNN) | Acc: 84.94%
+Selected client ids: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29]
+--- Round 6 ---
+Round 6 | Client 0 | Model: (CNN) | Acc: 97.01%
+Round 6 | Client 1 | Model: (CNN) | Acc: 97.80%
+Round 6 | Client 2 | Model: (CNN) | Acc: 98.52%
+Round 6 | Client 3 | Model: (CNN) | Acc: 89.34%
+Round 6 | Client 4 | Model: (CNN) | Acc: 69.81%
+Round 6 | Client 5 | Model: (CNN) | Acc: 85.12%
+Round 6 | Client 6 | Model: (CNN) | Acc: 92.47%
+Round 6 | Client 7 | Model: (CNN) | Acc: 93.08%
+Round 6 | Client 8 | Model: (CNN) | Acc: 68.48%
+Round 6 | Client 9 | Model: (CNN) | Acc: 92.99%
+Round 6 | Client 11 | Model: (CNN) | Acc: 94.56%
+Round 6 | Client 12 | Model: (CNN) | Acc: 96.72%
+Round 6 | Client 13 | Model: (CNN) | Acc: 92.41%
+Round 6 | Client 14 | Model: (CNN) | Acc: 93.84%
+Round 6 | Client 15 | Model: (CNN) | Acc: 94.67%
+Round 6 | Client 16 | Model: (CNN) | Acc: 96.63%
+Round 6 | Client 17 | Model: (CNN) | Acc: 94.14%
+Round 6 | Client 18 | Model: (CNN) | Acc: 96.34%
+Round 6 | Client 19 | Model: (CNN) | Acc: 92.81%
+Round 6 | Client 20 | Model: (CNN) | Acc: 92.88%
+Round 6 | Client 22 | Model: (CNN) | Acc: 79.40%
+Round 6 | Client 23 | Model: (CNN) | Acc: 69.73%
+Round 6 | Client 24 | Model: (CNN) | Acc: 80.00%
+Round 6 | Client 25 | Model: (CNN) | Acc: 75.15%
+Round 6 | Client 26 | Model: (CNN) | Acc: 83.71%
+Round 6 | Client 27 | Model: (CNN) | Acc: 76.09%
+Round 6 | Client 28 | Model: (CNN) | Acc: 88.40%
+Round 6 | Client 29 | Model: (CNN) | Acc: 93.13%
+Round 6 | Client 30 | Model: (CNN) | Acc: 87.36%
+Round 6 | Client 31 | Model: (CNN) | Acc: 75.96%
+Selected client ids: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29]
+--- Round 7 ---
+Round 7 | Client 0 | Model: (CNN) | Acc: 99.25%
+Round 7 | Client 1 | Model: (CNN) | Acc: 95.28%
+Round 7 | Client 2 | Model: (CNN) | Acc: 97.04%
+Round 7 | Client 3 | Model: (CNN) | Acc: 93.03%
+Round 7 | Client 4 | Model: (CNN) | Acc: 95.94%
+Round 7 | Client 5 | Model: (CNN) | Acc: 95.84%
+Round 7 | Client 6 | Model: (CNN) | Acc: 84.04%
+Round 7 | Client 7 | Model: (CNN) | Acc: 82.65%
+Round 7 | Client 8 | Model: (CNN) | Acc: 98.07%
+Round 7 | Client 9 | Model: (CNN) | Acc: 94.77%
+Round 7 | Client 11 | Model: (CNN) | Acc: 95.46%
+Round 7 | Client 12 | Model: (CNN) | Acc: 76.08%
+Round 7 | Client 13 | Model: (CNN) | Acc: 90.35%
+Round 7 | Client 14 | Model: (CNN) | Acc: 95.23%
+Round 7 | Client 15 | Model: (CNN) | Acc: 94.71%
+Round 7 | Client 16 | Model: (CNN) | Acc: 95.48%
+Round 7 | Client 17 | Model: (CNN) | Acc: 93.67%
+Round 7 | Client 18 | Model: (CNN) | Acc: 96.24%
+Round 7 | Client 19 | Model: (CNN) | Acc: 89.69%
+Round 7 | Client 20 | Model: (CNN) | Acc: 92.79%
+Round 7 | Client 22 | Model: (CNN) | Acc: 82.06%
+Round 7 | Client 23 | Model: (CNN) | Acc: 68.40%
+Round 7 | Client 24 | Model: (CNN) | Acc: 80.00%
+Round 7 | Client 25 | Model: (CNN) | Acc: 69.69%
+Round 7 | Client 26 | Model: (CNN) | Acc: 89.83%
+Round 7 | Client 27 | Model: (CNN) | Acc: 82.01%
+Round 7 | Client 28 | Model: (CNN) | Acc: 89.73%
+Round 7 | Client 29 | Model: (CNN) | Acc: 93.35%
+Round 7 | Client 30 | Model: (CNN) | Acc: 83.81%
+Round 7 | Client 31 | Model: (CNN) | Acc: 82.69%
+Selected client ids: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29]
+--- Round 8 ---
+Round 8 | Client 0 | Model: (CNN) | Acc: 99.00%
+Round 8 | Client 1 | Model: (CNN) | Acc: 98.43%
+Round 8 | Client 2 | Model: (CNN) | Acc: 98.52%
+Round 8 | Client 3 | Model: (CNN) | Acc: 96.31%
+Round 8 | Client 4 | Model: (CNN) | Acc: 98.38%
+Round 8 | Client 5 | Model: (CNN) | Acc: 97.81%
+Round 8 | Client 6 | Model: (CNN) | Acc: 92.77%
+Round 8 | Client 7 | Model: (CNN) | Acc: 96.60%
+Round 8 | Client 8 | Model: (CNN) | Acc: 99.06%
+Round 8 | Client 9 | Model: (CNN) | Acc: 96.08%
+Round 8 | Client 11 | Model: (CNN) | Acc: 95.36%
+Round 8 | Client 12 | Model: (CNN) | Acc: 94.81%
+Round 8 | Client 13 | Model: (CNN) | Acc: 92.22%
+Round 8 | Client 14 | Model: (CNN) | Acc: 94.90%
+Round 8 | Client 15 | Model: (CNN) | Acc: 93.37%
+Round 8 | Client 16 | Model: (CNN) | Acc: 96.77%
+Round 8 | Client 17 | Model: (CNN) | Acc: 93.51%
+Round 8 | Client 18 | Model: (CNN) | Acc: 96.62%
+Round 8 | Client 19 | Model: (CNN) | Acc: 92.27%
+Round 8 | Client 20 | Model: (CNN) | Acc: 93.32%
+Round 8 | Client 22 | Model: (CNN) | Acc: 66.13%
+Round 8 | Client 23 | Model: (CNN) | Acc: 71.60%
+Round 8 | Client 24 | Model: (CNN) | Acc: 60.00%
+Round 8 | Client 25 | Model: (CNN) | Acc: 76.57%
+Round 8 | Client 26 | Model: (CNN) | Acc: 90.33%
+Round 8 | Client 27 | Model: (CNN) | Acc: 69.01%
+Round 8 | Client 28 | Model: (CNN) | Acc: 89.23%
+Round 8 | Client 29 | Model: (CNN) | Acc: 93.99%
+Round 8 | Client 30 | Model: (CNN) | Acc: 91.35%
+Round 8 | Client 31 | Model: (CNN) | Acc: 85.26%
+Selected client ids: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29]
+--- Round 9 ---
+Round 9 | Client 0 | Model: (CNN) | Acc: 99.00%
+Round 9 | Client 1 | Model: (CNN) | Acc: 97.48%
+Round 9 | Client 2 | Model: (CNN) | Acc: 99.08%
+Round 9 | Client 3 | Model: (CNN) | Acc: 94.26%
+Round 9 | Client 4 | Model: (CNN) | Acc: 96.14%
+Round 9 | Client 5 | Model: (CNN) | Acc: 98.03%
+Round 9 | Client 6 | Model: (CNN) | Acc: 93.07%
+Round 9 | Client 7 | Model: (CNN) | Acc: 94.78%
+Round 9 | Client 8 | Model: (CNN) | Acc: 98.75%
+Round 9 | Client 9 | Model: (CNN) | Acc: 94.89%
+Round 9 | Client 11 | Model: (CNN) | Acc: 95.92%
+Round 9 | Client 12 | Model: (CNN) | Acc: 96.54%
+Round 9 | Client 13 | Model: (CNN) | Acc: 92.53%
+Round 9 | Client 14 | Model: (CNN) | Acc: 94.47%
+Round 9 | Client 15 | Model: (CNN) | Acc: 93.88%
+Round 9 | Client 16 | Model: (CNN) | Acc: 97.15%
+Round 9 | Client 17 | Model: (CNN) | Acc: 94.18%
+Round 9 | Client 18 | Model: (CNN) | Acc: 96.14%
+Round 9 | Client 19 | Model: (CNN) | Acc: 94.59%
+Round 9 | Client 20 | Model: (CNN) | Acc: 93.69%
+Round 9 | Client 22 | Model: (CNN) | Acc: 81.09%
+Round 9 | Client 23 | Model: (CNN) | Acc: 72.40%
+Round 9 | Client 24 | Model: (CNN) | Acc: 60.00%
+Round 9 | Client 25 | Model: (CNN) | Acc: 77.62%
+Round 9 | Client 26 | Model: (CNN) | Acc: 87.66%
+Round 9 | Client 27 | Model: (CNN) | Acc: 81.89%
+Round 9 | Client 28 | Model: (CNN) | Acc: 91.28%
+Round 9 | Client 29 | Model: (CNN) | Acc: 93.78%
+Round 9 | Client 30 | Model: (CNN) | Acc: 90.24%
+Round 9 | Client 31 | Model: (CNN) | Acc: 86.22%
+Selected client ids: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29]
+--- Round 10 ---
+Round 10 | Client 0 | Model: (CNN) | Acc: 99.00%
+Round 10 | Client 1 | Model: (CNN) | Acc: 97.80%
+Round 10 | Client 2 | Model: (CNN) | Acc: 98.89%
+Round 10 | Client 3 | Model: (CNN) | Acc: 90.16%
+Round 10 | Client 4 | Model: (CNN) | Acc: 87.72%
+Round 10 | Client 5 | Model: (CNN) | Acc: 97.92%
+Round 10 | Client 6 | Model: (CNN) | Acc: 95.78%
+Round 10 | Client 7 | Model: (CNN) | Acc: 96.49%
+Round 10 | Client 8 | Model: (CNN) | Acc: 98.79%
+Round 10 | Client 9 | Model: (CNN) | Acc: 92.28%
+Round 10 | Client 11 | Model: (CNN) | Acc: 95.72%
+Round 10 | Client 12 | Model: (CNN) | Acc: 96.39%
+Round 10 | Client 13 | Model: (CNN) | Acc: 92.80%
+Round 10 | Client 14 | Model: (CNN) | Acc: 93.85%
+Round 10 | Client 15 | Model: (CNN) | Acc: 94.65%
+Round 10 | Client 16 | Model: (CNN) | Acc: 97.00%
+Round 10 | Client 17 | Model: (CNN) | Acc: 93.99%
+Round 10 | Client 18 | Model: (CNN) | Acc: 96.50%
+Round 10 | Client 19 | Model: (CNN) | Acc: 94.48%
+Round 10 | Client 20 | Model: (CNN) | Acc: 93.73%
+Round 10 | Client 22 | Model: (CNN) | Acc: 75.95%
+Round 10 | Client 23 | Model: (CNN) | Acc: 62.27%
+Round 10 | Client 24 | Model: (CNN) | Acc: 60.00%
+Round 10 | Client 25 | Model: (CNN) | Acc: 77.54%
+Round 10 | Client 26 | Model: (CNN) | Acc: 88.06%
+Round 10 | Client 27 | Model: (CNN) | Acc: 83.46%
+Round 10 | Client 28 | Model: (CNN) | Acc: 83.18%
+Round 10 | Client 29 | Model: (CNN) | Acc: 93.99%
+Round 10 | Client 30 | Model: (CNN) | Acc: 85.59%
+Round 10 | Client 31 | Model: (CNN) | Acc: 84.62%
+Selected client ids: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29]
+--- Round 11 ---
+Round 11 | Client 0 | Model: (CNN) | Acc: 99.75%
+Round 11 | Client 1 | Model: (CNN) | Acc: 98.74%
+Round 11 | Client 2 | Model: (CNN) | Acc: 99.08%
+Round 11 | Client 3 | Model: (CNN) | Acc: 88.52%
+Round 11 | Client 4 | Model: (CNN) | Acc: 95.79%
+Round 11 | Client 5 | Model: (CNN) | Acc: 98.69%
+Round 11 | Client 6 | Model: (CNN) | Acc: 68.07%
+Round 11 | Client 7 | Model: (CNN) | Acc: 98.53%
+Round 11 | Client 8 | Model: (CNN) | Acc: 96.87%
+Round 11 | Client 9 | Model: (CNN) | Acc: 95.96%
+Round 11 | Client 11 | Model: (CNN) | Acc: 95.26%
+Round 11 | Client 12 | Model: (CNN) | Acc: 95.43%
+Round 11 | Client 13 | Model: (CNN) | Acc: 93.38%
+Round 11 | Client 14 | Model: (CNN) | Acc: 95.40%
+Round 11 | Client 15 | Model: (CNN) | Acc: 94.99%
+Round 11 | Client 16 | Model: (CNN) | Acc: 97.23%
+Round 11 | Client 17 | Model: (CNN) | Acc: 94.22%
+Round 11 | Client 18 | Model: (CNN) | Acc: 96.49%
+Round 11 | Client 19 | Model: (CNN) | Acc: 92.40%
+Round 11 | Client 20 | Model: (CNN) | Acc: 93.60%
+Round 11 | Client 22 | Model: (CNN) | Acc: 78.76%
+Round 11 | Client 23 | Model: (CNN) | Acc: 73.07%
+Round 11 | Client 24 | Model: (CNN) | Acc: 60.00%
+Round 11 | Client 25 | Model: (CNN) | Acc: 74.18%
+Round 11 | Client 26 | Model: (CNN) | Acc: 83.61%
+Round 11 | Client 27 | Model: (CNN) | Acc: 82.12%
+Round 11 | Client 28 | Model: (CNN) | Acc: 90.56%
+Round 11 | Client 29 | Model: (CNN) | Acc: 92.70%
+Round 11 | Client 30 | Model: (CNN) | Acc: 92.02%
+Round 11 | Client 31 | Model: (CNN) | Acc: 87.18%
+Selected client ids: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29]
+--- Round 12 ---
+Round 12 | Client 0 | Model: (CNN) | Acc: 99.50%
+Round 12 | Client 1 | Model: (CNN) | Acc: 95.60%
+Round 12 | Client 2 | Model: (CNN) | Acc: 99.08%
+Round 12 | Client 3 | Model: (CNN) | Acc: 96.72%
+Round 12 | Client 4 | Model: (CNN) | Acc: 98.22%
+Round 12 | Client 5 | Model: (CNN) | Acc: 97.26%
+Round 12 | Client 6 | Model: (CNN) | Acc: 96.99%
+Round 12 | Client 7 | Model: (CNN) | Acc: 98.75%
+Round 12 | Client 8 | Model: (CNN) | Acc: 99.36%
+Round 12 | Client 9 | Model: (CNN) | Acc: 97.03%
+Round 12 | Client 11 | Model: (CNN) | Acc: 95.97%
+Round 12 | Client 12 | Model: (CNN) | Acc: 96.71%
+Round 12 | Client 13 | Model: (CNN) | Acc: 93.55%
+Round 12 | Client 14 | Model: (CNN) | Acc: 93.14%
+Round 12 | Client 15 | Model: (CNN) | Acc: 93.40%
+Round 12 | Client 16 | Model: (CNN) | Acc: 97.27%
+Round 12 | Client 17 | Model: (CNN) | Acc: 94.26%
+Round 12 | Client 18 | Model: (CNN) | Acc: 96.43%
+Round 12 | Client 19 | Model: (CNN) | Acc: 95.25%
+Round 12 | Client 20 | Model: (CNN) | Acc: 92.41%
+Round 12 | Client 22 | Model: (CNN) | Acc: 75.78%
+Round 12 | Client 23 | Model: (CNN) | Acc: 52.93%
+Round 12 | Client 24 | Model: (CNN) | Acc: 60.00%
+Round 12 | Client 25 | Model: (CNN) | Acc: 79.49%
+Round 12 | Client 26 | Model: (CNN) | Acc: 86.97%
+Round 12 | Client 27 | Model: (CNN) | Acc: 80.09%
+Round 12 | Client 28 | Model: (CNN) | Acc: 90.28%
+Round 12 | Client 29 | Model: (CNN) | Acc: 94.21%
+Round 12 | Client 30 | Model: (CNN) | Acc: 87.58%
+Round 12 | Client 31 | Model: (CNN) | Acc: 86.22%
+Selected client ids: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29]
+--- Round 13 ---
+Round 13 | Client 0 | Model: (CNN) | Acc: 99.50%
+Round 13 | Client 1 | Model: (CNN) | Acc: 98.43%
+Round 13 | Client 2 | Model: (CNN) | Acc: 99.08%
+Round 13 | Client 3 | Model: (CNN) | Acc: 93.03%
+Round 13 | Client 4 | Model: (CNN) | Acc: 98.17%
+Round 13 | Client 5 | Model: (CNN) | Acc: 98.58%
+Round 13 | Client 6 | Model: (CNN) | Acc: 97.89%
+Round 13 | Client 7 | Model: (CNN) | Acc: 98.19%
+Round 13 | Client 8 | Model: (CNN) | Acc: 98.26%
+Round 13 | Client 9 | Model: (CNN) | Acc: 98.34%
+Round 13 | Client 11 | Model: (CNN) | Acc: 96.16%
+Round 13 | Client 12 | Model: (CNN) | Acc: 95.98%
+Round 13 | Client 13 | Model: (CNN) | Acc: 93.61%
+Round 13 | Client 14 | Model: (CNN) | Acc: 95.68%
+Round 13 | Client 15 | Model: (CNN) | Acc: 94.41%
+Round 13 | Client 16 | Model: (CNN) | Acc: 96.34%
+Round 13 | Client 17 | Model: (CNN) | Acc: 94.23%
+Round 13 | Client 18 | Model: (CNN) | Acc: 96.77%
+Round 13 | Client 19 | Model: (CNN) | Acc: 95.08%
+Round 13 | Client 20 | Model: (CNN) | Acc: 93.56%
+Round 13 | Client 22 | Model: (CNN) | Acc: 77.47%
+Round 13 | Client 23 | Model: (CNN) | Acc: 71.60%
+Round 13 | Client 24 | Model: (CNN) | Acc: 60.00%
+Round 13 | Client 25 | Model: (CNN) | Acc: 79.72%
+Round 13 | Client 26 | Model: (CNN) | Acc: 80.95%
+Round 13 | Client 27 | Model: (CNN) | Acc: 83.98%
+Round 13 | Client 28 | Model: (CNN) | Acc: 90.95%
+Round 13 | Client 29 | Model: (CNN) | Acc: 93.78%
+Round 13 | Client 30 | Model: (CNN) | Acc: 89.14%
+Round 13 | Client 31 | Model: (CNN) | Acc: 83.33%
+Selected client ids: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29]
+--- Round 14 ---
+Round 14 | Client 0 | Model: (CNN) | Acc: 99.75%
+Round 14 | Client 1 | Model: (CNN) | Acc: 98.11%
+Round 14 | Client 2 | Model: (CNN) | Acc: 99.08%
+Round 14 | Client 3 | Model: (CNN) | Acc: 92.21%
+Round 14 | Client 4 | Model: (CNN) | Acc: 88.74%
+Round 14 | Client 5 | Model: (CNN) | Acc: 98.47%
+Round 14 | Client 6 | Model: (CNN) | Acc: 97.59%
+Round 14 | Client 7 | Model: (CNN) | Acc: 96.83%
+Round 14 | Client 8 | Model: (CNN) | Acc: 98.53%
+Round 14 | Client 9 | Model: (CNN) | Acc: 98.10%
+Round 14 | Client 11 | Model: (CNN) | Acc: 95.90%
+Round 14 | Client 12 | Model: (CNN) | Acc: 96.39%
+Round 14 | Client 13 | Model: (CNN) | Acc: 93.36%
+Round 14 | Client 14 | Model: (CNN) | Acc: 95.12%
+Round 14 | Client 15 | Model: (CNN) | Acc: 93.93%
+Round 14 | Client 16 | Model: (CNN) | Acc: 96.94%
+Round 14 | Client 17 | Model: (CNN) | Acc: 94.59%
+Round 14 | Client 18 | Model: (CNN) | Acc: 96.68%
+Round 14 | Client 19 | Model: (CNN) | Acc: 94.55%
+Round 14 | Client 20 | Model: (CNN) | Acc: 94.18%
+Round 14 | Client 22 | Model: (CNN) | Acc: 81.17%
+Round 14 | Client 23 | Model: (CNN) | Acc: 74.13%
+Round 14 | Client 24 | Model: (CNN) | Acc: 60.00%
+Round 14 | Client 25 | Model: (CNN) | Acc: 74.40%
+Round 14 | Client 26 | Model: (CNN) | Acc: 86.38%
+Round 14 | Client 27 | Model: (CNN) | Acc: 81.54%
+Round 14 | Client 28 | Model: (CNN) | Acc: 92.17%
+Round 14 | Client 29 | Model: (CNN) | Acc: 93.35%
+Round 14 | Client 30 | Model: (CNN) | Acc: 90.69%
+Round 14 | Client 31 | Model: (CNN) | Acc: 85.58%
+Selected client ids: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29]
+--- Round 15 ---
+Round 15 | Client 0 | Model: (CNN) | Acc: 100.00%
+Round 15 | Client 1 | Model: (CNN) | Acc: 98.74%
+Round 15 | Client 2 | Model: (CNN) | Acc: 98.52%
+Round 15 | Client 3 | Model: (CNN) | Acc: 97.13%
+Round 15 | Client 4 | Model: (CNN) | Acc: 93.76%
+Round 15 | Client 5 | Model: (CNN) | Acc: 98.80%
+Round 15 | Client 6 | Model: (CNN) | Acc: 89.16%
+Round 15 | Client 7 | Model: (CNN) | Acc: 91.38%
+Round 15 | Client 8 | Model: (CNN) | Acc: 92.49%
+Round 15 | Client 9 | Model: (CNN) | Acc: 96.08%
+Round 15 | Client 11 | Model: (CNN) | Acc: 96.31%
+Round 15 | Client 12 | Model: (CNN) | Acc: 96.69%
+Round 15 | Client 13 | Model: (CNN) | Acc: 93.50%
+Round 15 | Client 14 | Model: (CNN) | Acc: 95.57%
+Round 15 | Client 15 | Model: (CNN) | Acc: 94.71%
+Round 15 | Client 16 | Model: (CNN) | Acc: 97.26%
+Round 15 | Client 17 | Model: (CNN) | Acc: 94.76%
+Round 15 | Client 18 | Model: (CNN) | Acc: 96.82%
+Round 15 | Client 19 | Model: (CNN) | Acc: 94.86%
+Round 15 | Client 20 | Model: (CNN) | Acc: 94.04%
+Round 15 | Client 22 | Model: (CNN) | Acc: 82.30%
+Round 15 | Client 23 | Model: (CNN) | Acc: 62.13%
+Round 15 | Client 24 | Model: (CNN) | Acc: 60.00%
+Round 15 | Client 25 | Model: (CNN) | Acc: 75.52%
+Round 15 | Client 26 | Model: (CNN) | Acc: 91.61%
+Round 15 | Client 27 | Model: (CNN) | Acc: 84.16%
+Round 15 | Client 28 | Model: (CNN) | Acc: 91.56%
+Round 15 | Client 29 | Model: (CNN) | Acc: 94.21%
+Round 15 | Client 30 | Model: (CNN) | Acc: 90.47%
+Round 15 | Client 31 | Model: (CNN) | Acc: 84.94%
+Selected client ids: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29]
+--- Round 16 ---
+Round 16 | Client 0 | Model: (CNN) | Acc: 99.75%
+Round 16 | Client 1 | Model: (CNN) | Acc: 99.06%
+Round 16 | Client 2 | Model: (CNN) | Acc: 98.52%
+Round 16 | Client 3 | Model: (CNN) | Acc: 96.72%
+Round 16 | Client 4 | Model: (CNN) | Acc: 93.81%
+Round 16 | Client 5 | Model: (CNN) | Acc: 98.14%
+Round 16 | Client 6 | Model: (CNN) | Acc: 90.06%
+Round 16 | Client 7 | Model: (CNN) | Acc: 95.92%
+Round 16 | Client 8 | Model: (CNN) | Acc: 90.86%
+Round 16 | Client 9 | Model: (CNN) | Acc: 98.10%
+Round 16 | Client 11 | Model: (CNN) | Acc: 95.78%
+Round 16 | Client 12 | Model: (CNN) | Acc: 95.09%
+Round 16 | Client 13 | Model: (CNN) | Acc: 92.78%
+Round 16 | Client 14 | Model: (CNN) | Acc: 95.39%
+Round 16 | Client 15 | Model: (CNN) | Acc: 94.92%
+Round 16 | Client 16 | Model: (CNN) | Acc: 97.25%
+Round 16 | Client 17 | Model: (CNN) | Acc: 94.08%
+Round 16 | Client 18 | Model: (CNN) | Acc: 96.48%
+Round 16 | Client 19 | Model: (CNN) | Acc: 94.51%
+Round 16 | Client 20 | Model: (CNN) | Acc: 94.26%
+Round 16 | Client 22 | Model: (CNN) | Acc: 79.00%
+Round 16 | Client 23 | Model: (CNN) | Acc: 71.60%
+Round 16 | Client 24 | Model: (CNN) | Acc: 60.00%
+Round 16 | Client 25 | Model: (CNN) | Acc: 78.22%
+Round 16 | Client 26 | Model: (CNN) | Acc: 85.59%
+Round 16 | Client 27 | Model: (CNN) | Acc: 74.35%
+Round 16 | Client 28 | Model: (CNN) | Acc: 92.56%
+Round 16 | Client 29 | Model: (CNN) | Acc: 91.42%
+Round 16 | Client 30 | Model: (CNN) | Acc: 91.80%
+Round 16 | Client 31 | Model: (CNN) | Acc: 86.86%
+Selected client ids: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29]
+--- Round 17 ---
+Round 17 | Client 0 | Model: (CNN) | Acc: 99.75%
+Round 17 | Client 1 | Model: (CNN) | Acc: 99.37%
+Round 17 | Client 2 | Model: (CNN) | Acc: 98.15%
+Round 17 | Client 3 | Model: (CNN) | Acc: 97.13%
+Round 17 | Client 4 | Model: (CNN) | Acc: 98.27%
+Round 17 | Client 5 | Model: (CNN) | Acc: 99.23%
+Round 17 | Client 6 | Model: (CNN) | Acc: 97.29%
+Round 17 | Client 7 | Model: (CNN) | Acc: 98.53%
+Round 17 | Client 8 | Model: (CNN) | Acc: 99.02%
+Round 17 | Client 9 | Model: (CNN) | Acc: 96.20%
+Round 17 | Client 11 | Model: (CNN) | Acc: 96.23%
+Round 17 | Client 12 | Model: (CNN) | Acc: 93.80%
+Round 17 | Client 13 | Model: (CNN) | Acc: 93.69%
+Round 17 | Client 14 | Model: (CNN) | Acc: 95.06%
+Round 17 | Client 15 | Model: (CNN) | Acc: 93.74%
+Round 17 | Client 16 | Model: (CNN) | Acc: 97.02%
+Round 17 | Client 17 | Model: (CNN) | Acc: 94.69%
+Round 17 | Client 18 | Model: (CNN) | Acc: 96.66%
+Round 17 | Client 19 | Model: (CNN) | Acc: 94.97%
+Round 17 | Client 20 | Model: (CNN) | Acc: 93.87%
+Round 17 | Client 22 | Model: (CNN) | Acc: 79.08%
+Round 17 | Client 23 | Model: (CNN) | Acc: 50.80%
+Round 17 | Client 24 | Model: (CNN) | Acc: 60.00%
+Round 17 | Client 25 | Model: (CNN) | Acc: 78.82%
+Round 17 | Client 26 | Model: (CNN) | Acc: 89.24%
+Round 17 | Client 27 | Model: (CNN) | Acc: 82.82%
+Round 17 | Client 28 | Model: (CNN) | Acc: 87.06%
+Round 17 | Client 29 | Model: (CNN) | Acc: 93.13%
+Round 17 | Client 30 | Model: (CNN) | Acc: 80.27%
+Round 17 | Client 31 | Model: (CNN) | Acc: 80.77%
+Selected client ids: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29]
+--- Round 18 ---
+Round 18 | Client 0 | Model: (CNN) | Acc: 99.75%
+Round 18 | Client 1 | Model: (CNN) | Acc: 98.74%
+Round 18 | Client 2 | Model: (CNN) | Acc: 98.89%
+Round 18 | Client 3 | Model: (CNN) | Acc: 97.54%
+Round 18 | Client 4 | Model: (CNN) | Acc: 97.87%
+Round 18 | Client 5 | Model: (CNN) | Acc: 96.72%
+Round 18 | Client 6 | Model: (CNN) | Acc: 75.60%
+Round 18 | Client 7 | Model: (CNN) | Acc: 99.09%
+Round 18 | Client 8 | Model: (CNN) | Acc: 98.60%
+Round 18 | Client 9 | Model: (CNN) | Acc: 88.12%
+Round 18 | Client 11 | Model: (CNN) | Acc: 96.37%
+Round 18 | Client 12 | Model: (CNN) | Acc: 96.68%
+Round 18 | Client 13 | Model: (CNN) | Acc: 93.94%
+Round 18 | Client 14 | Model: (CNN) | Acc: 95.74%
+Round 18 | Client 15 | Model: (CNN) | Acc: 94.98%
+Round 18 | Client 16 | Model: (CNN) | Acc: 97.00%
+Round 18 | Client 17 | Model: (CNN) | Acc: 94.74%
+Round 18 | Client 18 | Model: (CNN) | Acc: 96.66%
+Round 18 | Client 19 | Model: (CNN) | Acc: 94.68%
+Round 18 | Client 20 | Model: (CNN) | Acc: 94.30%
+Round 18 | Client 22 | Model: (CNN) | Acc: 77.88%
+Round 18 | Client 23 | Model: (CNN) | Acc: 72.13%
+Round 18 | Client 24 | Model: (CNN) | Acc: 80.00%
+Round 18 | Client 25 | Model: (CNN) | Acc: 70.88%
+Round 18 | Client 26 | Model: (CNN) | Acc: 88.55%
+Round 18 | Client 27 | Model: (CNN) | Acc: 82.88%
+Round 18 | Client 28 | Model: (CNN) | Acc: 84.06%
+Round 18 | Client 29 | Model: (CNN) | Acc: 93.13%
+Round 18 | Client 30 | Model: (CNN) | Acc: 87.58%
+Round 18 | Client 31 | Model: (CNN) | Acc: 88.14%
+Selected client ids: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29]
+--- Round 19 ---
+Round 19 | Client 0 | Model: (CNN) | Acc: 99.75%
+Round 19 | Client 1 | Model: (CNN) | Acc: 96.54%
+Round 19 | Client 2 | Model: (CNN) | Acc: 98.89%
+Round 19 | Client 3 | Model: (CNN) | Acc: 97.54%
+Round 19 | Client 4 | Model: (CNN) | Acc: 97.41%
+Round 19 | Client 5 | Model: (CNN) | Acc: 92.78%
+Round 19 | Client 6 | Model: (CNN) | Acc: 96.99%
+Round 19 | Client 7 | Model: (CNN) | Acc: 97.85%
+Round 19 | Client 8 | Model: (CNN) | Acc: 99.32%
+Round 19 | Client 9 | Model: (CNN) | Acc: 97.86%
+Round 19 | Client 11 | Model: (CNN) | Acc: 95.85%
+Round 19 | Client 12 | Model: (CNN) | Acc: 96.00%
+Round 19 | Client 13 | Model: (CNN) | Acc: 92.08%
+Round 19 | Client 14 | Model: (CNN) | Acc: 95.82%
+Round 19 | Client 15 | Model: (CNN) | Acc: 95.02%
+Round 19 | Client 16 | Model: (CNN) | Acc: 97.10%
+Round 19 | Client 17 | Model: (CNN) | Acc: 94.09%
+Round 19 | Client 18 | Model: (CNN) | Acc: 96.87%
+Round 19 | Client 19 | Model: (CNN) | Acc: 95.42%
+Round 19 | Client 20 | Model: (CNN) | Acc: 93.48%
+Round 19 | Client 22 | Model: (CNN) | Acc: 80.13%
+Round 19 | Client 23 | Model: (CNN) | Acc: 66.53%
+Round 19 | Client 24 | Model: (CNN) | Acc: 80.00%
+Round 19 | Client 25 | Model: (CNN) | Acc: 78.22%
+Round 19 | Client 26 | Model: (CNN) | Acc: 89.14%
+Round 19 | Client 27 | Model: (CNN) | Acc: 84.68%
+Round 19 | Client 28 | Model: (CNN) | Acc: 91.56%
+Round 19 | Client 29 | Model: (CNN) | Acc: 92.70%
+Round 19 | Client 30 | Model: (CNN) | Acc: 56.54%
+Round 19 | Client 31 | Model: (CNN) | Acc: 77.88%
+Selected client ids: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29]
+--- Round 20 ---
+Round 20 | Client 0 | Model: (CNN) | Acc: 99.75%
+Round 20 | Client 1 | Model: (CNN) | Acc: 98.43%
+Round 20 | Client 2 | Model: (CNN) | Acc: 99.08%
+Round 20 | Client 3 | Model: (CNN) | Acc: 97.54%
+Round 20 | Client 4 | Model: (CNN) | Acc: 98.99%
+Round 20 | Client 5 | Model: (CNN) | Acc: 96.94%
+Round 20 | Client 6 | Model: (CNN) | Acc: 98.80%
+Round 20 | Client 7 | Model: (CNN) | Acc: 99.21%
+Round 20 | Client 8 | Model: (CNN) | Acc: 95.73%
+Round 20 | Client 9 | Model: (CNN) | Acc: 98.34%
+Round 20 | Client 11 | Model: (CNN) | Acc: 96.30%
+Round 20 | Client 12 | Model: (CNN) | Acc: 97.41%
+Round 20 | Client 13 | Model: (CNN) | Acc: 93.33%
+Round 20 | Client 14 | Model: (CNN) | Acc: 95.11%
+Round 20 | Client 15 | Model: (CNN) | Acc: 91.80%
+Round 20 | Client 16 | Model: (CNN) | Acc: 97.15%
+Round 20 | Client 17 | Model: (CNN) | Acc: 94.32%
+Round 20 | Client 18 | Model: (CNN) | Acc: 96.79%
+Round 20 | Client 19 | Model: (CNN) | Acc: 94.53%
+Round 20 | Client 20 | Model: (CNN) | Acc: 94.13%
+Round 20 | Client 22 | Model: (CNN) | Acc: 75.86%
+Round 20 | Client 23 | Model: (CNN) | Acc: 76.27%
+Round 20 | Client 24 | Model: (CNN) | Acc: 80.00%
+Round 20 | Client 25 | Model: (CNN) | Acc: 80.01%
+Round 20 | Client 26 | Model: (CNN) | Acc: 83.71%
+Round 20 | Client 27 | Model: (CNN) | Acc: 77.48%
+Round 20 | Client 28 | Model: (CNN) | Acc: 91.73%
+Round 20 | Client 29 | Model: (CNN) | Acc: 92.27%
+Round 20 | Client 30 | Model: (CNN) | Acc: 90.91%
+Round 20 | Client 31 | Model: (CNN) | Acc: 80.13%
+Selected client ids: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29]
+--- Round 21 ---
+Round 21 | Client 0 | Model: (CNN) | Acc: 99.75%
+Round 21 | Client 1 | Model: (CNN) | Acc: 98.43%
+Round 21 | Client 2 | Model: (CNN) | Acc: 99.08%
+Round 21 | Client 3 | Model: (CNN) | Acc: 97.13%
+Round 21 | Client 4 | Model: (CNN) | Acc: 98.38%
+Round 21 | Client 5 | Model: (CNN) | Acc: 96.61%
+Round 21 | Client 6 | Model: (CNN) | Acc: 98.49%
+Round 21 | Client 7 | Model: (CNN) | Acc: 98.41%
+Round 21 | Client 8 | Model: (CNN) | Acc: 98.00%
+Round 21 | Client 9 | Model: (CNN) | Acc: 97.74%
+Round 21 | Client 11 | Model: (CNN) | Acc: 96.20%
+Round 21 | Client 12 | Model: (CNN) | Acc: 96.34%
+Round 21 | Client 13 | Model: (CNN) | Acc: 93.54%
+Round 21 | Client 14 | Model: (CNN) | Acc: 95.34%
+Round 21 | Client 15 | Model: (CNN) | Acc: 95.15%
+Round 21 | Client 16 | Model: (CNN) | Acc: 97.03%
+Round 21 | Client 17 | Model: (CNN) | Acc: 94.25%
+Round 21 | Client 18 | Model: (CNN) | Acc: 96.77%
+Round 21 | Client 19 | Model: (CNN) | Acc: 95.39%
+Round 21 | Client 20 | Model: (CNN) | Acc: 93.82%
+Round 21 | Client 22 | Model: (CNN) | Acc: 84.23%
+Round 21 | Client 23 | Model: (CNN) | Acc: 72.80%
+Round 21 | Client 24 | Model: (CNN) | Acc: 80.00%
+Round 21 | Client 25 | Model: (CNN) | Acc: 69.84%
+Round 21 | Client 26 | Model: (CNN) | Acc: 88.85%
+Round 21 | Client 27 | Model: (CNN) | Acc: 75.28%
+Round 21 | Client 28 | Model: (CNN) | Acc: 87.73%
+Round 21 | Client 29 | Model: (CNN) | Acc: 92.06%
+Round 21 | Client 30 | Model: (CNN) | Acc: 90.47%
+Round 21 | Client 31 | Model: (CNN) | Acc: 81.09%
+Selected client ids: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29]
+--- Round 22 ---
+Round 22 | Client 0 | Model: (CNN) | Acc: 99.75%
+Round 22 | Client 1 | Model: (CNN) | Acc: 93.08%
+Round 22 | Client 2 | Model: (CNN) | Acc: 98.89%
+Round 22 | Client 3 | Model: (CNN) | Acc: 97.54%
+Round 22 | Client 4 | Model: (CNN) | Acc: 98.88%
+Round 22 | Client 5 | Model: (CNN) | Acc: 98.14%
+Round 22 | Client 6 | Model: (CNN) | Acc: 88.25%
+Round 22 | Client 7 | Model: (CNN) | Acc: 99.32%
+Round 22 | Client 8 | Model: (CNN) | Acc: 96.98%
+Round 22 | Client 9 | Model: (CNN) | Acc: 97.86%
+Round 22 | Client 11 | Model: (CNN) | Acc: 95.39%
+Round 22 | Client 12 | Model: (CNN) | Acc: 95.83%
+Round 22 | Client 13 | Model: (CNN) | Acc: 93.35%
+Round 22 | Client 14 | Model: (CNN) | Acc: 94.99%
+Round 22 | Client 15 | Model: (CNN) | Acc: 95.29%
+Round 22 | Client 16 | Model: (CNN) | Acc: 97.00%
+Round 22 | Client 17 | Model: (CNN) | Acc: 94.70%
+Round 22 | Client 18 | Model: (CNN) | Acc: 96.91%
+Round 22 | Client 19 | Model: (CNN) | Acc: 94.63%
+Round 22 | Client 20 | Model: (CNN) | Acc: 93.77%
+Round 22 | Client 22 | Model: (CNN) | Acc: 81.66%
+Round 22 | Client 23 | Model: (CNN) | Acc: 62.93%
+Round 22 | Client 24 | Model: (CNN) | Acc: 80.00%
+Round 22 | Client 25 | Model: (CNN) | Acc: 71.93%
+Round 22 | Client 26 | Model: (CNN) | Acc: 86.57%
+Round 22 | Client 27 | Model: (CNN) | Acc: 74.00%
+Round 22 | Client 28 | Model: (CNN) | Acc: 92.50%
+Round 22 | Client 29 | Model: (CNN) | Acc: 91.63%
+Round 22 | Client 30 | Model: (CNN) | Acc: 90.24%
+Round 22 | Client 31 | Model: (CNN) | Acc: 83.01%
+Selected client ids: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29]
+--- Round 23 ---
+Round 23 | Client 0 | Model: (CNN) | Acc: 99.75%
+Round 23 | Client 1 | Model: (CNN) | Acc: 91.82%
+Round 23 | Client 2 | Model: (CNN) | Acc: 98.89%
+Round 23 | Client 3 | Model: (CNN) | Acc: 92.62%
+Round 23 | Client 4 | Model: (CNN) | Acc: 98.73%
+Round 23 | Client 5 | Model: (CNN) | Acc: 98.36%
+Round 23 | Client 6 | Model: (CNN) | Acc: 98.49%
+Round 23 | Client 7 | Model: (CNN) | Acc: 99.43%
+Round 23 | Client 8 | Model: (CNN) | Acc: 96.26%
+Round 23 | Client 9 | Model: (CNN) | Acc: 98.46%
+Round 23 | Client 11 | Model: (CNN) | Acc: 96.33%
+Round 23 | Client 12 | Model: (CNN) | Acc: 95.94%
+Round 23 | Client 13 | Model: (CNN) | Acc: 92.59%
+Round 23 | Client 14 | Model: (CNN) | Acc: 93.96%
+Round 23 | Client 15 | Model: (CNN) | Acc: 95.24%
+Round 23 | Client 16 | Model: (CNN) | Acc: 97.15%
+Round 23 | Client 17 | Model: (CNN) | Acc: 94.22%
+Round 23 | Client 18 | Model: (CNN) | Acc: 96.82%
+Round 23 | Client 19 | Model: (CNN) | Acc: 94.93%
+Round 23 | Client 20 | Model: (CNN) | Acc: 93.93%
+Round 23 | Client 22 | Model: (CNN) | Acc: 80.61%
+Round 23 | Client 23 | Model: (CNN) | Acc: 68.27%
+Round 23 | Client 24 | Model: (CNN) | Acc: 80.00%
+Round 23 | Client 25 | Model: (CNN) | Acc: 80.01%
+Round 23 | Client 26 | Model: (CNN) | Acc: 91.71%
+Round 23 | Client 27 | Model: (CNN) | Acc: 83.34%
+Round 23 | Client 28 | Model: (CNN) | Acc: 91.89%
+Round 23 | Client 29 | Model: (CNN) | Acc: 90.99%
+Round 23 | Client 30 | Model: (CNN) | Acc: 88.91%
+Round 23 | Client 31 | Model: (CNN) | Acc: 86.86%
+Selected client ids: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29]
+--- Round 24 ---
+Round 24 | Client 0 | Model: (CNN) | Acc: 99.75%
+Round 24 | Client 1 | Model: (CNN) | Acc: 95.60%
+Round 24 | Client 2 | Model: (CNN) | Acc: 97.97%
+Round 24 | Client 3 | Model: (CNN) | Acc: 94.26%
+Round 24 | Client 4 | Model: (CNN) | Acc: 98.53%
+Round 24 | Client 5 | Model: (CNN) | Acc: 99.12%
+Round 24 | Client 6 | Model: (CNN) | Acc: 97.29%
+Round 24 | Client 7 | Model: (CNN) | Acc: 99.66%
+Round 24 | Client 8 | Model: (CNN) | Acc: 99.36%
+Round 24 | Client 9 | Model: (CNN) | Acc: 97.51%
+Round 24 | Client 11 | Model: (CNN) | Acc: 96.54%
+Round 24 | Client 12 | Model: (CNN) | Acc: 97.13%
+Round 24 | Client 13 | Model: (CNN) | Acc: 93.08%
+Round 24 | Client 14 | Model: (CNN) | Acc: 95.69%
+Round 24 | Client 15 | Model: (CNN) | Acc: 95.04%
+Round 24 | Client 16 | Model: (CNN) | Acc: 97.30%
+Round 24 | Client 17 | Model: (CNN) | Acc: 94.44%
+Round 24 | Client 18 | Model: (CNN) | Acc: 96.87%
+Round 24 | Client 19 | Model: (CNN) | Acc: 94.63%
+Round 24 | Client 20 | Model: (CNN) | Acc: 94.18%
+Round 24 | Client 22 | Model: (CNN) | Acc: 73.21%
+Round 24 | Client 23 | Model: (CNN) | Acc: 73.73%
+Round 24 | Client 24 | Model: (CNN) | Acc: 80.00%
+Round 24 | Client 25 | Model: (CNN) | Acc: 76.95%
+Round 24 | Client 26 | Model: (CNN) | Acc: 89.54%
+Round 24 | Client 27 | Model: (CNN) | Acc: 80.50%
+Round 24 | Client 28 | Model: (CNN) | Acc: 88.17%
+Round 24 | Client 29 | Model: (CNN) | Acc: 93.13%
+Round 24 | Client 30 | Model: (CNN) | Acc: 90.24%
+Round 24 | Client 31 | Model: (CNN) | Acc: 81.73%
+Selected client ids: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29]
+--- Round 25 ---
+Round 25 | Client 0 | Model: (CNN) | Acc: 99.75%
+Round 25 | Client 1 | Model: (CNN) | Acc: 99.37%
+Round 25 | Client 2 | Model: (CNN) | Acc: 98.71%
+Round 25 | Client 3 | Model: (CNN) | Acc: 94.67%
+Round 25 | Client 4 | Model: (CNN) | Acc: 98.73%
+Round 25 | Client 5 | Model: (CNN) | Acc: 99.12%
+Round 25 | Client 6 | Model: (CNN) | Acc: 98.49%
+Round 25 | Client 7 | Model: (CNN) | Acc: 99.43%
+Round 25 | Client 8 | Model: (CNN) | Acc: 99.09%
+Round 25 | Client 9 | Model: (CNN) | Acc: 92.04%
+Round 25 | Client 11 | Model: (CNN) | Acc: 96.25%
+Round 25 | Client 12 | Model: (CNN) | Acc: 97.13%
+Round 25 | Client 13 | Model: (CNN) | Acc: 93.39%
+Round 25 | Client 14 | Model: (CNN) | Acc: 95.70%
+Round 25 | Client 15 | Model: (CNN) | Acc: 94.95%
+Round 25 | Client 16 | Model: (CNN) | Acc: 97.18%
+Round 25 | Client 17 | Model: (CNN) | Acc: 94.16%
+Round 25 | Client 18 | Model: (CNN) | Acc: 96.59%
+Round 25 | Client 19 | Model: (CNN) | Acc: 94.97%
+Round 25 | Client 20 | Model: (CNN) | Acc: 94.12%
+Round 25 | Client 22 | Model: (CNN) | Acc: 78.04%
+Round 25 | Client 23 | Model: (CNN) | Acc: 75.07%
+Round 25 | Client 24 | Model: (CNN) | Acc: 80.00%
+Round 25 | Client 25 | Model: (CNN) | Acc: 74.03%
+Round 25 | Client 26 | Model: (CNN) | Acc: 90.13%
+Round 25 | Client 27 | Model: (CNN) | Acc: 79.98%
+Round 25 | Client 28 | Model: (CNN) | Acc: 89.67%
+Round 25 | Client 29 | Model: (CNN) | Acc: 93.35%
+Round 25 | Client 30 | Model: (CNN) | Acc: 90.02%
+Round 25 | Client 31 | Model: (CNN) | Acc: 82.37%
+Selected client ids: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29]
+--- Round 26 ---
+Round 26 | Client 0 | Model: (CNN) | Acc: 99.75%
+Round 26 | Client 1 | Model: (CNN) | Acc: 98.11%
+Round 26 | Client 2 | Model: (CNN) | Acc: 99.08%
+Round 26 | Client 3 | Model: (CNN) | Acc: 73.36%
+Round 26 | Client 4 | Model: (CNN) | Acc: 97.92%
+Round 26 | Client 5 | Model: (CNN) | Acc: 98.91%
+Round 26 | Client 6 | Model: (CNN) | Acc: 99.10%
+Round 26 | Client 7 | Model: (CNN) | Acc: 99.43%
+Round 26 | Client 8 | Model: (CNN) | Acc: 99.28%
+Round 26 | Client 9 | Model: (CNN) | Acc: 97.62%
+Round 26 | Client 11 | Model: (CNN) | Acc: 95.99%
+Round 26 | Client 12 | Model: (CNN) | Acc: 96.50%
+Round 26 | Client 13 | Model: (CNN) | Acc: 93.46%
+Round 26 | Client 14 | Model: (CNN) | Acc: 95.50%
+Round 26 | Client 15 | Model: (CNN) | Acc: 95.15%
+Round 26 | Client 16 | Model: (CNN) | Acc: 97.28%
+Round 26 | Client 17 | Model: (CNN) | Acc: 94.51%
+Round 26 | Client 18 | Model: (CNN) | Acc: 96.52%
+Round 26 | Client 19 | Model: (CNN) | Acc: 95.43%
+Round 26 | Client 20 | Model: (CNN) | Acc: 93.73%
+Round 26 | Client 22 | Model: (CNN) | Acc: 78.36%
+Round 26 | Client 23 | Model: (CNN) | Acc: 75.73%
+Round 26 | Client 24 | Model: (CNN) | Acc: 80.00%
+Round 26 | Client 25 | Model: (CNN) | Acc: 40.72%
+Round 26 | Client 26 | Model: (CNN) | Acc: 91.71%
+Round 26 | Client 27 | Model: (CNN) | Acc: 81.08%
+Round 26 | Client 28 | Model: (CNN) | Acc: 91.50%
+Round 26 | Client 29 | Model: (CNN) | Acc: 94.64%
+Round 26 | Client 30 | Model: (CNN) | Acc: 89.80%
+Round 26 | Client 31 | Model: (CNN) | Acc: 83.97%
+Selected client ids: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29]
+--- Round 27 ---
+Round 27 | Client 0 | Model: (CNN) | Acc: 99.75%
+Round 27 | Client 1 | Model: (CNN) | Acc: 99.37%
+Round 27 | Client 2 | Model: (CNN) | Acc: 57.67%
+Round 27 | Client 3 | Model: (CNN) | Acc: 93.85%
+Round 27 | Client 4 | Model: (CNN) | Acc: 99.34%
+Round 27 | Client 5 | Model: (CNN) | Acc: 99.23%
+Round 27 | Client 6 | Model: (CNN) | Acc: 99.10%
+Round 27 | Client 7 | Model: (CNN) | Acc: 86.96%
+Round 27 | Client 8 | Model: (CNN) | Acc: 98.79%
+Round 27 | Client 9 | Model: (CNN) | Acc: 97.27%
+Round 27 | Client 11 | Model: (CNN) | Acc: 96.26%
+Round 27 | Client 12 | Model: (CNN) | Acc: 95.42%
+Round 27 | Client 13 | Model: (CNN) | Acc: 93.72%
+Round 27 | Client 14 | Model: (CNN) | Acc: 96.01%
+Round 27 | Client 15 | Model: (CNN) | Acc: 95.09%
+Round 27 | Client 16 | Model: (CNN) | Acc: 97.06%
+Round 27 | Client 17 | Model: (CNN) | Acc: 94.00%
+Round 27 | Client 18 | Model: (CNN) | Acc: 96.60%
+Round 27 | Client 19 | Model: (CNN) | Acc: 95.38%
+Round 27 | Client 20 | Model: (CNN) | Acc: 94.11%
+Round 27 | Client 22 | Model: (CNN) | Acc: 81.42%
+Round 27 | Client 23 | Model: (CNN) | Acc: 72.93%
+Round 27 | Client 24 | Model: (CNN) | Acc: 80.00%
+Round 27 | Client 25 | Model: (CNN) | Acc: 76.42%
+Round 27 | Client 26 | Model: (CNN) | Acc: 91.12%
+Round 27 | Client 27 | Model: (CNN) | Acc: 85.90%
+Round 27 | Client 28 | Model: (CNN) | Acc: 80.79%
+Round 27 | Client 29 | Model: (CNN) | Acc: 94.42%
+Round 27 | Client 30 | Model: (CNN) | Acc: 92.46%
+Round 27 | Client 31 | Model: (CNN) | Acc: 82.05%
+Selected client ids: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29]
+--- Round 28 ---
+Round 28 | Client 0 | Model: (CNN) | Acc: 99.75%
+Round 28 | Client 1 | Model: (CNN) | Acc: 100.00%
+Round 28 | Client 2 | Model: (CNN) | Acc: 98.34%
+Round 28 | Client 3 | Model: (CNN) | Acc: 76.64%
+Round 28 | Client 4 | Model: (CNN) | Acc: 99.24%
+Round 28 | Client 5 | Model: (CNN) | Acc: 99.02%
+Round 28 | Client 6 | Model: (CNN) | Acc: 99.10%
+Round 28 | Client 7 | Model: (CNN) | Acc: 91.04%
+Round 28 | Client 8 | Model: (CNN) | Acc: 98.94%
+Round 28 | Client 9 | Model: (CNN) | Acc: 95.96%
+Round 28 | Client 11 | Model: (CNN) | Acc: 96.49%
+Round 28 | Client 12 | Model: (CNN) | Acc: 95.54%
+Round 28 | Client 13 | Model: (CNN) | Acc: 94.23%
+Round 28 | Client 14 | Model: (CNN) | Acc: 95.59%
+Round 28 | Client 15 | Model: (CNN) | Acc: 94.84%
+Round 28 | Client 16 | Model: (CNN) | Acc: 96.78%
+Round 28 | Client 17 | Model: (CNN) | Acc: 94.62%
+Round 28 | Client 18 | Model: (CNN) | Acc: 96.79%
+Round 28 | Client 19 | Model: (CNN) | Acc: 94.94%
+Round 28 | Client 20 | Model: (CNN) | Acc: 94.08%
+Round 28 | Client 22 | Model: (CNN) | Acc: 79.73%
+Round 28 | Client 23 | Model: (CNN) | Acc: 72.67%
+Round 28 | Client 24 | Model: (CNN) | Acc: 80.00%
+Round 28 | Client 25 | Model: (CNN) | Acc: 52.17%
+Round 28 | Client 26 | Model: (CNN) | Acc: 90.23%
+Round 28 | Client 27 | Model: (CNN) | Acc: 85.14%
+Round 28 | Client 28 | Model: (CNN) | Acc: 90.23%
+Round 28 | Client 29 | Model: (CNN) | Acc: 93.78%
+Round 28 | Client 30 | Model: (CNN) | Acc: 88.69%
+Round 28 | Client 31 | Model: (CNN) | Acc: 85.90%
+Selected client ids: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29]
+--- Round 29 ---
+Round 29 | Client 0 | Model: (CNN) | Acc: 99.75%
+Round 29 | Client 1 | Model: (CNN) | Acc: 99.06%
+Round 29 | Client 2 | Model: (CNN) | Acc: 98.71%
+Round 29 | Client 3 | Model: (CNN) | Acc: 97.54%
+Round 29 | Client 4 | Model: (CNN) | Acc: 98.88%
+Round 29 | Client 5 | Model: (CNN) | Acc: 99.34%
+Round 29 | Client 6 | Model: (CNN) | Acc: 99.10%
+Round 29 | Client 7 | Model: (CNN) | Acc: 87.87%
+Round 29 | Client 8 | Model: (CNN) | Acc: 99.28%
+Round 29 | Client 9 | Model: (CNN) | Acc: 97.15%
+Round 29 | Client 11 | Model: (CNN) | Acc: 96.42%
+Round 29 | Client 12 | Model: (CNN) | Acc: 97.01%
+Round 29 | Client 13 | Model: (CNN) | Acc: 93.75%
+Round 29 | Client 14 | Model: (CNN) | Acc: 95.95%
+Round 29 | Client 15 | Model: (CNN) | Acc: 94.80%
+Round 29 | Client 16 | Model: (CNN) | Acc: 97.01%
+Round 29 | Client 17 | Model: (CNN) | Acc: 94.56%
+Round 29 | Client 18 | Model: (CNN) | Acc: 96.85%
+Round 29 | Client 19 | Model: (CNN) | Acc: 94.07%
+Round 29 | Client 20 | Model: (CNN) | Acc: 94.27%
+Round 29 | Client 22 | Model: (CNN) | Acc: 82.94%
+Round 29 | Client 23 | Model: (CNN) | Acc: 59.60%
+Round 29 | Client 24 | Model: (CNN) | Acc: 80.00%
+Round 29 | Client 25 | Model: (CNN) | Acc: 83.16%
+Round 29 | Client 26 | Model: (CNN) | Acc: 84.70%
+Round 29 | Client 27 | Model: (CNN) | Acc: 80.73%
+Round 29 | Client 28 | Model: (CNN) | Acc: 91.17%
+Round 29 | Client 29 | Model: (CNN) | Acc: 95.06%
+Round 29 | Client 30 | Model: (CNN) | Acc: 88.91%
+Round 29 | Client 31 | Model: (CNN) | Acc: 87.82%
+Selected client ids: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29]
+--- Round 30 ---
+Round 30 | Client 0 | Model: (CNN) | Acc: 99.75%
+Round 30 | Client 1 | Model: (CNN) | Acc: 99.69%
+Round 30 | Client 2 | Model: (CNN) | Acc: 99.45%
+Round 30 | Client 3 | Model: (CNN) | Acc: 96.31%
+Round 30 | Client 4 | Model: (CNN) | Acc: 97.62%
+Round 30 | Client 5 | Model: (CNN) | Acc: 99.23%
+Round 30 | Client 6 | Model: (CNN) | Acc: 99.10%
+Round 30 | Client 7 | Model: (CNN) | Acc: 98.75%
+Round 30 | Client 8 | Model: (CNN) | Acc: 98.60%
+Round 30 | Client 9 | Model: (CNN) | Acc: 94.66%
+Round 30 | Client 11 | Model: (CNN) | Acc: 94.48%
+Round 30 | Client 12 | Model: (CNN) | Acc: 96.94%
+Round 30 | Client 13 | Model: (CNN) | Acc: 93.61%
+Round 30 | Client 14 | Model: (CNN) | Acc: 96.00%
+Round 30 | Client 15 | Model: (CNN) | Acc: 95.27%
+Round 30 | Client 16 | Model: (CNN) | Acc: 97.15%
+Round 30 | Client 17 | Model: (CNN) | Acc: 94.59%
+Round 30 | Client 18 | Model: (CNN) | Acc: 96.43%
+Round 30 | Client 19 | Model: (CNN) | Acc: 94.33%
+Round 30 | Client 20 | Model: (CNN) | Acc: 93.39%
+Round 30 | Client 22 | Model: (CNN) | Acc: 76.91%
+Round 30 | Client 23 | Model: (CNN) | Acc: 74.80%
+Round 30 | Client 24 | Model: (CNN) | Acc: 60.00%
+Round 30 | Client 25 | Model: (CNN) | Acc: 71.48%
+Round 30 | Client 26 | Model: (CNN) | Acc: 87.17%
+Round 30 | Client 27 | Model: (CNN) | Acc: 80.09%
+Round 30 | Client 28 | Model: (CNN) | Acc: 89.28%
+Round 30 | Client 29 | Model: (CNN) | Acc: 94.21%
+Round 30 | Client 30 | Model: (CNN) | Acc: 92.24%
+Round 30 | Client 31 | Model: (CNN) | Acc: 66.35%
+Selected client ids: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29]
+--- Round 31 ---
+Round 31 | Client 0 | Model: (CNN) | Acc: 99.75%
+Round 31 | Client 1 | Model: (CNN) | Acc: 99.37%
+Round 31 | Client 2 | Model: (CNN) | Acc: 99.45%
+Round 31 | Client 3 | Model: (CNN) | Acc: 98.77%
+Round 31 | Client 4 | Model: (CNN) | Acc: 97.97%
+Round 31 | Client 5 | Model: (CNN) | Acc: 99.12%
+Round 31 | Client 6 | Model: (CNN) | Acc: 98.49%
+Round 31 | Client 7 | Model: (CNN) | Acc: 98.41%
+Round 31 | Client 8 | Model: (CNN) | Acc: 98.91%
+Round 31 | Client 9 | Model: (CNN) | Acc: 94.89%
+Round 31 | Client 11 | Model: (CNN) | Acc: 96.13%
+Round 31 | Client 12 | Model: (CNN) | Acc: 97.32%
+Round 31 | Client 13 | Model: (CNN) | Acc: 94.01%
+Round 31 | Client 14 | Model: (CNN) | Acc: 95.91%
+Round 31 | Client 15 | Model: (CNN) | Acc: 95.21%
+Round 31 | Client 16 | Model: (CNN) | Acc: 96.99%
+Round 31 | Client 17 | Model: (CNN) | Acc: 94.63%
+Round 31 | Client 18 | Model: (CNN) | Acc: 95.95%
+Round 31 | Client 19 | Model: (CNN) | Acc: 94.93%
+Round 31 | Client 20 | Model: (CNN) | Acc: 94.08%
+Round 31 | Client 22 | Model: (CNN) | Acc: 82.06%
+Round 31 | Client 23 | Model: (CNN) | Acc: 75.07%
+Round 31 | Client 24 | Model: (CNN) | Acc: 60.00%
+Round 31 | Client 25 | Model: (CNN) | Acc: 71.41%
+Round 31 | Client 26 | Model: (CNN) | Acc: 91.02%
+Round 31 | Client 27 | Model: (CNN) | Acc: 80.91%
+Round 31 | Client 28 | Model: (CNN) | Acc: 91.23%
+Round 31 | Client 29 | Model: (CNN) | Acc: 93.35%
+Round 31 | Client 30 | Model: (CNN) | Acc: 88.03%
+Round 31 | Client 31 | Model: (CNN) | Acc: 81.73%
+Selected client ids: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29]
+--- Round 32 ---
+Round 32 | Client 0 | Model: (CNN) | Acc: 99.75%
+Round 32 | Client 1 | Model: (CNN) | Acc: 99.37%
+Round 32 | Client 2 | Model: (CNN) | Acc: 99.26%
+Round 32 | Client 3 | Model: (CNN) | Acc: 90.57%
+Round 32 | Client 4 | Model: (CNN) | Acc: 93.35%
+Round 32 | Client 5 | Model: (CNN) | Acc: 99.34%
+Round 32 | Client 6 | Model: (CNN) | Acc: 93.67%
+Round 32 | Client 7 | Model: (CNN) | Acc: 96.15%
+Round 32 | Client 8 | Model: (CNN) | Acc: 99.02%
+Round 32 | Client 9 | Model: (CNN) | Acc: 98.22%
+Round 32 | Client 11 | Model: (CNN) | Acc: 95.74%
+Round 32 | Client 12 | Model: (CNN) | Acc: 95.59%
+Round 32 | Client 13 | Model: (CNN) | Acc: 93.94%
+Round 32 | Client 14 | Model: (CNN) | Acc: 95.95%
+Round 32 | Client 15 | Model: (CNN) | Acc: 95.42%
+Round 32 | Client 16 | Model: (CNN) | Acc: 97.24%
+Round 32 | Client 17 | Model: (CNN) | Acc: 94.42%
+Round 32 | Client 18 | Model: (CNN) | Acc: 96.61%
+Round 32 | Client 19 | Model: (CNN) | Acc: 95.34%
+Round 32 | Client 20 | Model: (CNN) | Acc: 93.71%
+Round 32 | Client 22 | Model: (CNN) | Acc: 81.90%
+Round 32 | Client 23 | Model: (CNN) | Acc: 71.20%
+Round 32 | Client 24 | Model: (CNN) | Acc: 80.00%
+Round 32 | Client 25 | Model: (CNN) | Acc: 76.57%
+Round 32 | Client 26 | Model: (CNN) | Acc: 83.71%
+Round 32 | Client 27 | Model: (CNN) | Acc: 81.20%
+Round 32 | Client 28 | Model: (CNN) | Acc: 93.50%
+Round 32 | Client 29 | Model: (CNN) | Acc: 94.21%
+Round 32 | Client 30 | Model: (CNN) | Acc: 92.02%
+Round 32 | Client 31 | Model: (CNN) | Acc: 84.94%
+Selected client ids: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29]
+--- Round 33 ---
+Round 33 | Client 0 | Model: (CNN) | Acc: 99.75%
+Round 33 | Client 1 | Model: (CNN) | Acc: 99.37%
+Round 33 | Client 2 | Model: (CNN) | Acc: 99.45%
+Round 33 | Client 3 | Model: (CNN) | Acc: 93.85%
+Round 33 | Client 4 | Model: (CNN) | Acc: 99.34%
+Round 33 | Client 5 | Model: (CNN) | Acc: 99.23%
+Round 33 | Client 6 | Model: (CNN) | Acc: 96.39%
+Round 33 | Client 7 | Model: (CNN) | Acc: 96.37%
+Round 33 | Client 8 | Model: (CNN) | Acc: 99.28%
+Round 33 | Client 9 | Model: (CNN) | Acc: 98.22%
+Round 33 | Client 11 | Model: (CNN) | Acc: 96.01%
+Round 33 | Client 12 | Model: (CNN) | Acc: 97.00%
+Round 33 | Client 13 | Model: (CNN) | Acc: 93.54%
+Round 33 | Client 14 | Model: (CNN) | Acc: 95.93%
+Round 33 | Client 15 | Model: (CNN) | Acc: 95.11%
+Round 33 | Client 16 | Model: (CNN) | Acc: 97.06%
+Round 33 | Client 17 | Model: (CNN) | Acc: 94.63%
+Round 33 | Client 18 | Model: (CNN) | Acc: 96.76%
+Round 33 | Client 19 | Model: (CNN) | Acc: 95.01%
+Round 33 | Client 20 | Model: (CNN) | Acc: 93.35%
+Round 33 | Client 22 | Model: (CNN) | Acc: 83.75%
+Round 33 | Client 23 | Model: (CNN) | Acc: 72.40%
+Round 33 | Client 24 | Model: (CNN) | Acc: 80.00%
+Round 33 | Client 25 | Model: (CNN) | Acc: 70.66%
+Round 33 | Client 26 | Model: (CNN) | Acc: 91.12%
+Round 33 | Client 27 | Model: (CNN) | Acc: 80.27%
+Round 33 | Client 28 | Model: (CNN) | Acc: 92.00%
+Round 33 | Client 29 | Model: (CNN) | Acc: 94.42%
+Round 33 | Client 30 | Model: (CNN) | Acc: 91.80%
+Round 33 | Client 31 | Model: (CNN) | Acc: 87.18%
+Selected client ids: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29]
+--- Round 34 ---
+Round 34 | Client 0 | Model: (CNN) | Acc: 99.75%
+Round 34 | Client 1 | Model: (CNN) | Acc: 99.37%
+Round 34 | Client 2 | Model: (CNN) | Acc: 99.08%
+Round 34 | Client 3 | Model: (CNN) | Acc: 97.95%
+Round 34 | Client 4 | Model: (CNN) | Acc: 98.48%
+Round 34 | Client 5 | Model: (CNN) | Acc: 99.23%
+Round 34 | Client 6 | Model: (CNN) | Acc: 98.49%
+Round 34 | Client 7 | Model: (CNN) | Acc: 98.30%
+Round 34 | Client 8 | Model: (CNN) | Acc: 99.32%
+Round 34 | Client 9 | Model: (CNN) | Acc: 98.46%
+Round 34 | Client 11 | Model: (CNN) | Acc: 96.33%
+Round 34 | Client 12 | Model: (CNN) | Acc: 96.97%
+Round 34 | Client 13 | Model: (CNN) | Acc: 93.46%
+Round 34 | Client 14 | Model: (CNN) | Acc: 95.82%
+Round 34 | Client 15 | Model: (CNN) | Acc: 94.86%
+Round 34 | Client 16 | Model: (CNN) | Acc: 96.73%
+Round 34 | Client 17 | Model: (CNN) | Acc: 94.72%
+Round 34 | Client 18 | Model: (CNN) | Acc: 96.39%
+Round 34 | Client 19 | Model: (CNN) | Acc: 95.25%
+Round 34 | Client 20 | Model: (CNN) | Acc: 93.22%
+Round 34 | Client 22 | Model: (CNN) | Acc: 76.99%
+Round 34 | Client 23 | Model: (CNN) | Acc: 65.87%
+Round 34 | Client 24 | Model: (CNN) | Acc: 80.00%
+Round 34 | Client 25 | Model: (CNN) | Acc: 77.40%
+Round 34 | Client 26 | Model: (CNN) | Acc: 83.91%
+Round 34 | Client 27 | Model: (CNN) | Acc: 79.11%
+Round 34 | Client 28 | Model: (CNN) | Acc: 92.34%
+Round 34 | Client 29 | Model: (CNN) | Acc: 87.98%
+Round 34 | Client 30 | Model: (CNN) | Acc: 86.47%
+Round 34 | Client 31 | Model: (CNN) | Acc: 82.37%
+Selected client ids: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29]
+--- Round 35 ---
+Round 35 | Client 0 | Model: (CNN) | Acc: 99.75%
+Round 35 | Client 1 | Model: (CNN) | Acc: 99.69%
+Round 35 | Client 2 | Model: (CNN) | Acc: 99.08%
+Round 35 | Client 3 | Model: (CNN) | Acc: 96.72%
+Round 35 | Client 4 | Model: (CNN) | Acc: 99.04%
+Round 35 | Client 5 | Model: (CNN) | Acc: 99.12%
+Round 35 | Client 6 | Model: (CNN) | Acc: 96.99%
+Round 35 | Client 7 | Model: (CNN) | Acc: 99.55%
+Round 35 | Client 8 | Model: (CNN) | Acc: 99.43%
+Round 35 | Client 9 | Model: (CNN) | Acc: 98.10%
+Round 35 | Client 11 | Model: (CNN) | Acc: 96.56%
+Round 35 | Client 12 | Model: (CNN) | Acc: 97.45%
+Round 35 | Client 13 | Model: (CNN) | Acc: 93.38%
+Round 35 | Client 14 | Model: (CNN) | Acc: 94.96%
+Round 35 | Client 15 | Model: (CNN) | Acc: 94.47%
+Round 35 | Client 16 | Model: (CNN) | Acc: 97.23%
+Round 35 | Client 17 | Model: (CNN) | Acc: 93.96%
+Round 35 | Client 18 | Model: (CNN) | Acc: 96.43%
+Round 35 | Client 19 | Model: (CNN) | Acc: 94.82%
+Round 35 | Client 20 | Model: (CNN) | Acc: 94.11%
+Round 35 | Client 22 | Model: (CNN) | Acc: 48.51%
+Round 35 | Client 23 | Model: (CNN) | Acc: 67.20%
+Round 35 | Client 24 | Model: (CNN) | Acc: 80.00%
+Round 35 | Client 25 | Model: (CNN) | Acc: 62.28%
+Round 35 | Client 26 | Model: (CNN) | Acc: 87.27%
+Round 35 | Client 27 | Model: (CNN) | Acc: 83.52%
+Round 35 | Client 28 | Model: (CNN) | Acc: 89.84%
+Round 35 | Client 29 | Model: (CNN) | Acc: 94.42%
+Round 35 | Client 30 | Model: (CNN) | Acc: 90.91%
+Round 35 | Client 31 | Model: (CNN) | Acc: 67.95%
+Selected client ids: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29]
+--- Round 36 ---
+Round 36 | Client 0 | Model: (CNN) | Acc: 99.75%
+Round 36 | Client 1 | Model: (CNN) | Acc: 99.37%
+Round 36 | Client 2 | Model: (CNN) | Acc: 99.08%
+Round 36 | Client 3 | Model: (CNN) | Acc: 97.13%
+Round 36 | Client 4 | Model: (CNN) | Acc: 95.33%
+Round 36 | Client 5 | Model: (CNN) | Acc: 99.23%
+Round 36 | Client 6 | Model: (CNN) | Acc: 99.10%
+Round 36 | Client 7 | Model: (CNN) | Acc: 99.21%
+Round 36 | Client 8 | Model: (CNN) | Acc: 99.28%
+Round 36 | Client 9 | Model: (CNN) | Acc: 97.27%
+Round 36 | Client 11 | Model: (CNN) | Acc: 96.26%
+Round 36 | Client 12 | Model: (CNN) | Acc: 95.42%
+Round 36 | Client 13 | Model: (CNN) | Acc: 93.28%
+Round 36 | Client 14 | Model: (CNN) | Acc: 95.67%
+Round 36 | Client 15 | Model: (CNN) | Acc: 95.40%
+Round 36 | Client 16 | Model: (CNN) | Acc: 97.04%
+Round 36 | Client 17 | Model: (CNN) | Acc: 94.55%
+Round 36 | Client 18 | Model: (CNN) | Acc: 96.45%
+Round 36 | Client 19 | Model: (CNN) | Acc: 94.76%
+Round 36 | Client 20 | Model: (CNN) | Acc: 93.10%
+Round 36 | Client 22 | Model: (CNN) | Acc: 84.31%
+Round 36 | Client 23 | Model: (CNN) | Acc: 75.47%
+Round 36 | Client 24 | Model: (CNN) | Acc: 80.00%
+Round 36 | Client 25 | Model: (CNN) | Acc: 80.69%
+Round 36 | Client 26 | Model: (CNN) | Acc: 92.10%
+Round 36 | Client 27 | Model: (CNN) | Acc: 79.51%
+Round 36 | Client 28 | Model: (CNN) | Acc: 92.84%
+Round 36 | Client 29 | Model: (CNN) | Acc: 94.64%
+Round 36 | Client 30 | Model: (CNN) | Acc: 92.24%
+Round 36 | Client 31 | Model: (CNN) | Acc: 86.86%
+Selected client ids: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29]
+--- Round 37 ---
+Round 37 | Client 0 | Model: (CNN) | Acc: 99.00%
+Round 37 | Client 1 | Model: (CNN) | Acc: 99.69%
+Round 37 | Client 2 | Model: (CNN) | Acc: 98.89%
+Round 37 | Client 3 | Model: (CNN) | Acc: 97.54%
+Round 37 | Client 4 | Model: (CNN) | Acc: 99.04%
+Round 37 | Client 5 | Model: (CNN) | Acc: 99.34%
+Round 37 | Client 6 | Model: (CNN) | Acc: 99.10%
+Round 37 | Client 7 | Model: (CNN) | Acc: 99.43%
+Round 37 | Client 8 | Model: (CNN) | Acc: 99.32%
+Round 37 | Client 9 | Model: (CNN) | Acc: 97.98%
+Round 37 | Client 11 | Model: (CNN) | Acc: 96.41%
+Round 37 | Client 12 | Model: (CNN) | Acc: 97.59%
+Round 37 | Client 13 | Model: (CNN) | Acc: 94.07%
+Round 37 | Client 14 | Model: (CNN) | Acc: 95.46%
+Round 37 | Client 15 | Model: (CNN) | Acc: 95.36%
+Round 37 | Client 16 | Model: (CNN) | Acc: 96.87%
+Round 37 | Client 17 | Model: (CNN) | Acc: 94.49%
+Round 37 | Client 18 | Model: (CNN) | Acc: 96.70%
+Round 37 | Client 19 | Model: (CNN) | Acc: 95.08%
+Round 37 | Client 20 | Model: (CNN) | Acc: 93.45%
+Round 37 | Client 22 | Model: (CNN) | Acc: 82.46%
+Round 37 | Client 23 | Model: (CNN) | Acc: 71.47%
+Round 37 | Client 24 | Model: (CNN) | Acc: 80.00%
+Round 37 | Client 25 | Model: (CNN) | Acc: 82.78%
+Round 37 | Client 26 | Model: (CNN) | Acc: 91.12%
+Round 37 | Client 27 | Model: (CNN) | Acc: 82.12%
+Round 37 | Client 28 | Model: (CNN) | Acc: 93.11%
+Round 37 | Client 29 | Model: (CNN) | Acc: 94.42%
+Round 37 | Client 30 | Model: (CNN) | Acc: 89.36%
+Round 37 | Client 31 | Model: (CNN) | Acc: 71.79%
+Selected client ids: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29]
+--- Round 38 ---
+Round 38 | Client 0 | Model: (CNN) | Acc: 99.75%
+Round 38 | Client 1 | Model: (CNN) | Acc: 99.37%
+Round 38 | Client 2 | Model: (CNN) | Acc: 99.08%
+Round 38 | Client 3 | Model: (CNN) | Acc: 97.13%
+Round 38 | Client 4 | Model: (CNN) | Acc: 99.04%
+Round 38 | Client 5 | Model: (CNN) | Acc: 99.34%
+Round 38 | Client 6 | Model: (CNN) | Acc: 99.10%
+Round 38 | Client 7 | Model: (CNN) | Acc: 99.66%
+Round 38 | Client 8 | Model: (CNN) | Acc: 99.24%
+Round 38 | Client 9 | Model: (CNN) | Acc: 97.51%
+Round 38 | Client 11 | Model: (CNN) | Acc: 95.91%
+Round 38 | Client 12 | Model: (CNN) | Acc: 97.06%
+Round 38 | Client 13 | Model: (CNN) | Acc: 93.50%
+Round 38 | Client 14 | Model: (CNN) | Acc: 95.23%
+Round 38 | Client 15 | Model: (CNN) | Acc: 95.27%
+Round 38 | Client 16 | Model: (CNN) | Acc: 97.22%
+Round 38 | Client 17 | Model: (CNN) | Acc: 94.20%
+Round 38 | Client 18 | Model: (CNN) | Acc: 96.53%
+Round 38 | Client 19 | Model: (CNN) | Acc: 94.74%
+Round 38 | Client 20 | Model: (CNN) | Acc: 93.28%
+Round 38 | Client 22 | Model: (CNN) | Acc: 81.98%
+Round 38 | Client 23 | Model: (CNN) | Acc: 67.87%
+Round 38 | Client 24 | Model: (CNN) | Acc: 80.00%
+Round 38 | Client 25 | Model: (CNN) | Acc: 77.10%
+Round 38 | Client 26 | Model: (CNN) | Acc: 92.00%
+Round 38 | Client 27 | Model: (CNN) | Acc: 78.41%
+Round 38 | Client 28 | Model: (CNN) | Acc: 87.06%
+Round 38 | Client 29 | Model: (CNN) | Acc: 93.99%
+Round 38 | Client 30 | Model: (CNN) | Acc: 92.46%
+Round 38 | Client 31 | Model: (CNN) | Acc: 87.18%
+Selected client ids: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29]
+--- Round 39 ---
+Round 39 | Client 0 | Model: (CNN) | Acc: 99.75%
+Round 39 | Client 1 | Model: (CNN) | Acc: 99.37%
+Round 39 | Client 2 | Model: (CNN) | Acc: 99.45%
+Round 39 | Client 3 | Model: (CNN) | Acc: 97.54%
+Round 39 | Client 4 | Model: (CNN) | Acc: 98.99%
+Round 39 | Client 5 | Model: (CNN) | Acc: 99.02%
+Round 39 | Client 6 | Model: (CNN) | Acc: 99.10%
+Round 39 | Client 7 | Model: (CNN) | Acc: 99.43%
+Round 39 | Client 8 | Model: (CNN) | Acc: 30.80%
+Round 39 | Client 9 | Model: (CNN) | Acc: 98.34%
+Round 39 | Client 11 | Model: (CNN) | Acc: 95.72%
+Round 39 | Client 12 | Model: (CNN) | Acc: 97.51%
+Round 39 | Client 13 | Model: (CNN) | Acc: 93.71%
+Round 39 | Client 14 | Model: (CNN) | Acc: 95.68%
+Round 39 | Client 15 | Model: (CNN) | Acc: 94.08%
+Round 39 | Client 16 | Model: (CNN) | Acc: 97.09%
+Round 39 | Client 17 | Model: (CNN) | Acc: 94.39%
+Round 39 | Client 18 | Model: (CNN) | Acc: 96.70%
+Round 39 | Client 19 | Model: (CNN) | Acc: 95.08%
+Round 39 | Client 20 | Model: (CNN) | Acc: 92.87%
+Round 39 | Client 22 | Model: (CNN) | Acc: 81.74%
+Round 39 | Client 23 | Model: (CNN) | Acc: 70.40%
+Round 39 | Client 24 | Model: (CNN) | Acc: 80.00%
+Round 39 | Client 25 | Model: (CNN) | Acc: 56.21%
+Round 39 | Client 26 | Model: (CNN) | Acc: 92.20%
+Round 39 | Client 27 | Model: (CNN) | Acc: 83.69%
+Round 39 | Client 28 | Model: (CNN) | Acc: 89.17%
+Round 39 | Client 29 | Model: (CNN) | Acc: 91.85%
+Round 39 | Client 30 | Model: (CNN) | Acc: 90.02%
+Round 39 | Client 31 | Model: (CNN) | Acc: 86.22%
+Selected client ids: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29]
+--- Round 40 ---
+Round 40 | Client 0 | Model: (CNN) | Acc: 99.75%
+Round 40 | Client 1 | Model: (CNN) | Acc: 99.37%
+Round 40 | Client 2 | Model: (CNN) | Acc: 99.08%
+Round 40 | Client 3 | Model: (CNN) | Acc: 96.72%
+Round 40 | Client 4 | Model: (CNN) | Acc: 98.99%
+Round 40 | Client 5 | Model: (CNN) | Acc: 99.23%
+Round 40 | Client 6 | Model: (CNN) | Acc: 45.78%
+Round 40 | Client 7 | Model: (CNN) | Acc: 99.43%
+Round 40 | Client 8 | Model: (CNN) | Acc: 99.28%
+Round 40 | Client 9 | Model: (CNN) | Acc: 97.03%
+Round 40 | Client 11 | Model: (CNN) | Acc: 96.19%
+Round 40 | Client 12 | Model: (CNN) | Acc: 97.22%
+Round 40 | Client 13 | Model: (CNN) | Acc: 93.96%
+Round 40 | Client 14 | Model: (CNN) | Acc: 95.61%
+Round 40 | Client 15 | Model: (CNN) | Acc: 95.04%
+Round 40 | Client 16 | Model: (CNN) | Acc: 97.27%
+Round 40 | Client 17 | Model: (CNN) | Acc: 93.87%
+Round 40 | Client 18 | Model: (CNN) | Acc: 96.38%
+Round 40 | Client 19 | Model: (CNN) | Acc: 95.14%
+Round 40 | Client 20 | Model: (CNN) | Acc: 93.77%
+Round 40 | Client 22 | Model: (CNN) | Acc: 72.57%
+Round 40 | Client 23 | Model: (CNN) | Acc: 76.00%
+Round 40 | Client 24 | Model: (CNN) | Acc: 80.00%
+Round 40 | Client 25 | Model: (CNN) | Acc: 79.79%
+Round 40 | Client 26 | Model: (CNN) | Acc: 92.10%
+Round 40 | Client 27 | Model: (CNN) | Acc: 82.65%
+Round 40 | Client 28 | Model: (CNN) | Acc: 85.34%
+Round 40 | Client 29 | Model: (CNN) | Acc: 94.85%
+Round 40 | Client 30 | Model: (CNN) | Acc: 92.68%
+Round 40 | Client 31 | Model: (CNN) | Acc: 86.54%
+Saving checkpoints ...
+[Server] Checkpoint saved to logs/2026-03-26_12-18-33/Local/server_checkpoints.pth
+[Server] All 30 clients saved in logs/2026-03-26_12-18-33/Local/clients_last_round(40)_checkpoints/
+==============================    Finished. Total Time: 1:48:55    ==============================

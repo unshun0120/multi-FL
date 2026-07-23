@@ -1,0 +1,65 @@
+Time: 2026-05-13 13:20:29
+Log Dir: /home/unshun/multi-FL/logs/2026-05-12_07-04-29/FedTED/new_client_2026-05-13_13-20-29/our_finetune_global_single_dataset
+================================================================================
+============================== New Client: our_finetune_global ==============================
+  Target Model: logs/2026-05-12_07-04-29/FedTED/config_checkpoints.pth
+  Dataset Mode: single
+  Output Dir:   /home/unshun/multi-FL/logs/2026-05-12_07-04-29/FedTED/new_client_2026-05-13_13-20-29/our_finetune_global_single_dataset
+================================================================================
+[Init] Server Global Model parameters from: logs/2026-05-12_07-04-29/FedTED/server_global_model.pth
+
+==================================================
+Dataset: MNIST | Client ID: 10
+==================================================
+
+  [ResNet18] Training...
+    Epoch 0 | Acc: 98.56%
+    Epoch 1/10 | CE Loss: 0.2185 | Acc: 93.92%
+    Epoch 2/10 | CE Loss: 0.0844 | Acc: 96.91%
+    Epoch 3/10 | CE Loss: 0.0597 | Acc: 94.92%
+    Epoch 4/10 | CE Loss: 0.0705 | Acc: 97.79%
+    Epoch 5/10 | CE Loss: 0.0297 | Acc: 97.68%
+    Epoch 6/10 | CE Loss: 0.0434 | Acc: 98.01%
+    Epoch 7/10 | CE Loss: 0.0364 | Acc: 98.01%
+    Epoch 8/10 | CE Loss: 0.0562 | Acc: 97.46%
+    Epoch 9/10 | CE Loss: 0.0284 | Acc: 98.12%
+    Epoch 10/10 | CE Loss: 0.0367 | Acc: 98.67%
+Accuracy history saved to /home/unshun/multi-FL/logs/2026-05-12_07-04-29/FedTED/new_client_2026-05-13_13-20-29/our_finetune_global_single_dataset/MNIST_newclient_history.csv
+
+==================================================
+Dataset: EMNIST | Client ID: 21
+==================================================
+
+  [ResNet18] Training...
+    Epoch 0 | Acc: 78.81%
+    Epoch 1/10 | CE Loss: 0.5432 | Acc: 83.12%
+    Epoch 2/10 | CE Loss: 0.4388 | Acc: 84.46%
+    Epoch 3/10 | CE Loss: 0.4040 | Acc: 85.00%
+    Epoch 4/10 | CE Loss: 0.3816 | Acc: 83.62%
+    Epoch 5/10 | CE Loss: 0.3626 | Acc: 85.18%
+    Epoch 6/10 | CE Loss: 0.3481 | Acc: 85.54%
+    Epoch 7/10 | CE Loss: 0.3293 | Acc: 85.12%
+    Epoch 8/10 | CE Loss: 0.3128 | Acc: 85.65%
+    Epoch 9/10 | CE Loss: 0.3010 | Acc: 85.20%
+    Epoch 10/10 | CE Loss: 0.2857 | Acc: 85.84%
+Accuracy history saved to /home/unshun/multi-FL/logs/2026-05-12_07-04-29/FedTED/new_client_2026-05-13_13-20-29/our_finetune_global_single_dataset/EMNIST_newclient_history.csv
+
+==================================================
+Dataset: CIFAR10 | Client ID: 32
+==================================================
+
+  [ResNet18] Training...
+    Epoch 0 | Acc: 73.67%
+    Epoch 1/10 | CE Loss: 1.2341 | Acc: 48.89%
+    Epoch 2/10 | CE Loss: 0.9028 | Acc: 63.00%
+    Epoch 3/10 | CE Loss: 0.6818 | Acc: 56.56%
+    Epoch 4/10 | CE Loss: 0.4936 | Acc: 60.44%
+    Epoch 5/10 | CE Loss: 0.3983 | Acc: 62.89%
+    Epoch 6/10 | CE Loss: 0.2713 | Acc: 54.44%
+    Epoch 7/10 | CE Loss: 0.2274 | Acc: 58.33%
+    Epoch 8/10 | CE Loss: 0.1948 | Acc: 65.22%
+    Epoch 9/10 | CE Loss: 0.1292 | Acc: 67.33%
+    Epoch 10/10 | CE Loss: 0.0892 | Acc: 63.56%
+Accuracy history saved to /home/unshun/multi-FL/logs/2026-05-12_07-04-29/FedTED/new_client_2026-05-13_13-20-29/our_finetune_global_single_dataset/CIFAR10_newclient_history.csv
+
+============================== Finished. Total Time: 0:04:43 ==============================

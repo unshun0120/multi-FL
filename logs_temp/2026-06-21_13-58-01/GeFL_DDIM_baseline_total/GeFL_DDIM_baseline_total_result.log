@@ -1,0 +1,101 @@
+Time: 2026-06-21 13:58:01
+Log Dir: logs/2026-06-21_13-58-01/GeFL_DDIM_baseline_total
+================================================================================
+
+==============================        Args        ==============================
+  exp_timestamp: None
+  exp_conf: ./configs/het-iid-exp.yaml
+  device: cuda:1
+  seed: 15698
+  algorithm: GeFL_DDIM_baseline_total
+  num_new_clients: 1
+  num_train_mnist: 10
+  num_train_emnist: 10
+  num_train_fashionmnist: 0
+  num_train_cifar10: 0
+  num_train_cifar100: 0
+  num_train_usps: 0
+  label_mapping: class_name
+================================================================================
+==============================    Exp Configs     ==============================
+exp_name: model-heterogeneity
+heterogeneous: true
+dirichlet_alpha: 100
+global_rounds: 30
+local_epochs: 1
+local_loss_fn: CrossEntropyLoss
+local_optim: Adam
+local_lr: 0.001
+batch_size: 64
+sample_frac: 1.0
+test_interval: 1
+metric_type: accuracy
+global_feature_dim: 256
+optim: Adam
+optim_lr: 0.001
+global_gen_epochs: 10
+gen_noise_dim: 128
+gen_optim: Adam
+gen_optim_lr: 0.001
+global_feat_gen_epochs: 10
+feat_gen_noise_dim: 128
+feat_gen_optim: Adam
+feat_gen_optim_lr: 0.001
+feat_gen_div_beta: 1.0
+public_data_ratio: 0.05
+start_mapping_epoch: 20
+gen_observer_weight: 0.0
+index_matching: ddpm
+aggregate_method: dataset_name
+use_new_entropy_method: true
+entropy_ratio: 0.7
+cs_threshold: 0.9
+global_model_epochs: 5
+global_model_optim: Adam
+global_model_optim_lr: 0.001
+global_samples_per_class: 64
+
+================================================================================
+
+==================================================
+Start 30 rounds training by GeFL_DDIM_baseline_total
+Selected client ids: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19]
+--- Round 1 ---
+Client 0 (MNIST) | Target Loss: 0.9788 | DDIM Loss: 0.0751
+Client 1 (MNIST) | Target Loss: 1.5277 | DDIM Loss: 0.0755
+Client 2 (MNIST) | Target Loss: 0.7892 | DDIM Loss: 0.0765
+Client 3 (MNIST) | Target Loss: 0.4603 | DDIM Loss: 0.0816
+Client 4 (MNIST) | Target Loss: 1.6556 | DDIM Loss: 0.0792
+Client 5 (MNIST) | Target Loss: 1.6937 | DDIM Loss: 0.0817
+Client 6 (MNIST) | Target Loss: 1.4361 | DDIM Loss: 0.0763
+Client 7 (MNIST) | Target Loss: 1.3673 | DDIM Loss: 0.0770
+Client 8 (MNIST) | Target Loss: 1.7078 | DDIM Loss: 0.0807
+Client 9 (MNIST) | Target Loss: 1.9347 | DDIM Loss: 0.0770
+Client 11 (EMNIST) | Target Loss: 1.2109 | DDIM Loss: 0.0240
+Client 12 (EMNIST) | Target Loss: 1.3460 | DDIM Loss: 0.0237
+Client 13 (EMNIST) | Target Loss: 0.9291 | DDIM Loss: 0.0239
+Client 14 (EMNIST) | Target Loss: 0.7608 | DDIM Loss: 0.0234
+Client 15 (EMNIST) | Target Loss: 1.4010 | DDIM Loss: 0.0240
+Client 16 (EMNIST) | Target Loss: 2.0937 | DDIM Loss: 0.0244
+Client 17 (EMNIST) | Target Loss: 1.2011 | DDIM Loss: 0.0236
+Client 18 (EMNIST) | Target Loss: 1.2847 | DDIM Loss: 0.0238
+Client 19 (EMNIST) | Target Loss: 1.6791 | DDIM Loss: 0.0234
+Client 20 (EMNIST) | Target Loss: 1.5928 | DDIM Loss: 0.0237
+Selected client ids: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19]
+--- Round 2 ---
+Client 0 (MNIST) | Target Loss: 0.4241 | DDIM Loss: 0.0525
+Client 1 (MNIST) | Target Loss: 0.5285 | DDIM Loss: 0.0542
+Client 2 (MNIST) | Target Loss: 0.1677 | DDIM Loss: 0.0580
+Client 3 (MNIST) | Target Loss: 0.1572 | DDIM Loss: 0.0599
+Client 4 (MNIST) | Target Loss: 0.6613 | DDIM Loss: 0.0530
+Client 5 (MNIST) | Target Loss: 1.1892 | DDIM Loss: 0.0573
+Client 6 (MNIST) | Target Loss: 0.4013 | DDIM Loss: 0.0566
+Client 7 (MNIST) | Target Loss: 0.3265 | DDIM Loss: 0.0563
+Client 8 (MNIST) | Target Loss: 0.9994 | DDIM Loss: 0.0567
+Client 9 (MNIST) | Target Loss: 1.0743 | DDIM Loss: 0.0528
+Client 11 (EMNIST) | Target Loss: 0.7408 | DDIM Loss: 0.0205
+Client 12 (EMNIST) | Target Loss: 0.6790 | DDIM Loss: 0.0205
+Client 13 (EMNIST) | Target Loss: 0.5039 | DDIM Loss: 0.0201
+Client 14 (EMNIST) | Target Loss: 0.4697 | DDIM Loss: 0.0212
+Client 15 (EMNIST) | Target Loss: 0.7188 | DDIM Loss: 0.0201
+Client 16 (EMNIST) | Target Loss: 1.3063 | DDIM Loss: 0.0202

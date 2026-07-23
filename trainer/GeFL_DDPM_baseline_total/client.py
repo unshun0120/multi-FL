@@ -8,8 +8,8 @@ import copy
 from tqdm import tqdm
 
 from trainer.BaseFL.client import Client as BaseClient
-from utils.nets import ContextUnet, DDPM
-# from utils.ddpm_nets import ContextUnet, DDPM
+# from utils.nets import ContextUnet, DDPM
+from utils.ddpm_nets import ContextUnet, DDPM
 
 
 class Client(BaseClient):
@@ -34,6 +34,25 @@ class Client(BaseClient):
             device=self.device,
             drop_prob=0.1
         ).to(self.device)
+
+        # unet = ContextUnet(
+        #     in_channels=self.channels,
+        #     n_feat=n_feat,
+        #     n_classes=self.local_num_classes,
+        #     norm_type="instance",
+        #     dropout_p=0.10,
+        #     down1_skip_scale=0.25,
+        #     out_skip_scale=0.0,
+        # )
+
+        # self.ddpm = DDPM(
+        #     nn_model=unet,
+        #     betas=(1e-4, 0.02),
+        #     n_T=1000,
+        #     device=self.device,
+        #     drop_prob=0.30,
+        #     target_lowres=16,
+        # ).to(self.device)
 
         self.gen_optimizer = torch.optim.Adam(self.ddpm.parameters(), lr=self.gen_lr)
 

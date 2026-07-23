@@ -1,0 +1,372 @@
+Time: 2026-04-15 17:24:43
+Log Dir: /home/unshun/multi-FL/logs/Local_noniid_het_gb40/new_client_2026-04-15_17-24-43/
+================================================================================Loading checkpoints from logs/Local_noniid_het_gb40/Local/
+Method selected: DI
+Loaded MLP for MNIST from client_model_MNIST_c0_MLP.pth
+Loaded LeNet for MNIST from client_model_MNIST_c6_LeNet.pth
+Loaded ShuffleNet for MNIST from client_model_MNIST_c8_ShuffleNet.pth
+Loaded MobileNetV2 for MNIST from client_model_MNIST_c4_MobileNetV2.pth
+Loaded ResNet8 for MNIST from client_model_MNIST_c2_ResNet8.pth
+Loaded CNN for MNIST from client_model_MNIST_c1_CNN.pth
+Loaded ResNet18 for MNIST from client_model_MNIST_c3_ResNet18.pth
+Loaded SqueezeNet for MNIST from client_model_MNIST_c9_SqueezeNet.pth
+Loaded AlexNet for MNIST from client_model_MNIST_c7_AlexNet.pth
+Loaded MobileNetV3 for MNIST from client_model_MNIST_c5_MobileNetV3.pth
+Loaded ShuffleNet for EMNIST from client_model_EMNIST_c19_ShuffleNet.pth
+Loaded MobileNetV2 for EMNIST from client_model_EMNIST_c15_MobileNetV2.pth
+Loaded AlexNet for EMNIST from client_model_EMNIST_c18_AlexNet.pth
+Loaded SqueezeNet for EMNIST from client_model_EMNIST_c20_SqueezeNet.pth
+Loaded MobileNetV3 for EMNIST from client_model_EMNIST_c16_MobileNetV3.pth
+Loaded ResNet18 for EMNIST from client_model_EMNIST_c14_ResNet18.pth
+Loaded ResNet8 for EMNIST from client_model_EMNIST_c13_ResNet8.pth
+Loaded CNN for EMNIST from client_model_EMNIST_c12_CNN.pth
+Loaded MLP for EMNIST from client_model_EMNIST_c11_MLP.pth
+Loaded LeNet for EMNIST from client_model_EMNIST_c17_LeNet.pth
+WARNING: No models loaded for dataset: FashionMNIST.
+WARNING: No models loaded for dataset: CIFAR100.
+
+========================================
+>>> [METHOD: SYNTHETIC] Starting Synthetic Label Mapping...
+========================================
+>>> Target Methods to Run: ['DI']
+>>> [Syn] Loaded client data distributions directly from server checkpoint.
+
+########################################
+>>> [Syn] Running Method: DI
+########################################
+
+>>> Syn-DI Training Old Generators...
+[Testing] Training Per-Dataset Generators Offline (Old Gen Method)...
+--- DeepInversion Generator Configuration ---
+    epochs: 120
+    g_steps: 1000
+    lr: 0.1
+    ce: 1.0
+    bn: 10.0
+    tv: 0.005
+    l2: 0.0
+    adv: 1.0
+    student_lr: 0.2
+------------------------------------
+    -> [Epoch 0] Student Test Accuracy for MNIST: 9.79%
+    -> [Epoch 1] Student Test Accuracy for MNIST: 9.25%
+    -> [Epoch 2] Student Test Accuracy for MNIST: 8.92%
+    -> [Epoch 3] Student Test Accuracy for MNIST: 13.50%
+    -> [Epoch 4] Student Test Accuracy for MNIST: 9.67%
+    -> [Epoch 5] Student Test Accuracy for MNIST: 10.10%
+    -> [Epoch 6] Student Test Accuracy for MNIST: 10.10%
+    -> [Epoch 7] Student Test Accuracy for MNIST: 10.10%
+    -> [Epoch 8] Student Test Accuracy for MNIST: 10.10%
+    -> [Epoch 9] Student Test Accuracy for MNIST: 10.10%
+    -> [Epoch 10] Student Test Accuracy for MNIST: 10.10%
+    -> [Epoch 11] Student Test Accuracy for MNIST: 10.10%
+    -> [Epoch 12] Student Test Accuracy for MNIST: 10.10%
+    -> [Epoch 13] Student Test Accuracy for MNIST: 10.10%
+    -> [Epoch 14] Student Test Accuracy for MNIST: 10.32%
+    -> [Epoch 15] Student Test Accuracy for MNIST: 10.32%
+    -> [Epoch 16] Student Test Accuracy for MNIST: 10.32%
+    -> [Epoch 17] Student Test Accuracy for MNIST: 10.32%
+    -> [Epoch 18] Student Test Accuracy for MNIST: 10.32%
+    -> [Epoch 19] Student Test Accuracy for MNIST: 10.32%
+    -> [Epoch 20] Student Test Accuracy for MNIST: 10.32%
+    -> [Epoch 21] Student Test Accuracy for MNIST: 10.32%
+    -> [Epoch 22] Student Test Accuracy for MNIST: 10.32%
+    -> [Epoch 23] Student Test Accuracy for MNIST: 12.90%
+    -> [Epoch 24] Student Test Accuracy for MNIST: 10.10%
+    -> [Epoch 25] Student Test Accuracy for MNIST: 10.10%
+    -> [Epoch 26] Student Test Accuracy for MNIST: 9.98%
+    -> [Epoch 27] Student Test Accuracy for MNIST: 7.24%
+    -> [Epoch 28] Student Test Accuracy for MNIST: 7.07%
+    -> [Epoch 29] Student Test Accuracy for MNIST: 6.91%
+    -> [Epoch 30] Student Test Accuracy for MNIST: 7.16%
+    -> [Epoch 31] Student Test Accuracy for MNIST: 8.14%
+    -> [Epoch 32] Student Test Accuracy for MNIST: 9.28%
+    -> [Epoch 33] Student Test Accuracy for MNIST: 10.82%
+    -> [Epoch 34] Student Test Accuracy for MNIST: 10.62%
+    -> [Epoch 35] Student Test Accuracy for MNIST: 10.04%
+    -> [Epoch 36] Student Test Accuracy for MNIST: 9.77%
+    -> [Epoch 37] Student Test Accuracy for MNIST: 9.69%
+    -> [Epoch 38] Student Test Accuracy for MNIST: 9.16%
+    -> [Epoch 39] Student Test Accuracy for MNIST: 8.92%
+    -> [Epoch 40] Student Test Accuracy for MNIST: 10.14%
+    -> [Epoch 41] Student Test Accuracy for MNIST: 15.27%
+    -> [Epoch 42] Student Test Accuracy for MNIST: 18.94%
+    -> [Epoch 43] Student Test Accuracy for MNIST: 18.62%
+    -> [Epoch 44] Student Test Accuracy for MNIST: 16.47%
+    -> [Epoch 45] Student Test Accuracy for MNIST: 16.15%
+    -> [Epoch 46] Student Test Accuracy for MNIST: 17.60%
+    -> [Epoch 47] Student Test Accuracy for MNIST: 17.75%
+    -> [Epoch 48] Student Test Accuracy for MNIST: 17.32%
+    -> [Epoch 49] Student Test Accuracy for MNIST: 16.93%
+    -> [Epoch 50] Student Test Accuracy for MNIST: 16.77%
+    -> [Epoch 51] Student Test Accuracy for MNIST: 26.13%
+    -> [Epoch 52] Student Test Accuracy for MNIST: 16.81%
+    -> [Epoch 53] Student Test Accuracy for MNIST: 10.10%
+    -> [Epoch 54] Student Test Accuracy for MNIST: 10.10%
+    -> [Epoch 55] Student Test Accuracy for MNIST: 10.30%
+    -> [Epoch 56] Student Test Accuracy for MNIST: 10.22%
+    -> [Epoch 57] Student Test Accuracy for MNIST: 12.95%
+    -> [Epoch 58] Student Test Accuracy for MNIST: 21.45%
+    -> [Epoch 59] Student Test Accuracy for MNIST: 21.15%
+    -> [Epoch 60] Student Test Accuracy for MNIST: 20.83%
+    -> [Epoch 61] Student Test Accuracy for MNIST: 20.86%
+    -> [Epoch 62] Student Test Accuracy for MNIST: 21.74%
+    -> [Epoch 63] Student Test Accuracy for MNIST: 20.51%
+    -> [Epoch 64] Student Test Accuracy for MNIST: 18.67%
+    -> [Epoch 65] Student Test Accuracy for MNIST: 17.83%
+    -> [Epoch 66] Student Test Accuracy for MNIST: 7.83%
+    -> [Epoch 67] Student Test Accuracy for MNIST: 10.73%
+    -> [Epoch 68] Student Test Accuracy for MNIST: 10.09%
+    -> [Epoch 69] Student Test Accuracy for MNIST: 10.10%
+    -> [Epoch 70] Student Test Accuracy for MNIST: 10.10%
+    -> [Epoch 71] Student Test Accuracy for MNIST: 10.10%
+    -> [Epoch 72] Student Test Accuracy for MNIST: 9.96%
+    -> [Epoch 73] Student Test Accuracy for MNIST: 9.48%
+    -> [Epoch 74] Student Test Accuracy for MNIST: 8.11%
+    -> [Epoch 75] Student Test Accuracy for MNIST: 8.10%
+    -> [Epoch 76] Student Test Accuracy for MNIST: 8.09%
+    -> [Epoch 77] Student Test Accuracy for MNIST: 17.59%
+    -> [Epoch 78] Student Test Accuracy for MNIST: 18.28%
+    -> [Epoch 79] Student Test Accuracy for MNIST: 18.18%
+    -> [Epoch 80] Student Test Accuracy for MNIST: 18.24%
+    -> [Epoch 81] Student Test Accuracy for MNIST: 18.19%
+    -> [Epoch 82] Student Test Accuracy for MNIST: 16.89%
+    -> [Epoch 83] Student Test Accuracy for MNIST: 13.04%
+    -> [Epoch 84] Student Test Accuracy for MNIST: 8.50%
+    -> [Epoch 85] Student Test Accuracy for MNIST: 9.12%
+    -> [Epoch 86] Student Test Accuracy for MNIST: 9.43%
+    -> [Epoch 87] Student Test Accuracy for MNIST: 9.49%
+    -> [Epoch 88] Student Test Accuracy for MNIST: 9.56%
+    -> [Epoch 89] Student Test Accuracy for MNIST: 9.55%
+    -> [Epoch 90] Student Test Accuracy for MNIST: 7.96%
+    -> [Epoch 91] Student Test Accuracy for MNIST: 8.92%
+    -> [Epoch 92] Student Test Accuracy for MNIST: 9.46%
+    -> [Epoch 93] Student Test Accuracy for MNIST: 9.25%
+    -> [Epoch 94] Student Test Accuracy for MNIST: 9.03%
+    -> [Epoch 95] Student Test Accuracy for MNIST: 9.61%
+    -> [Epoch 96] Student Test Accuracy for MNIST: 9.71%
+    -> [Epoch 97] Student Test Accuracy for MNIST: 8.74%
+    -> [Epoch 98] Student Test Accuracy for MNIST: 9.52%
+    -> [Epoch 99] Student Test Accuracy for MNIST: 9.58%
+    -> [Epoch 100] Student Test Accuracy for MNIST: 9.58%
+    -> [Epoch 101] Student Test Accuracy for MNIST: 9.56%
+    -> [Epoch 102] Student Test Accuracy for MNIST: 9.37%
+    -> [Epoch 103] Student Test Accuracy for MNIST: 8.91%
+    -> [Epoch 104] Student Test Accuracy for MNIST: 11.15%
+    -> [Epoch 105] Student Test Accuracy for MNIST: 9.78%
+    -> [Epoch 106] Student Test Accuracy for MNIST: 10.08%
+    -> [Epoch 107] Student Test Accuracy for MNIST: 10.02%
+    -> [Epoch 108] Student Test Accuracy for MNIST: 10.07%
+    -> [Epoch 109] Student Test Accuracy for MNIST: 9.58%
+    -> [Epoch 110] Student Test Accuracy for MNIST: 9.57%
+    -> [Epoch 111] Student Test Accuracy for MNIST: 9.53%
+    -> [Epoch 112] Student Test Accuracy for MNIST: 9.50%
+    -> [Epoch 113] Student Test Accuracy for MNIST: 9.33%
+    -> [Epoch 114] Student Test Accuracy for MNIST: 9.28%
+    -> [Epoch 115] Student Test Accuracy for MNIST: 9.07%
+    -> [Epoch 116] Student Test Accuracy for MNIST: 9.18%
+    -> [Epoch 117] Student Test Accuracy for MNIST: 9.52%
+    -> [Epoch 118] Student Test Accuracy for MNIST: 9.58%
+    -> [Epoch 119] Student Test Accuracy for MNIST: 9.58%
+    Dataset [MNIST] Generator | Epochs: 120 | Final Loss: 50.0197
+    -> Student Accuracy per Epoch saved to /home/unshun/multi-FL/logs/Local_noniid_het_gb40/new_client_2026-04-15_17-24-43/DI_MNIST_student_acc.csv
+-> [New] Gen images saved to /home/unshun/multi-FL/logs/Local_noniid_het_gb40/new_client_2026-04-15_17-24-43/DeepInversion_MNIST__gen_img_old.png
+    -> [Epoch 0] Student Test Accuracy for EMNIST: 0.54%
+    -> [Epoch 1] Student Test Accuracy for EMNIST: 0.36%
+    -> [Epoch 2] Student Test Accuracy for EMNIST: 0.36%
+    -> [Epoch 3] Student Test Accuracy for EMNIST: 0.36%
+    -> [Epoch 4] Student Test Accuracy for EMNIST: 0.36%
+    -> [Epoch 5] Student Test Accuracy for EMNIST: 0.36%
+    -> [Epoch 6] Student Test Accuracy for EMNIST: 0.36%
+    -> [Epoch 7] Student Test Accuracy for EMNIST: 0.36%
+    -> [Epoch 8] Student Test Accuracy for EMNIST: 4.84%
+    -> [Epoch 9] Student Test Accuracy for EMNIST: 0.69%
+    -> [Epoch 10] Student Test Accuracy for EMNIST: 0.69%
+    -> [Epoch 11] Student Test Accuracy for EMNIST: 0.69%
+    -> [Epoch 12] Student Test Accuracy for EMNIST: 0.69%
+    -> [Epoch 13] Student Test Accuracy for EMNIST: 0.69%
+    -> [Epoch 14] Student Test Accuracy for EMNIST: 0.69%
+    -> [Epoch 15] Student Test Accuracy for EMNIST: 0.69%
+    -> [Epoch 16] Student Test Accuracy for EMNIST: 3.68%
+    -> [Epoch 17] Student Test Accuracy for EMNIST: 3.57%
+    -> [Epoch 18] Student Test Accuracy for EMNIST: 3.57%
+    -> [Epoch 19] Student Test Accuracy for EMNIST: 1.75%
+    -> [Epoch 20] Student Test Accuracy for EMNIST: 0.36%
+    -> [Epoch 21] Student Test Accuracy for EMNIST: 0.36%
+    -> [Epoch 22] Student Test Accuracy for EMNIST: 4.89%
+    -> [Epoch 23] Student Test Accuracy for EMNIST: 4.84%
+    -> [Epoch 24] Student Test Accuracy for EMNIST: 4.84%
+    -> [Epoch 25] Student Test Accuracy for EMNIST: 4.84%
+    -> [Epoch 26] Student Test Accuracy for EMNIST: 4.84%
+    -> [Epoch 27] Student Test Accuracy for EMNIST: 4.84%
+    -> [Epoch 28] Student Test Accuracy for EMNIST: 4.84%
+    -> [Epoch 29] Student Test Accuracy for EMNIST: 4.84%
+    -> [Epoch 30] Student Test Accuracy for EMNIST: 4.84%
+    -> [Epoch 31] Student Test Accuracy for EMNIST: 4.84%
+    -> [Epoch 32] Student Test Accuracy for EMNIST: 4.84%
+    -> [Epoch 33] Student Test Accuracy for EMNIST: 4.84%
+    -> [Epoch 34] Student Test Accuracy for EMNIST: 4.84%
+    -> [Epoch 35] Student Test Accuracy for EMNIST: 4.84%
+    -> [Epoch 36] Student Test Accuracy for EMNIST: 4.84%
+    -> [Epoch 37] Student Test Accuracy for EMNIST: 4.84%
+    -> [Epoch 38] Student Test Accuracy for EMNIST: 4.84%
+    -> [Epoch 39] Student Test Accuracy for EMNIST: 4.84%
+    -> [Epoch 40] Student Test Accuracy for EMNIST: 4.84%
+    -> [Epoch 41] Student Test Accuracy for EMNIST: 4.84%
+    -> [Epoch 42] Student Test Accuracy for EMNIST: 0.67%
+    -> [Epoch 43] Student Test Accuracy for EMNIST: 0.36%
+    -> [Epoch 44] Student Test Accuracy for EMNIST: 0.36%
+    -> [Epoch 45] Student Test Accuracy for EMNIST: 0.36%
+    -> [Epoch 46] Student Test Accuracy for EMNIST: 0.36%
+    -> [Epoch 47] Student Test Accuracy for EMNIST: 0.36%
+    -> [Epoch 48] Student Test Accuracy for EMNIST: 0.35%
+    -> [Epoch 49] Student Test Accuracy for EMNIST: 4.20%
+    -> [Epoch 50] Student Test Accuracy for EMNIST: 4.97%
+    -> [Epoch 51] Student Test Accuracy for EMNIST: 4.97%
+    -> [Epoch 52] Student Test Accuracy for EMNIST: 4.97%
+    -> [Epoch 53] Student Test Accuracy for EMNIST: 4.84%
+    -> [Epoch 54] Student Test Accuracy for EMNIST: 4.83%
+    -> [Epoch 55] Student Test Accuracy for EMNIST: 4.84%
+    -> [Epoch 56] Student Test Accuracy for EMNIST: 4.82%
+    -> [Epoch 57] Student Test Accuracy for EMNIST: 4.12%
+    -> [Epoch 58] Student Test Accuracy for EMNIST: 3.90%
+    -> [Epoch 59] Student Test Accuracy for EMNIST: 4.63%
+    -> [Epoch 60] Student Test Accuracy for EMNIST: 4.84%
+    -> [Epoch 61] Student Test Accuracy for EMNIST: 4.84%
+    -> [Epoch 62] Student Test Accuracy for EMNIST: 4.84%
+    -> [Epoch 63] Student Test Accuracy for EMNIST: 4.89%
+    -> [Epoch 64] Student Test Accuracy for EMNIST: 4.83%
+    -> [Epoch 65] Student Test Accuracy for EMNIST: 1.83%
+    -> [Epoch 66] Student Test Accuracy for EMNIST: 1.00%
+    -> [Epoch 67] Student Test Accuracy for EMNIST: 0.62%
+    -> [Epoch 68] Student Test Accuracy for EMNIST: 0.60%
+    -> [Epoch 69] Student Test Accuracy for EMNIST: 0.84%
+    -> [Epoch 70] Student Test Accuracy for EMNIST: 1.49%
+    -> [Epoch 71] Student Test Accuracy for EMNIST: 2.74%
+    -> [Epoch 72] Student Test Accuracy for EMNIST: 3.20%
+    -> [Epoch 73] Student Test Accuracy for EMNIST: 0.43%
+    -> [Epoch 74] Student Test Accuracy for EMNIST: 0.36%
+    -> [Epoch 75] Student Test Accuracy for EMNIST: 0.36%
+    -> [Epoch 76] Student Test Accuracy for EMNIST: 0.37%
+    -> [Epoch 77] Student Test Accuracy for EMNIST: 1.74%
+    -> [Epoch 78] Student Test Accuracy for EMNIST: 3.94%
+    -> [Epoch 79] Student Test Accuracy for EMNIST: 4.89%
+    -> [Epoch 80] Student Test Accuracy for EMNIST: 4.89%
+    -> [Epoch 81] Student Test Accuracy for EMNIST: 4.90%
+    -> [Epoch 82] Student Test Accuracy for EMNIST: 4.60%
+    -> [Epoch 83] Student Test Accuracy for EMNIST: 3.36%
+    -> [Epoch 84] Student Test Accuracy for EMNIST: 0.83%
+    -> [Epoch 85] Student Test Accuracy for EMNIST: 0.45%
+    -> [Epoch 86] Student Test Accuracy for EMNIST: 0.45%
+    -> [Epoch 87] Student Test Accuracy for EMNIST: 0.45%
+    -> [Epoch 88] Student Test Accuracy for EMNIST: 0.36%
+    -> [Epoch 89] Student Test Accuracy for EMNIST: 0.74%
+    -> [Epoch 90] Student Test Accuracy for EMNIST: 0.61%
+    -> [Epoch 91] Student Test Accuracy for EMNIST: 0.35%
+    -> [Epoch 92] Student Test Accuracy for EMNIST: 0.36%
+    -> [Epoch 93] Student Test Accuracy for EMNIST: 0.36%
+    -> [Epoch 94] Student Test Accuracy for EMNIST: 0.36%
+    -> [Epoch 95] Student Test Accuracy for EMNIST: 0.36%
+    -> [Epoch 96] Student Test Accuracy for EMNIST: 0.39%
+    -> [Epoch 97] Student Test Accuracy for EMNIST: 0.98%
+    -> [Epoch 98] Student Test Accuracy for EMNIST: 2.34%
+    -> [Epoch 99] Student Test Accuracy for EMNIST: 5.78%
+    -> [Epoch 100] Student Test Accuracy for EMNIST: 5.10%
+    -> [Epoch 101] Student Test Accuracy for EMNIST: 5.05%
+    -> [Epoch 102] Student Test Accuracy for EMNIST: 5.05%
+    -> [Epoch 103] Student Test Accuracy for EMNIST: 5.05%
+    -> [Epoch 104] Student Test Accuracy for EMNIST: 5.05%
+    -> [Epoch 105] Student Test Accuracy for EMNIST: 5.05%
+    -> [Epoch 106] Student Test Accuracy for EMNIST: 5.06%
+    -> [Epoch 107] Student Test Accuracy for EMNIST: 5.83%
+    -> [Epoch 108] Student Test Accuracy for EMNIST: 0.40%
+    -> [Epoch 109] Student Test Accuracy for EMNIST: 0.36%
+    -> [Epoch 110] Student Test Accuracy for EMNIST: 0.36%
+    -> [Epoch 111] Student Test Accuracy for EMNIST: 0.36%
+    -> [Epoch 112] Student Test Accuracy for EMNIST: 0.36%
+    -> [Epoch 113] Student Test Accuracy for EMNIST: 0.37%
+    -> [Epoch 114] Student Test Accuracy for EMNIST: 1.67%
+    -> [Epoch 115] Student Test Accuracy for EMNIST: 4.84%
+    -> [Epoch 116] Student Test Accuracy for EMNIST: 4.84%
+    -> [Epoch 117] Student Test Accuracy for EMNIST: 4.84%
+    -> [Epoch 118] Student Test Accuracy for EMNIST: 4.84%
+    -> [Epoch 119] Student Test Accuracy for EMNIST: 4.84%
+    Dataset [EMNIST] Generator | Epochs: 120 | Final Loss: 1332.5687
+    -> Student Accuracy per Epoch saved to /home/unshun/multi-FL/logs/Local_noniid_het_gb40/new_client_2026-04-15_17-24-43/DI_EMNIST_student_acc.csv
+-> [New] Gen images saved to /home/unshun/multi-FL/logs/Local_noniid_het_gb40/new_client_2026-04-15_17-24-43/DeepInversion_EMNIST__gen_img_old.png
+Exp: Old Gen + Old Ent (0.1)
+dynamic_entropy_ratio: 0.1
+Exp: Old Gen + Old Ent (0.15)
+dynamic_entropy_ratio: 0.15
+Exp: Old Gen + Old Ent (0.2)
+dynamic_entropy_ratio: 0.2
+Exp: Old Gen + Old Ent (0.25)
+dynamic_entropy_ratio: 0.25
+Exp: Old Gen + Old Ent (0.3)
+dynamic_entropy_ratio: 0.3
+Exp: Old Gen + Old Ent (0.35)
+dynamic_entropy_ratio: 0.35
+Exp: Old Gen + Old Ent (0.4)
+dynamic_entropy_ratio: 0.4
+Exp: Old Gen + Old Ent (0.45)
+dynamic_entropy_ratio: 0.45
+Exp: Old Gen + Old Ent (0.5)
+dynamic_entropy_ratio: 0.5
+Exp: Old Gen + Old Ent (0.55)
+dynamic_entropy_ratio: 0.55
+Exp: Old Gen + Old Ent (0.6)
+dynamic_entropy_ratio: 0.6
+Exp: Old Gen + Old Ent (0.65)
+dynamic_entropy_ratio: 0.65
+Exp: Old Gen + Old Ent (0.7)
+dynamic_entropy_ratio: 0.7
+Exp: Old Gen + Old Ent (0.75)
+dynamic_entropy_ratio: 0.75
+Exp: Old Gen + Old Ent (0.8)
+dynamic_entropy_ratio: 0.8
+Exp: Old Gen + Old Ent (0.85)
+dynamic_entropy_ratio: 0.85
+Exp: Old Gen + Old Ent (0.9)
+dynamic_entropy_ratio: 0.9
+Exp: Old Gen + Old Ent (0.95)
+dynamic_entropy_ratio: 0.95
+Exp: Old Gen + Old Ent (1.0)
+dynamic_entropy_ratio: 1.0
+Exp: Old Gen + New Ent (0.1)
+dynamic_entropy_ratio: 0.1
+Exp: Old Gen + New Ent (0.15)
+dynamic_entropy_ratio: 0.15
+Exp: Old Gen + New Ent (0.2)
+dynamic_entropy_ratio: 0.2
+Exp: Old Gen + New Ent (0.25)
+dynamic_entropy_ratio: 0.25
+Exp: Old Gen + New Ent (0.3)
+dynamic_entropy_ratio: 0.3
+Exp: Old Gen + New Ent (0.35)
+dynamic_entropy_ratio: 0.35
+Exp: Old Gen + New Ent (0.4)
+dynamic_entropy_ratio: 0.4
+Exp: Old Gen + New Ent (0.45)
+dynamic_entropy_ratio: 0.45
+Exp: Old Gen + New Ent (0.5)
+dynamic_entropy_ratio: 0.5
+Exp: Old Gen + New Ent (0.55)
+dynamic_entropy_ratio: 0.55
+Exp: Old Gen + New Ent (0.6)
+dynamic_entropy_ratio: 0.6
+Exp: Old Gen + New Ent (0.65)
+dynamic_entropy_ratio: 0.65
+Exp: Old Gen + New Ent (0.7)
+dynamic_entropy_ratio: 0.7
+Exp: Old Gen + New Ent (0.75)
+dynamic_entropy_ratio: 0.75
+Exp: Old Gen + New Ent (0.8)
+dynamic_entropy_ratio: 0.8
+Exp: Old Gen + New Ent (0.85)
+dynamic_entropy_ratio: 0.85
+Exp: Old Gen + New Ent (0.9)
+dynamic_entropy_ratio: 0.9
+Exp: Old Gen + New Ent (0.95)
+dynamic_entropy_ratio: 0.95
+Exp: Old Gen + New Ent (1.0)
+dynamic_entropy_ratio: 1.0

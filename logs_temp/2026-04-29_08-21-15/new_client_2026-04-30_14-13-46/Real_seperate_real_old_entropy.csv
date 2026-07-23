@@ -1,0 +1,2 @@
+thresh,recall,specificity,average_accuracy,TP,FP,TN,FN
+0.9,0.5548780487804879,0.9988817891373802,0.776879918958934,91,7,6253,73

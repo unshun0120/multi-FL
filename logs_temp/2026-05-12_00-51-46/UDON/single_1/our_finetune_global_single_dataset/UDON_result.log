@@ -1,0 +1,65 @@
+Time: 2026-05-13 12:41:22
+Log Dir: /home/unshun/multi-FL/logs/2026-05-12_00-51-46/UDON/new_client_2026-05-13_12-41-22/our_finetune_global_single_dataset
+================================================================================
+============================== New Client: our_finetune_global ==============================
+  Target Model: logs/2026-05-12_00-51-46/UDON/config_checkpoints.pth
+  Dataset Mode: single
+  Output Dir:   /home/unshun/multi-FL/logs/2026-05-12_00-51-46/UDON/new_client_2026-05-13_12-41-22/our_finetune_global_single_dataset
+================================================================================
+[Init] Server Global Model parameters from: logs/2026-05-12_00-51-46/UDON/server_global_model.pth
+
+==================================================
+Dataset: MNIST | Client ID: 10
+==================================================
+
+  [ResNet18] Training...
+    Epoch 0 | Acc: 95.80%
+    Epoch 1/10 | CE Loss: 0.1930 | Acc: 89.61%
+    Epoch 2/10 | CE Loss: 0.0744 | Acc: 96.91%
+    Epoch 3/10 | CE Loss: 0.0466 | Acc: 98.01%
+    Epoch 4/10 | CE Loss: 0.0487 | Acc: 87.96%
+    Epoch 5/10 | CE Loss: 0.0410 | Acc: 98.23%
+    Epoch 6/10 | CE Loss: 0.0338 | Acc: 98.34%
+    Epoch 7/10 | CE Loss: 0.0887 | Acc: 97.57%
+    Epoch 8/10 | CE Loss: 0.0344 | Acc: 97.90%
+    Epoch 9/10 | CE Loss: 0.0170 | Acc: 98.01%
+    Epoch 10/10 | CE Loss: 0.0389 | Acc: 97.24%
+Accuracy history saved to /home/unshun/multi-FL/logs/2026-05-12_00-51-46/UDON/new_client_2026-05-13_12-41-22/our_finetune_global_single_dataset/MNIST_newclient_history.csv
+
+==================================================
+Dataset: FashionMNIST | Client ID: 21
+==================================================
+
+  [ResNet18] Training...
+    Epoch 0 | Acc: 82.56%
+    Epoch 1/10 | CE Loss: 0.5799 | Acc: 81.44%
+    Epoch 2/10 | CE Loss: 0.3549 | Acc: 83.33%
+    Epoch 3/10 | CE Loss: 0.3069 | Acc: 83.33%
+    Epoch 4/10 | CE Loss: 0.2596 | Acc: 80.22%
+    Epoch 5/10 | CE Loss: 0.2496 | Acc: 85.22%
+    Epoch 6/10 | CE Loss: 0.1721 | Acc: 84.44%
+    Epoch 7/10 | CE Loss: 0.1771 | Acc: 80.78%
+    Epoch 8/10 | CE Loss: 0.1431 | Acc: 84.56%
+    Epoch 9/10 | CE Loss: 0.1419 | Acc: 81.00%
+    Epoch 10/10 | CE Loss: 0.1428 | Acc: 85.44%
+Accuracy history saved to /home/unshun/multi-FL/logs/2026-05-12_00-51-46/UDON/new_client_2026-05-13_12-41-22/our_finetune_global_single_dataset/FashionMNIST_newclient_history.csv
+
+==================================================
+Dataset: EMNIST | Client ID: 32
+==================================================
+
+  [ResNet18] Training...
+    Epoch 0 | Acc: 83.07%
+    Epoch 1/10 | CE Loss: 0.5365 | Acc: 82.39%
+    Epoch 2/10 | CE Loss: 0.4340 | Acc: 84.39%
+    Epoch 3/10 | CE Loss: 0.4020 | Acc: 83.16%
+    Epoch 4/10 | CE Loss: 0.3789 | Acc: 84.94%
+    Epoch 5/10 | CE Loss: 0.3626 | Acc: 84.94%
+    Epoch 6/10 | CE Loss: 0.3400 | Acc: 85.56%
+    Epoch 7/10 | CE Loss: 0.3234 | Acc: 85.79%
+    Epoch 8/10 | CE Loss: 0.3064 | Acc: 85.08%
+    Epoch 9/10 | CE Loss: 0.2945 | Acc: 85.65%
+    Epoch 10/10 | CE Loss: 0.2723 | Acc: 85.14%
+Accuracy history saved to /home/unshun/multi-FL/logs/2026-05-12_00-51-46/UDON/new_client_2026-05-13_12-41-22/our_finetune_global_single_dataset/EMNIST_newclient_history.csv
+
+============================== Finished. Total Time: 0:04:47 ==============================

@@ -1,0 +1,51 @@
+Time: 2026-04-18 22:36:44
+Log Dir: /home/unshun/multi-FL/logs/2026-04-17_21-04-20/FedTED/new_client_2026-04-18_22-36-44/our_finetune_global_super_dataset
+================================================================================
+============================== New Client: our_finetune_global ==============================
+  Target Model: logs/2026-04-17_21-04-20/FedTED/config_checkpoints.pth
+  Dataset Mode: super
+  Output Dir:   /home/unshun/multi-FL/logs/2026-04-17_21-04-20/FedTED/new_client_2026-04-18_22-36-44/our_finetune_global_super_dataset
+================================================================================
+[Init] Server Global Model parameters from: logs/2026-04-17_21-04-20/FedTED/server_global_model.pth
+
+====================================================================================================
+--- [Super Dataset] Mode ---
+====================================================================================================
+
+==================================================
+[ResNet18] Training on Super Dataset...
+==================================================
+    Epoch 0 | Acc: 1.20%
+    Epoch 1/30 | CE Loss: 1.4843 | Acc: 67.11%
+    Epoch 2/30 | CE Loss: 0.0465 | Acc: 67.92%
+    Epoch 3/30 | CE Loss: 0.0085 | Acc: 67.81%
+    Epoch 4/30 | CE Loss: 0.0037 | Acc: 68.00%
+    Epoch 5/30 | CE Loss: 0.0022 | Acc: 68.02%
+    Epoch 6/30 | CE Loss: 0.0016 | Acc: 68.32%
+    Epoch 7/30 | CE Loss: 0.0011 | Acc: 68.25%
+    Epoch 8/30 | CE Loss: 0.0008 | Acc: 68.64%
+    Epoch 9/30 | CE Loss: 0.0007 | Acc: 68.62%
+    Epoch 10/30 | CE Loss: 0.0005 | Acc: 68.52%
+    Epoch 11/30 | CE Loss: 0.0004 | Acc: 68.50%
+    Epoch 12/30 | CE Loss: 0.0004 | Acc: 68.85%
+    Epoch 13/30 | CE Loss: 0.0003 | Acc: 68.92%
+    Epoch 14/30 | CE Loss: 0.0003 | Acc: 68.72%
+    Epoch 15/30 | CE Loss: 0.0003 | Acc: 68.77%
+    Epoch 16/30 | CE Loss: 0.0002 | Acc: 68.89%
+    Epoch 17/30 | CE Loss: 0.0002 | Acc: 68.86%
+    Epoch 18/30 | CE Loss: 0.0002 | Acc: 68.99%
+    Epoch 19/30 | CE Loss: 0.0001 | Acc: 68.95%
+    Epoch 20/30 | CE Loss: 0.0001 | Acc: 69.12%
+    Epoch 21/30 | CE Loss: 0.0001 | Acc: 69.04%
+    Epoch 22/30 | CE Loss: 0.0001 | Acc: 69.31%
+    Epoch 23/30 | CE Loss: 0.0001 | Acc: 68.86%
+    Epoch 24/30 | CE Loss: 0.0001 | Acc: 68.84%
+    Epoch 25/30 | CE Loss: 0.0001 | Acc: 69.19%
+    Epoch 26/30 | CE Loss: 0.0001 | Acc: 69.39%
+    Epoch 27/30 | CE Loss: 0.0001 | Acc: 69.13%
+    Epoch 28/30 | CE Loss: 0.0001 | Acc: 69.23%
+    Epoch 29/30 | CE Loss: 0.0001 | Acc: 69.14%
+    Epoch 30/30 | CE Loss: 0.0001 | Acc: 69.03%
+Accuracy history saved to /home/unshun/multi-FL/logs/2026-04-17_21-04-20/FedTED/new_client_2026-04-18_22-36-44/our_finetune_global_super_dataset/SuperDataset_newclient_history.csv
+
+============================== Finished. Total Time: 0:13:31 ==============================

@@ -110,4 +110,4 @@ if __name__ == "__main__":
     metrics_to_plot = ["recall", "specificity", "precision", "average_accuracy", "f1_score", "mcc"]
     
     for m in metrics_to_plot:
-        plot_metric_comparison(files_to_compare, metric=m, output_filename="plot.png", save_dir=save_dir)
+        plot_metric_comparison(files_to_compare, metric=m, output_filename="plot.pdf", save_dir=save_dir)

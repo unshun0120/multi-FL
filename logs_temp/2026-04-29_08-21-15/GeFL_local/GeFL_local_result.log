@@ -1,0 +1,466 @@
+Time: 2026-04-29 08:21:15
+Log Dir: logs/2026-04-29_08-21-15/GeFL_local
+================================================================================
+
+==============================        Args        ==============================
+  exp_timestamp: None
+  exp_conf: ./configs/het-iid-exp.yaml
+  device: cuda:1
+  seed: 15698
+  algorithm: GeFL_local
+  num_new_clients: 1
+  num_train_mnist: 2
+  num_train_emnist: 2
+  num_train_fashionmnist: 0
+  num_train_cifar10: 0
+  num_train_cifar100: 0
+  num_train_usps: 0
+================================================================================
+==============================    Exp Configs     ==============================
+exp_name: model-heterogeneity
+heterogeneous: true
+dirichlet_alpha: 100
+global_rounds: 40
+local_epochs: 1
+local_loss_fn: CrossEntropyLoss
+local_optim: Adam
+local_lr: 0.001
+batch_size: 64
+sample_frac: 1.0
+test_interval: 1
+metric_type: accuracy
+global_feature_dim: 256
+optim: Adam
+optim_lr: 0.001
+global_gen_epochs: 10
+gen_noise_dim: 128
+gen_optim: Adam
+gen_optim_lr: 0.001
+global_feat_gen_epochs: 10
+feat_gen_noise_dim: 128
+feat_gen_optim: Adam
+feat_gen_optim_lr: 0.001
+feat_gen_div_beta: 1.0
+public_data_ratio: 0.05
+start_mapping_epoch: 1
+gen_observer_weight: 1.0
+index_matching: class_name
+aggregate_method: dataset_name
+use_new_entropy_method: true
+entropy_ratio: 0.7
+global_model_epochs: 15
+global_model_optim: Adam
+global_model_optim_lr: 0.001
+global_samples_per_class: 64
+
+================================================================================
+
+==================================================
+Start 40 rounds training by GeFL_local
+Selected client ids: [0, 1, 2, 3]
+--- Round 1 ---
+Client 0 (MNIST) | Target Loss: 0.5221 | G Loss: 1.7909 | D Loss: 0.4020
+Client 1 (MNIST) | Target Loss: 0.6391 | G Loss: 1.9324 | D Loss: 0.3885
+Client 3 (EMNIST) | Target Loss: 0.8505 | G Loss: 3.6160 | D Loss: 0.1755
+Client 4 (EMNIST) | Target Loss: 0.8129 | G Loss: 3.7294 | D Loss: 0.1695
+Round 1 | Client 0 | Model: (MLP) | Acc: 92.12%
+Round 1 | Client 1 | Model: (CNN) | Acc: 84.24%
+Round 1 | Client 3 | Model: (MLP) | Acc: 80.20%
+Round 1 | Client 4 | Model: (CNN) | Acc: 80.49%
+Selected client ids: [0, 1, 2, 3]
+--- Round 2 ---
+Client 0 (MNIST) | Target Loss: 0.2579 | G Loss: 1.9813 | D Loss: 0.3433
+Client 1 (MNIST) | Target Loss: 0.1476 | G Loss: 2.3204 | D Loss: 0.2906
+Client 3 (EMNIST) | Target Loss: 0.5925 | G Loss: 5.5147 | D Loss: 0.0706
+Client 4 (EMNIST) | Target Loss: 0.5027 | G Loss: 5.6400 | D Loss: 0.0669
+Round 2 | Client 0 | Model: (MLP) | Acc: 92.85%
+Round 2 | Client 1 | Model: (CNN) | Acc: 90.81%
+Round 2 | Client 3 | Model: (MLP) | Acc: 80.84%
+Round 2 | Client 4 | Model: (CNN) | Acc: 82.70%
+Selected client ids: [0, 1, 2, 3]
+--- Round 3 ---
+Client 0 (MNIST) | Target Loss: 0.1912 | G Loss: 3.5358 | D Loss: 0.1306
+Client 1 (MNIST) | Target Loss: 0.1045 | G Loss: 3.7167 | D Loss: 0.1253
+Client 3 (EMNIST) | Target Loss: 0.5449 | G Loss: 6.3526 | D Loss: 0.0425
+Client 4 (EMNIST) | Target Loss: 0.4552 | G Loss: 6.2771 | D Loss: 0.0442
+Round 3 | Client 0 | Model: (MLP) | Acc: 93.12%
+Round 3 | Client 1 | Model: (CNN) | Acc: 93.89%
+Round 3 | Client 3 | Model: (MLP) | Acc: 81.45%
+Round 3 | Client 4 | Model: (CNN) | Acc: 84.58%
+Selected client ids: [0, 1, 2, 3]
+--- Round 4 ---
+Client 0 (MNIST) | Target Loss: 0.1621 | G Loss: 4.1305 | D Loss: 0.1336
+Client 1 (MNIST) | Target Loss: 0.0846 | G Loss: 4.3247 | D Loss: 0.1043
+Client 3 (EMNIST) | Target Loss: 0.5223 | G Loss: 6.6833 | D Loss: 0.0328
+Client 4 (EMNIST) | Target Loss: 0.4273 | G Loss: 6.5156 | D Loss: 0.0318
+Round 4 | Client 0 | Model: (MLP) | Acc: 93.32%
+Round 4 | Client 1 | Model: (CNN) | Acc: 81.07%
+Round 4 | Client 3 | Model: (MLP) | Acc: 82.31%
+Round 4 | Client 4 | Model: (CNN) | Acc: 84.64%
+Selected client ids: [0, 1, 2, 3]
+--- Round 5 ---
+Client 0 (MNIST) | Target Loss: 0.1422 | G Loss: 4.6549 | D Loss: 0.0759
+Client 1 (MNIST) | Target Loss: 0.0671 | G Loss: 5.1959 | D Loss: 0.0732
+Client 3 (EMNIST) | Target Loss: 0.5075 | G Loss: 6.9277 | D Loss: 0.0323
+Client 4 (EMNIST) | Target Loss: 0.4096 | G Loss: 6.9225 | D Loss: 0.0300
+Round 5 | Client 0 | Model: (MLP) | Acc: 94.49%
+Round 5 | Client 1 | Model: (CNN) | Acc: 96.95%
+Round 5 | Client 3 | Model: (MLP) | Acc: 81.83%
+Round 5 | Client 4 | Model: (CNN) | Acc: 85.09%
+Selected client ids: [0, 1, 2, 3]
+--- Round 6 ---
+Client 0 (MNIST) | Target Loss: 0.1194 | G Loss: 4.0936 | D Loss: 0.1716
+Client 1 (MNIST) | Target Loss: 0.0603 | G Loss: 4.1817 | D Loss: 0.1228
+Client 3 (EMNIST) | Target Loss: 0.4954 | G Loss: 7.1181 | D Loss: 0.0271
+Client 4 (EMNIST) | Target Loss: 0.3964 | G Loss: 6.9221 | D Loss: 0.0295
+Round 6 | Client 0 | Model: (MLP) | Acc: 94.81%
+Round 6 | Client 1 | Model: (CNN) | Acc: 95.04%
+Round 6 | Client 3 | Model: (MLP) | Acc: 81.94%
+Round 6 | Client 4 | Model: (CNN) | Acc: 85.12%
+Selected client ids: [0, 1, 2, 3]
+--- Round 7 ---
+Client 0 (MNIST) | Target Loss: 0.1113 | G Loss: 5.4115 | D Loss: 0.0547
+Client 1 (MNIST) | Target Loss: 0.0493 | G Loss: 5.7389 | D Loss: 0.0411
+Client 3 (EMNIST) | Target Loss: 0.4847 | G Loss: 7.4418 | D Loss: 0.0227
+Client 4 (EMNIST) | Target Loss: 0.3864 | G Loss: 7.0782 | D Loss: 0.0262
+Round 7 | Client 0 | Model: (MLP) | Acc: 95.65%
+Round 7 | Client 1 | Model: (CNN) | Acc: 94.17%
+Round 7 | Client 3 | Model: (MLP) | Acc: 82.39%
+Round 7 | Client 4 | Model: (CNN) | Acc: 85.48%
+Selected client ids: [0, 1, 2, 3]
+--- Round 8 ---
+Client 0 (MNIST) | Target Loss: 0.1014 | G Loss: 5.0035 | D Loss: 0.0715
+Client 1 (MNIST) | Target Loss: 0.0396 | G Loss: 4.5369 | D Loss: 0.1073
+Client 3 (EMNIST) | Target Loss: 0.4802 | G Loss: 7.2946 | D Loss: 0.0235
+Client 4 (EMNIST) | Target Loss: 0.3781 | G Loss: 7.6414 | D Loss: 0.0194
+Round 8 | Client 0 | Model: (MLP) | Acc: 95.51%
+Round 8 | Client 1 | Model: (CNN) | Acc: 97.41%
+Round 8 | Client 3 | Model: (MLP) | Acc: 82.73%
+Round 8 | Client 4 | Model: (CNN) | Acc: 85.80%
+Selected client ids: [0, 1, 2, 3]
+--- Round 9 ---
+Client 0 (MNIST) | Target Loss: 0.0867 | G Loss: 7.1453 | D Loss: 0.0024
+Client 1 (MNIST) | Target Loss: 0.0404 | G Loss: 5.0723 | D Loss: 0.0672
+Client 3 (EMNIST) | Target Loss: 0.4746 | G Loss: 7.4895 | D Loss: 0.0197
+Client 4 (EMNIST) | Target Loss: 0.3712 | G Loss: 7.4156 | D Loss: 0.0234
+Round 9 | Client 0 | Model: (MLP) | Acc: 96.35%
+Round 9 | Client 1 | Model: (CNN) | Acc: 80.67%
+Round 9 | Client 3 | Model: (MLP) | Acc: 82.56%
+Round 9 | Client 4 | Model: (CNN) | Acc: 85.80%
+Selected client ids: [0, 1, 2, 3]
+--- Round 10 ---
+Client 0 (MNIST) | Target Loss: 0.0696 | G Loss: 4.4350 | D Loss: 0.1184
+Client 1 (MNIST) | Target Loss: 0.0315 | G Loss: 5.0959 | D Loss: 0.0801
+Client 3 (EMNIST) | Target Loss: 0.4720 | G Loss: 7.9022 | D Loss: 0.0190
+Client 4 (EMNIST) | Target Loss: 0.3649 | G Loss: 7.9556 | D Loss: 0.0177
+Round 10 | Client 0 | Model: (MLP) | Acc: 96.62%
+Round 10 | Client 1 | Model: (CNN) | Acc: 97.16%
+Round 10 | Client 3 | Model: (MLP) | Acc: 82.21%
+Round 10 | Client 4 | Model: (CNN) | Acc: 85.88%
+Selected client ids: [0, 1, 2, 3]
+--- Round 11 ---
+Client 0 (MNIST) | Target Loss: 0.0727 | G Loss: 5.9541 | D Loss: 0.0315
+Client 1 (MNIST) | Target Loss: 0.0318 | G Loss: 5.5774 | D Loss: 0.0551
+Client 3 (EMNIST) | Target Loss: 0.4676 | G Loss: 7.8532 | D Loss: 0.0173
+Client 4 (EMNIST) | Target Loss: 0.3597 | G Loss: 7.9719 | D Loss: 0.0166
+Round 11 | Client 0 | Model: (MLP) | Acc: 96.27%
+Round 11 | Client 1 | Model: (CNN) | Acc: 98.30%
+Round 11 | Client 3 | Model: (MLP) | Acc: 82.25%
+Round 11 | Client 4 | Model: (CNN) | Acc: 86.05%
+Selected client ids: [0, 1, 2, 3]
+--- Round 12 ---
+Client 0 (MNIST) | Target Loss: 0.0701 | G Loss: 5.1837 | D Loss: 0.0868
+Client 1 (MNIST) | Target Loss: 0.0278 | G Loss: 5.0030 | D Loss: 0.0836
+Client 3 (EMNIST) | Target Loss: 0.4667 | G Loss: 7.7559 | D Loss: 0.0200
+Client 4 (EMNIST) | Target Loss: 0.3541 | G Loss: 8.1303 | D Loss: 0.0160
+Round 12 | Client 0 | Model: (MLP) | Acc: 96.21%
+Round 12 | Client 1 | Model: (CNN) | Acc: 95.25%
+Round 12 | Client 3 | Model: (MLP) | Acc: 82.33%
+Round 12 | Client 4 | Model: (CNN) | Acc: 85.00%
+Selected client ids: [0, 1, 2, 3]
+--- Round 13 ---
+Client 0 (MNIST) | Target Loss: 0.0610 | G Loss: 5.0864 | D Loss: 0.0645
+Client 1 (MNIST) | Target Loss: 0.0227 | G Loss: 5.5264 | D Loss: 0.0519
+Client 3 (EMNIST) | Target Loss: 0.4610 | G Loss: 8.2467 | D Loss: 0.0140
+Client 4 (EMNIST) | Target Loss: 0.3509 | G Loss: 8.3905 | D Loss: 0.0144
+Round 13 | Client 0 | Model: (MLP) | Acc: 96.38%
+Round 13 | Client 1 | Model: (CNN) | Acc: 98.12%
+Round 13 | Client 3 | Model: (MLP) | Acc: 83.01%
+Round 13 | Client 4 | Model: (CNN) | Acc: 86.14%
+Selected client ids: [0, 1, 2, 3]
+--- Round 14 ---
+Client 0 (MNIST) | Target Loss: 0.0653 | G Loss: 5.1438 | D Loss: 0.0764
+Client 1 (MNIST) | Target Loss: 0.0217 | G Loss: 5.8004 | D Loss: 0.0443
+Client 3 (EMNIST) | Target Loss: 0.4601 | G Loss: 8.1226 | D Loss: 0.0146
+Client 4 (EMNIST) | Target Loss: 0.3457 | G Loss: 8.2947 | D Loss: 0.0139
+Round 14 | Client 0 | Model: (MLP) | Acc: 94.78%
+Round 14 | Client 1 | Model: (CNN) | Acc: 91.77%
+Round 14 | Client 3 | Model: (MLP) | Acc: 82.84%
+Round 14 | Client 4 | Model: (CNN) | Acc: 86.26%
+Selected client ids: [0, 1, 2, 3]
+--- Round 15 ---
+Client 0 (MNIST) | Target Loss: 0.0566 | G Loss: 6.7626 | D Loss: 0.0035
+Client 1 (MNIST) | Target Loss: 0.0226 | G Loss: 5.4280 | D Loss: 0.0585
+Client 3 (EMNIST) | Target Loss: 0.4581 | G Loss: 8.2860 | D Loss: 0.0144
+Client 4 (EMNIST) | Target Loss: 0.3415 | G Loss: 8.4405 | D Loss: 0.0141
+Round 15 | Client 0 | Model: (MLP) | Acc: 96.97%
+Round 15 | Client 1 | Model: (CNN) | Acc: 98.15%
+Round 15 | Client 3 | Model: (MLP) | Acc: 82.72%
+Round 15 | Client 4 | Model: (CNN) | Acc: 86.36%
+Selected client ids: [0, 1, 2, 3]
+--- Round 16 ---
+Client 0 (MNIST) | Target Loss: 0.0465 | G Loss: 4.8013 | D Loss: 0.0897
+Client 1 (MNIST) | Target Loss: 0.0180 | G Loss: 6.5163 | D Loss: 0.0399
+Client 3 (EMNIST) | Target Loss: 0.4530 | G Loss: 8.3128 | D Loss: 0.0141
+Client 4 (EMNIST) | Target Loss: 0.3385 | G Loss: 8.8390 | D Loss: 0.0107
+Round 16 | Client 0 | Model: (MLP) | Acc: 96.12%
+Round 16 | Client 1 | Model: (CNN) | Acc: 96.30%
+Round 16 | Client 3 | Model: (MLP) | Acc: 82.83%
+Round 16 | Client 4 | Model: (CNN) | Acc: 86.22%
+Selected client ids: [0, 1, 2, 3]
+--- Round 17 ---
+Client 0 (MNIST) | Target Loss: 0.0599 | G Loss: 6.8497 | D Loss: 0.0036
+Client 1 (MNIST) | Target Loss: 0.0173 | G Loss: 5.7221 | D Loss: 0.0528
+Client 3 (EMNIST) | Target Loss: 0.4548 | G Loss: 8.7328 | D Loss: 0.0109
+Client 4 (EMNIST) | Target Loss: 0.3358 | G Loss: 8.5934 | D Loss: 0.0127
+Round 17 | Client 0 | Model: (MLP) | Acc: 97.00%
+Round 17 | Client 1 | Model: (CNN) | Acc: 94.82%
+Round 17 | Client 3 | Model: (MLP) | Acc: 83.01%
+Round 17 | Client 4 | Model: (CNN) | Acc: 86.71%
+Selected client ids: [0, 1, 2, 3]
+--- Round 18 ---
+Client 0 (MNIST) | Target Loss: 0.0432 | G Loss: 6.4185 | D Loss: 0.0506
+Client 1 (MNIST) | Target Loss: 0.0175 | G Loss: 5.3970 | D Loss: 0.0614
+Client 3 (EMNIST) | Target Loss: 0.4505 | G Loss: 8.7026 | D Loss: 0.0112
+Client 4 (EMNIST) | Target Loss: 0.3319 | G Loss: 8.9018 | D Loss: 0.0105
+Round 18 | Client 0 | Model: (MLP) | Acc: 97.43%
+Round 18 | Client 1 | Model: (CNN) | Acc: 91.06%
+Round 18 | Client 3 | Model: (MLP) | Acc: 82.48%
+Round 18 | Client 4 | Model: (CNN) | Acc: 85.99%
+Selected client ids: [0, 1, 2, 3]
+--- Round 19 ---
+Client 0 (MNIST) | Target Loss: 0.0456 | G Loss: 5.1330 | D Loss: 0.0824
+Client 1 (MNIST) | Target Loss: 0.0142 | G Loss: 5.5797 | D Loss: 0.0438
+Client 3 (EMNIST) | Target Loss: 0.4516 | G Loss: 8.6671 | D Loss: 0.0110
+Client 4 (EMNIST) | Target Loss: 0.3282 | G Loss: 9.0557 | D Loss: 0.0094
+Round 19 | Client 0 | Model: (MLP) | Acc: 96.62%
+Round 19 | Client 1 | Model: (CNN) | Acc: 96.82%
+Round 19 | Client 3 | Model: (MLP) | Acc: 82.65%
+Round 19 | Client 4 | Model: (CNN) | Acc: 86.49%
+Selected client ids: [0, 1, 2, 3]
+--- Round 20 ---
+Client 0 (MNIST) | Target Loss: 0.0434 | G Loss: 6.0796 | D Loss: 0.0189
+Client 1 (MNIST) | Target Loss: 0.0186 | G Loss: 5.5794 | D Loss: 0.0474
+Client 3 (EMNIST) | Target Loss: 0.4512 | G Loss: 9.0669 | D Loss: 0.0078
+Client 4 (EMNIST) | Target Loss: 0.3254 | G Loss: 8.7326 | D Loss: 0.0108
+Round 20 | Client 0 | Model: (MLP) | Acc: 96.65%
+Round 20 | Client 1 | Model: (CNN) | Acc: 97.10%
+Round 20 | Client 3 | Model: (MLP) | Acc: 82.71%
+Round 20 | Client 4 | Model: (CNN) | Acc: 86.49%
+Selected client ids: [0, 1, 2, 3]
+--- Round 21 ---
+Client 0 (MNIST) | Target Loss: 0.0398 | G Loss: 6.7364 | D Loss: 0.0321
+Client 1 (MNIST) | Target Loss: 0.0171 | G Loss: 6.1571 | D Loss: 0.0378
+Client 3 (EMNIST) | Target Loss: 0.4466 | G Loss: 9.0963 | D Loss: 0.0098
+Client 4 (EMNIST) | Target Loss: 0.3229 | G Loss: 9.2116 | D Loss: 0.0092
+Round 21 | Client 0 | Model: (MLP) | Acc: 96.73%
+Round 21 | Client 1 | Model: (CNN) | Acc: 98.15%
+Round 21 | Client 3 | Model: (MLP) | Acc: 82.55%
+Round 21 | Client 4 | Model: (CNN) | Acc: 86.22%
+Selected client ids: [0, 1, 2, 3]
+--- Round 22 ---
+Client 0 (MNIST) | Target Loss: 0.0450 | G Loss: 5.3380 | D Loss: 0.0529
+Client 1 (MNIST) | Target Loss: 0.0175 | G Loss: 5.8792 | D Loss: 0.0515
+Client 3 (EMNIST) | Target Loss: 0.4481 | G Loss: 8.8414 | D Loss: 0.0113
+Client 4 (EMNIST) | Target Loss: 0.3203 | G Loss: 8.8022 | D Loss: 0.0096
+Round 22 | Client 0 | Model: (MLP) | Acc: 96.41%
+Round 22 | Client 1 | Model: (CNN) | Acc: 97.19%
+Round 22 | Client 3 | Model: (MLP) | Acc: 81.80%
+Round 22 | Client 4 | Model: (CNN) | Acc: 86.50%
+Selected client ids: [0, 1, 2, 3]
+--- Round 23 ---
+Client 0 (MNIST) | Target Loss: 0.0447 | G Loss: 6.1085 | D Loss: 0.0293
+Client 1 (MNIST) | Target Loss: 0.0121 | G Loss: 6.3216 | D Loss: 0.0356
+Client 3 (EMNIST) | Target Loss: 0.4467 | G Loss: 9.3572 | D Loss: 0.0083
+Client 4 (EMNIST) | Target Loss: 0.3173 | G Loss: 8.9236 | D Loss: 0.0098
+Round 23 | Client 0 | Model: (MLP) | Acc: 97.00%
+Round 23 | Client 1 | Model: (CNN) | Acc: 95.62%
+Round 23 | Client 3 | Model: (MLP) | Acc: 82.32%
+Round 23 | Client 4 | Model: (CNN) | Acc: 86.16%
+Selected client ids: [0, 1, 2, 3]
+--- Round 24 ---
+Client 0 (MNIST) | Target Loss: 0.0317 | G Loss: 6.7989 | D Loss: 0.0272
+Client 1 (MNIST) | Target Loss: 0.0096 | G Loss: 6.3322 | D Loss: 0.0146
+Client 3 (EMNIST) | Target Loss: 0.4434 | G Loss: 9.1955 | D Loss: 0.0087
+Client 4 (EMNIST) | Target Loss: 0.3147 | G Loss: 9.0886 | D Loss: 0.0079
+Round 24 | Client 0 | Model: (MLP) | Acc: 96.38%
+Round 24 | Client 1 | Model: (CNN) | Acc: 97.13%
+Round 24 | Client 3 | Model: (MLP) | Acc: 83.05%
+Round 24 | Client 4 | Model: (CNN) | Acc: 86.41%
+Selected client ids: [0, 1, 2, 3]
+--- Round 25 ---
+Client 0 (MNIST) | Target Loss: 0.0419 | G Loss: 5.9819 | D Loss: 0.0419
+Client 1 (MNIST) | Target Loss: 0.0086 | G Loss: 5.6754 | D Loss: 0.0537
+Client 3 (EMNIST) | Target Loss: 0.4508 | G Loss: 9.0412 | D Loss: 0.0088
+Client 4 (EMNIST) | Target Loss: 0.3122 | G Loss: 9.1335 | D Loss: 0.0086
+Round 25 | Client 0 | Model: (MLP) | Acc: 97.05%
+Round 25 | Client 1 | Model: (CNN) | Acc: 97.75%
+Round 25 | Client 3 | Model: (MLP) | Acc: 83.10%
+Round 25 | Client 4 | Model: (CNN) | Acc: 86.00%
+Selected client ids: [0, 1, 2, 3]
+--- Round 26 ---
+Client 0 (MNIST) | Target Loss: 0.0326 | G Loss: 6.3739 | D Loss: 0.0236
+Client 1 (MNIST) | Target Loss: 0.0142 | G Loss: 7.6355 | D Loss: 0.0016
+Client 3 (EMNIST) | Target Loss: 0.4451 | G Loss: 9.3070 | D Loss: 0.0080
+Client 4 (EMNIST) | Target Loss: 0.3101 | G Loss: 9.0831 | D Loss: 0.0067
+Round 26 | Client 0 | Model: (MLP) | Acc: 97.05%
+Round 26 | Client 1 | Model: (CNN) | Acc: 98.40%
+Round 26 | Client 3 | Model: (MLP) | Acc: 83.43%
+Round 26 | Client 4 | Model: (CNN) | Acc: 86.56%
+Selected client ids: [0, 1, 2, 3]
+--- Round 27 ---
+Client 0 (MNIST) | Target Loss: 0.0327 | G Loss: 5.8654 | D Loss: 0.0490
+Client 1 (MNIST) | Target Loss: 0.0103 | G Loss: 5.8234 | D Loss: 0.0643
+Client 3 (EMNIST) | Target Loss: 0.4458 | G Loss: 9.2958 | D Loss: 0.0068
+Client 4 (EMNIST) | Target Loss: 0.3068 | G Loss: 8.9127 | D Loss: 0.0064
+Round 27 | Client 0 | Model: (MLP) | Acc: 97.35%
+Round 27 | Client 1 | Model: (CNN) | Acc: 97.63%
+Round 27 | Client 3 | Model: (MLP) | Acc: 82.32%
+Round 27 | Client 4 | Model: (CNN) | Acc: 86.79%
+Selected client ids: [0, 1, 2, 3]
+--- Round 28 ---
+Client 0 (MNIST) | Target Loss: 0.0296 | G Loss: 5.7900 | D Loss: 0.0421
+Client 1 (MNIST) | Target Loss: 0.0134 | G Loss: 6.1352 | D Loss: 0.0361
+Client 3 (EMNIST) | Target Loss: 0.4467 | G Loss: 9.1683 | D Loss: 0.0071
+Client 4 (EMNIST) | Target Loss: 0.3052 | G Loss: 8.7837 | D Loss: 0.0045
+Round 28 | Client 0 | Model: (MLP) | Acc: 96.18%
+Round 28 | Client 1 | Model: (CNN) | Acc: 97.10%
+Round 28 | Client 3 | Model: (MLP) | Acc: 82.98%
+Round 28 | Client 4 | Model: (CNN) | Acc: 86.12%
+Selected client ids: [0, 1, 2, 3]
+--- Round 29 ---
+Client 0 (MNIST) | Target Loss: 0.0366 | G Loss: 6.6292 | D Loss: 0.0230
+Client 1 (MNIST) | Target Loss: 0.0046 | G Loss: 6.2361 | D Loss: 0.0223
+Client 3 (EMNIST) | Target Loss: 0.4489 | G Loss: 9.1469 | D Loss: 0.0054
+Client 4 (EMNIST) | Target Loss: 0.3028 | G Loss: 8.6252 | D Loss: 0.0041
+Round 29 | Client 0 | Model: (MLP) | Acc: 96.65%
+Round 29 | Client 1 | Model: (CNN) | Acc: 98.43%
+Round 29 | Client 3 | Model: (MLP) | Acc: 82.62%
+Round 29 | Client 4 | Model: (CNN) | Acc: 86.04%
+Selected client ids: [0, 1, 2, 3]
+--- Round 30 ---
+Client 0 (MNIST) | Target Loss: 0.0482 | G Loss: 5.6254 | D Loss: 0.0492
+Client 1 (MNIST) | Target Loss: 0.0108 | G Loss: 5.3521 | D Loss: 0.0816
+Client 3 (EMNIST) | Target Loss: 0.4512 | G Loss: 9.0733 | D Loss: 0.0047
+Client 4 (EMNIST) | Target Loss: 0.3012 | G Loss: 8.6514 | D Loss: 0.0050
+Round 30 | Client 0 | Model: (MLP) | Acc: 97.02%
+Round 30 | Client 1 | Model: (CNN) | Acc: 96.85%
+Round 30 | Client 3 | Model: (MLP) | Acc: 82.73%
+Round 30 | Client 4 | Model: (CNN) | Acc: 86.42%
+Selected client ids: [0, 1, 2, 3]
+--- Round 31 ---
+Client 0 (MNIST) | Target Loss: 0.0306 | G Loss: 6.8970 | D Loss: 0.0047
+Client 1 (MNIST) | Target Loss: 0.0142 | G Loss: 6.3017 | D Loss: 0.0372
+Client 3 (EMNIST) | Target Loss: 0.4451 | G Loss: 8.9116 | D Loss: 0.0045
+Client 4 (EMNIST) | Target Loss: 0.2981 | G Loss: 8.9476 | D Loss: 0.0043
+Round 31 | Client 0 | Model: (MLP) | Acc: 97.02%
+Round 31 | Client 1 | Model: (CNN) | Acc: 96.95%
+Round 31 | Client 3 | Model: (MLP) | Acc: 83.08%
+Round 31 | Client 4 | Model: (CNN) | Acc: 86.54%
+Selected client ids: [0, 1, 2, 3]
+--- Round 32 ---
+Client 0 (MNIST) | Target Loss: 0.0243 | G Loss: 6.3586 | D Loss: 0.0275
+Client 1 (MNIST) | Target Loss: 0.0043 | G Loss: 5.9456 | D Loss: 0.0317
+Client 3 (EMNIST) | Target Loss: 0.4688 | G Loss: 9.3393 | D Loss: 0.0041
+Client 4 (EMNIST) | Target Loss: 0.2963 | G Loss: 9.1678 | D Loss: 0.0043
+Round 32 | Client 0 | Model: (MLP) | Acc: 97.29%
+Round 32 | Client 1 | Model: (CNN) | Acc: 97.72%
+Round 32 | Client 3 | Model: (MLP) | Acc: 83.25%
+Round 32 | Client 4 | Model: (CNN) | Acc: 86.17%
+Selected client ids: [0, 1, 2, 3]
+--- Round 33 ---
+Client 0 (MNIST) | Target Loss: 0.0224 | G Loss: 5.9712 | D Loss: 0.0505
+Client 1 (MNIST) | Target Loss: 0.0116 | G Loss: 6.4882 | D Loss: 0.0230
+Client 3 (EMNIST) | Target Loss: 0.4553 | G Loss: 9.3925 | D Loss: 0.0036
+Client 4 (EMNIST) | Target Loss: 0.2938 | G Loss: 8.8355 | D Loss: 0.0052
+Round 33 | Client 0 | Model: (MLP) | Acc: 97.08%
+Round 33 | Client 1 | Model: (CNN) | Acc: 97.66%
+Round 33 | Client 3 | Model: (MLP) | Acc: 82.44%
+Round 33 | Client 4 | Model: (CNN) | Acc: 86.25%
+Selected client ids: [0, 1, 2, 3]
+--- Round 34 ---
+Client 0 (MNIST) | Target Loss: 0.0367 | G Loss: 5.8661 | D Loss: 0.0308
+Client 1 (MNIST) | Target Loss: 0.0075 | G Loss: 7.9537 | D Loss: 0.0011
+Client 3 (EMNIST) | Target Loss: 0.4502 | G Loss: 9.0724 | D Loss: 0.0051
+Client 4 (EMNIST) | Target Loss: 0.2918 | G Loss: 9.0005 | D Loss: 0.0049
+Round 34 | Client 0 | Model: (MLP) | Acc: 96.91%
+Round 34 | Client 1 | Model: (CNN) | Acc: 97.41%
+Round 34 | Client 3 | Model: (MLP) | Acc: 82.44%
+Round 34 | Client 4 | Model: (CNN) | Acc: 86.04%
+Selected client ids: [0, 1, 2, 3]
+--- Round 35 ---
+Client 0 (MNIST) | Target Loss: 0.0274 | G Loss: 6.4367 | D Loss: 0.0421
+Client 1 (MNIST) | Target Loss: 0.0061 | G Loss: 5.8475 | D Loss: 0.0461
+Client 3 (EMNIST) | Target Loss: 0.4578 | G Loss: 9.2204 | D Loss: 0.0040
+Client 4 (EMNIST) | Target Loss: 0.2907 | G Loss: 9.2530 | D Loss: 0.0045
+Round 35 | Client 0 | Model: (MLP) | Acc: 97.23%
+Round 35 | Client 1 | Model: (CNN) | Acc: 98.58%
+Round 35 | Client 3 | Model: (MLP) | Acc: 82.51%
+Round 35 | Client 4 | Model: (CNN) | Acc: 86.20%
+Selected client ids: [0, 1, 2, 3]
+--- Round 36 ---
+Client 0 (MNIST) | Target Loss: 0.0191 | G Loss: 6.0979 | D Loss: 0.0281
+Client 1 (MNIST) | Target Loss: 0.0088 | G Loss: 6.0003 | D Loss: 0.0606
+Client 3 (EMNIST) | Target Loss: 0.4585 | G Loss: 9.2769 | D Loss: 0.0044
+Client 4 (EMNIST) | Target Loss: 0.2889 | G Loss: 8.9334 | D Loss: 0.0054
+Round 36 | Client 0 | Model: (MLP) | Acc: 96.30%
+Round 36 | Client 1 | Model: (CNN) | Acc: 94.11%
+Round 36 | Client 3 | Model: (MLP) | Acc: 82.67%
+Round 36 | Client 4 | Model: (CNN) | Acc: 86.57%
+Selected client ids: [0, 1, 2, 3]
+--- Round 37 ---
+Client 0 (MNIST) | Target Loss: 0.0323 | G Loss: 6.4933 | D Loss: 0.0140
+Client 1 (MNIST) | Target Loss: 0.0103 | G Loss: 6.8877 | D Loss: 0.0235
+Client 3 (EMNIST) | Target Loss: 0.4696 | G Loss: 9.1628 | D Loss: 0.0041
+Client 4 (EMNIST) | Target Loss: 0.2864 | G Loss: 9.0765 | D Loss: 0.0046
+Round 37 | Client 0 | Model: (MLP) | Acc: 96.65%
+Round 37 | Client 1 | Model: (CNN) | Acc: 96.18%
+Round 37 | Client 3 | Model: (MLP) | Acc: 82.37%
+Round 37 | Client 4 | Model: (CNN) | Acc: 86.33%
+Selected client ids: [0, 1, 2, 3]
+--- Round 38 ---
+Client 0 (MNIST) | Target Loss: 0.0339 | G Loss: 6.1528 | D Loss: 0.0243
+Client 1 (MNIST) | Target Loss: 0.0082 | G Loss: 5.4706 | D Loss: 0.0577
+Client 3 (EMNIST) | Target Loss: 0.4574 | G Loss: 9.4532 | D Loss: 0.0049
+Client 4 (EMNIST) | Target Loss: 0.2843 | G Loss: 9.3428 | D Loss: 0.0052
+Round 38 | Client 0 | Model: (MLP) | Acc: 97.11%
+Round 38 | Client 1 | Model: (CNN) | Acc: 95.96%
+Round 38 | Client 3 | Model: (MLP) | Acc: 82.75%
+Round 38 | Client 4 | Model: (CNN) | Acc: 86.52%
+Selected client ids: [0, 1, 2, 3]
+--- Round 39 ---
+Client 0 (MNIST) | Target Loss: 0.0193 | G Loss: 6.5501 | D Loss: 0.0238
+Client 1 (MNIST) | Target Loss: 0.0083 | G Loss: 6.8929 | D Loss: 0.0039
+Client 3 (EMNIST) | Target Loss: 0.4647 | G Loss: 9.7594 | D Loss: 0.0034
+Client 4 (EMNIST) | Target Loss: 0.2821 | G Loss: 9.9621 | D Loss: 0.0039
+Round 39 | Client 0 | Model: (MLP) | Acc: 97.58%
+Round 39 | Client 1 | Model: (CNN) | Acc: 93.99%
+Round 39 | Client 3 | Model: (MLP) | Acc: 83.04%
+Round 39 | Client 4 | Model: (CNN) | Acc: 85.91%
+Selected client ids: [0, 1, 2, 3]
+--- Round 40 ---
+Client 0 (MNIST) | Target Loss: 0.0213 | G Loss: 6.6424 | D Loss: 0.0187
+Client 1 (MNIST) | Target Loss: 0.0062 | G Loss: 7.6368 | D Loss: 0.0190
+Client 3 (EMNIST) | Target Loss: 0.4741 | G Loss: 9.7679 | D Loss: 0.0044
+Client 4 (EMNIST) | Target Loss: 0.2811 | G Loss: 9.6841 | D Loss: 0.0037
+Round 40 | Client 0 | Model: (MLP) | Acc: 96.50%
+Round 40 | Client 1 | Model: (CNN) | Acc: 97.07%
+Round 40 | Client 3 | Model: (MLP) | Acc: 82.72%
+Round 40 | Client 4 | Model: (CNN) | Acc: 86.44%
+Saving checkpoints ...
+[Server] Checkpoint saved to logs/2026-04-29_08-21-15/GeFL_local/server_checkpoints.pth
+[Server] All 4 clients saved in logs/2026-04-29_08-21-15/GeFL_local/clients_last_round_checkpoints/
+Saving checkpoints ...
+[Server] Checkpoint saved to logs/2026-04-29_08-21-15/GeFL_local/server_checkpoints.pth
+[Server] All 4 clients saved in logs/2026-04-29_08-21-15/GeFL_local/clients_last_round_checkpoints/
+==============================    Finished. Total Time: 7:06:13    ==============================

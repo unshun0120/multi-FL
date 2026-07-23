@@ -1,0 +1,50 @@
+Time: 2026-04-17 16:14:04
+Log Dir: /home/unshun/multi-FL/logs/Ours_iid_het_gb100/Ours/new_client_2026-04-17_16-14-04/baseline_super_dataset
+================================================================================
+============================== New Client: baseline ==============================
+  Target Model: logs/Ours_iid_het_gb100/Ours/config_checkpoints.pth
+  Dataset Mode: super
+  Output Dir:   /home/unshun/multi-FL/logs/Ours_iid_het_gb100/Ours/new_client_2026-04-17_16-14-04/baseline_super_dataset
+================================================================================
+
+====================================================================================================
+--- [Super Dataset] Mode ---
+====================================================================================================
+
+==================================================
+[ResNet18] Training on Super Dataset...
+==================================================
+    Epoch 0 (init) | Acc: 4.84%
+    Epoch 1/30 | CE: 2.8553 | Acc: 7.70%
+    Epoch 2/30 | CE: 1.4951 | Acc: 51.93%
+    Epoch 3/30 | CE: 1.1517 | Acc: 55.75%
+    Epoch 4/30 | CE: 0.9905 | Acc: 58.29%
+    Epoch 5/30 | CE: 0.9016 | Acc: 59.67%
+    Epoch 6/30 | CE: 0.8128 | Acc: 54.86%
+    Epoch 7/30 | CE: 0.7613 | Acc: 65.45%
+    Epoch 8/30 | CE: 0.6927 | Acc: 67.53%
+    Epoch 9/30 | CE: 0.6408 | Acc: 69.00%
+    Epoch 10/30 | CE: 0.5606 | Acc: 68.27%
+    Epoch 11/30 | CE: 0.5336 | Acc: 64.40%
+    Epoch 12/30 | CE: 0.5133 | Acc: 67.39%
+    Epoch 13/30 | CE: 0.4368 | Acc: 66.56%
+    Epoch 14/30 | CE: 0.3731 | Acc: 68.81%
+    Epoch 15/30 | CE: 0.3253 | Acc: 63.96%
+    Epoch 16/30 | CE: 0.2915 | Acc: 69.57%
+    Epoch 17/30 | CE: 0.2935 | Acc: 64.48%
+    Epoch 18/30 | CE: 0.2156 | Acc: 66.83%
+    Epoch 19/30 | CE: 0.1695 | Acc: 64.13%
+    Epoch 20/30 | CE: 0.2094 | Acc: 67.26%
+    Epoch 21/30 | CE: 0.1704 | Acc: 69.76%
+    Epoch 22/30 | CE: 0.1611 | Acc: 64.50%
+    Epoch 23/30 | CE: 0.1336 | Acc: 67.47%
+    Epoch 24/30 | CE: 0.1015 | Acc: 68.04%
+    Epoch 25/30 | CE: 0.1254 | Acc: 66.40%
+    Epoch 26/30 | CE: 0.1030 | Acc: 64.15%
+    Epoch 27/30 | CE: 0.0734 | Acc: 65.92%
+    Epoch 28/30 | CE: 0.0427 | Acc: 68.66%
+    Epoch 29/30 | CE: 0.0469 | Acc: 64.28%
+    Epoch 30/30 | CE: 0.0760 | Acc: 69.33%
+Accuracy history saved to /home/unshun/multi-FL/logs/Ours_iid_het_gb100/Ours/new_client_2026-04-17_16-14-04/baseline_super_dataset/SuperDataset_newclient_history.csv
+
+============================== Finished. Total Time: 0:12:00 ==============================

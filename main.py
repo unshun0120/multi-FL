@@ -26,21 +26,36 @@ IMPLEMENTED_ALGORITHMS = ["Local", # FL with local only
                           "UDON", # Only KD not FL
                           "Ours", # Ours
                           "Ours_GeFL", # Ours with generative model
+                          "GeFL_DeepInversion",
+                          "GeFL_DeepInversion_gen",
                           "GeFL_DDPM",
+                          "GeFL_slamdunk",  
                           "GeFL_GAN_DDPM",
                           'GeFL_DDPM_baseline', 
                           'GeFL_GAN_baseline', 
                           'GeFL_DDPM_baseline_total',
+                          'GeFL_DDPM_baseline_total_DI',
                           'GeFL_DDPM_baseline_total_gan',
                           'GeFL_DDPM_baseline_total_gan_sep',
+                          'GeFL_DDPM_baseline_total_gan_noniid',
                           'GeFL_DDPM_baseline_total_public',
                           'GeFL_DDIM_baseline_total',
                           'GeFL_DDPM_baseline_total_sep',
+                          'GeFL_gan_missing_link',
+                          "GeFL_gan_pacfl_iid",
+                          "GeFL_gan_pacfl_noniid",
                           "BaseFL_public",
                           "BaseFL_DDPM",
+                          "BaseFL_public_kd",
                           ]
 
-IMPLEMENTED_LM = ["image-bi", "image-single", "feature-bi", "image-cs", "class_name", "independent", "identical"]   
+IMPLEMENTED_LM = ["image-bi", "image-single", "feature-bi", "image-cs", "slam_dunk", "missing_link", 
+                  "class_name", "independent", "identical", 
+                  "cs_mapping", "feature_mapping", "single_mapping", "slam_dunk_mapping",
+                  "ours_5", "ours_10", "ours_15", "ours_20", "ours_25",
+                  "ours_5_noEntropy", 
+                  "slam_dunk_mapping_5", "slam_dunk_mapping_10", "slam_dunk_mapping_15", "slam_dunk_mapping_20", "slam_dunk_mapping_25",
+                  ]   
 
 DATASET_META = { 
     'MNIST':        {'in_ch': 3, 'classes': 10,  'size': 32},  
@@ -75,6 +90,8 @@ def parser_args():
                         help="random seed")
     parser.add_argument("--algorithm", type=str, default="Ours", choices=IMPLEMENTED_ALGORITHMS,
                         help=f"the implemented algorithms, choices include: {IMPLEMENTED_ALGORITHMS}")
+    parser.add_argument("--noniid_partition", type=str, default="dirichlet", choices=["dirichlet", "noniid_label"])
+    parser.add_argument("--aggregate_method", type=str, default="dataset_name", choices=["dataset_name", "pacfl"])
     
     # --- Dataset ---
     parser.add_argument('--num_new_clients', type=int, default=1, 
