@@ -674,7 +674,7 @@ class Server(BaseServer):
             )
 
         with torch.no_grad():
-            for d_name, test_loader in self.public_test_loader.items():
+            for d_name, test_loader in self.test_loader.items():
                 if d_name not in dataset_to_mapping:
                     self.logger.log(f"[Test] Skip {d_name}: no client-level mapping found.")
                     continue

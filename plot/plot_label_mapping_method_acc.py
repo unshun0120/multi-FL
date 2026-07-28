@@ -2,6 +2,105 @@ import os
 import pandas as pd
 import matplotlib.pyplot as plt
 
+
+def plot_mapping_analyze_results():
+    csv_path = "./label_mapping/offline_ours_results_analyze/2026_07_24_12_01_36/offline_improve_mapping_acc.csv"
+    output_base_dir = os.path.join(os.path.dirname(csv_path), "plots")
+    os.makedirs(output_base_dir, exist_ok=True)
+
+    df = pd.read_csv(csv_path)
+
+    numeric_columns = [
+        "global_round", "entropy_ratio", "confuse_model_ratio",
+        "recall", "specificity", "precision", "average_accuracy", "f1_score", "mcc"
+    ]
+
+    for col in numeric_columns:
+        df[col] = pd.to_numeric(df[col], errors="coerce")
+
+    df["vote_mode"] = (
+        df["vote_mode"]
+        .astype(str)
+        .str.strip()
+        .str.lower()
+        .map({
+            "true": True,
+            "false": False
+        })
+    )
+
+    df = df.dropna(subset=["global_round", "entropy_ratio", "confuse_model_ratio", "vote_mode"])
+
+    metrics = {
+        "Recall": "recall",
+        "Specificity": "specificity",
+        "Precision": "precision",
+        "Average_Accuracy": "average_accuracy",
+        "F1_Score": "f1_score",
+        "MCC": "mcc"
+    }
+
+    entropy_values = [0.1, 0.15, 0.2, 0.25, 0.3, 0.35, 0.4, 0.45, 0.5, 0.55, 0.6, 0.65, 0.7, 0.75, 0.8, 0.85, 0.9, 0.95, 1.0]
+
+    rounds = sorted(df["global_round"].dropna().unique())
+
+    for metric_name, metric_col in metrics.items():
+        metric_dir = os.path.join(output_base_dir, metric_name)
+        os.makedirs(metric_dir, exist_ok=True)
+
+        for rnd in rounds:
+            round_dir = os.path.join(metric_dir, f"Round_{int(rnd)}")
+            os.makedirs(round_dir, exist_ok=True)
+
+            df_round = df[df["global_round"] == rnd]
+
+            for entropy_ratio in entropy_values:
+                df_plot = df_round[(df_round["entropy_ratio"] - entropy_ratio).abs() < 1e-8].copy()
+
+                if df_plot.empty:
+                    continue
+
+                fig, ax = plt.subplots(figsize=(10, 6))
+
+                # for vote_value, line_name, marker in [(True, "Voting", "o"), (False, "No Voting", "s")]:
+                for vote_value, line_name, marker in [(True, "Voting", "o"), (False, "Average soft label", "s")]:
+                    line_df = df_plot[df_plot["vote_mode"] == vote_value].sort_values("confuse_model_ratio")
+
+                    if line_df.empty:
+                        continue
+
+                    ax.plot(
+                        line_df["confuse_model_ratio"],
+                        line_df[metric_col],
+                        marker=marker,
+                        linewidth=2,
+                        label=line_name
+                    )
+
+                ax.set_title(f"{metric_name} | "f"Round {int(rnd)} | "f"Entropy Ratio {entropy_ratio:.2f}", fontsize=14)
+                ax.set_xlabel("Confuse Model Ratio", fontsize=12)
+                ax.set_ylabel(metric_name, fontsize=12)
+                x_values = sorted(df_plot["confuse_model_ratio"].dropna().unique())
+                ax.set_xticks(x_values)
+                ax.set_xlim(min(x_values) - 0.05, max(x_values) + 0.05)
+
+                if metric_name == "MCC":
+                    ax.set_ylim(-1.05, 1.05)
+                else:
+                    ax.set_ylim(-0.05, 1.05)
+
+                ax.grid(True, linestyle="--", alpha=0.7)
+                ax.legend(fontsize=11, loc="best")
+                entropy_text = (f"{entropy_ratio:.2f}".replace(".", "_"))
+
+                save_path = os.path.join(round_dir, f"{metric_name}_Round_{int(rnd)}_" f"Entropy_{entropy_text}.pdf")
+
+                plt.savefig(save_path, bbox_inches="tight")
+                plt.close()
+
+                print(f"Saved: {save_path}")
+
+
 def plot_mapping_results():
     results_dir = ""
 
@@ -229,4 +328,5 @@ def plot_mapping_results():
             
 
 if __name__ == "__main__":
-    plot_mapping_results()
+    plot_mapping_analyze_results()
+    # plot_mapping_results()

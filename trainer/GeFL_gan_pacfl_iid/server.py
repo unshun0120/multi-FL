@@ -574,26 +574,50 @@ class Server(BaseServer):
 
     def save_model(self, global_round=0, fname='checkpoints.pth'):
         self.logger.log("Saving checkpoints ...")
-
-        dataset_classifiers = {}
-        for ls_id, model_dict in self.global_models.items():
-            if 'classifier' in model_dict:
-                dataset_classifiers[ls_id] = model_dict['classifier'].state_dict()
-
         client_label_distributions = {}
+        client_label_space_meta = {}
+        client_metadata = {}
+
         for client in self.clients:
             unique_labels = set()
+
             for _, labels in client.train_loader:
                 unique_labels.update(labels.tolist())
-            client_label_distributions[client.id] = list(unique_labels)
 
-        client_label_space_meta = {f"client_{client.id}": list(client.class_name_set) for client in self.clients}
+            valid_labels = sorted(unique_labels)
+            client_name = f"client_{client.id}"
+
+            client_label_distributions[client.id] = valid_labels
+            client_label_space_meta[client_name] = list(client.class_name_set)
+
+            client_metadata[client.id] = {
+                "client_id": client.id,
+                "dataset_name": client.dataset_name,
+                "group_name": client.group_name,
+                "valid_labels": valid_labels,
+                "class_names": list(client.class_name_set),
+                "model_name": client.model_name
+            }
+
+        group_metadata = {}
+
+        for group_name, group_clients in self.client_groups.items():
+            group_metadata[group_name] = {
+                "group_name": group_name,
+                "client_ids": [client.id for client in group_clients],
+                "datasets": sorted({client.dataset_name for client in group_clients}),
+                "label_space_meta": self.group_label_space_meta.get(group_name, [])
+            }
+
 
         checkpoint = {
             'client_label_distributions': client_label_distributions,
             'global_registry': self.local_id_to_global_id,
             'label_space_meta': client_label_space_meta,
+            "group_label_space_meta": self.group_label_space_meta,
             "client_groups": {client.id: client.group_name for client in self.clients},
+            "client_metadata": client_metadata,
+            "group_metadata": group_metadata,
             'global_feature_dim': self.global_feature_dim,
             'exp_conf': self.exp_conf,
             'args': {
@@ -613,29 +637,88 @@ class Server(BaseServer):
         torch.save(checkpoint, server_save_path)
         self.logger.log(f"[Server] Checkpoint saved to {server_save_path}")
 
-        gen_dir = os.path.join(self.logger.log_dir, f"local_gans_round_{global_round}")
-        os.makedirs(gen_dir, exist_ok=True)
+        global_gan_dir = os.path.join(self.logger.log_dir, f"global_gans_round_{global_round}")
+        os.makedirs(global_gan_dir, exist_ok=True)
+
+        for group_name, gen_state in self.global_gen_states.items():
+            group_clients = self.client_groups.get(group_name, [])
+            client_ids = [client.id for client in group_clients]
+            datasets = sorted({
+                client.dataset_name
+                for client in group_clients
+            })
+
+            global_gan_checkpoint = {
+                "global_round": global_round,
+                "aggregate_method": self.aggregate_method,
+                "group_name": group_name,
+                "client_ids": client_ids,
+                "datasets": datasets,
+                "label_space_meta": self.group_label_space_meta.get(
+                    group_name,
+                    []
+                ),
+                "generator": gen_state,
+                "discriminator": self.global_dis_states.get(group_name)
+            }
+
+            global_gan_path = os.path.join(
+                global_gan_dir,
+                f"global_GAN_{group_name}.pth"
+            )
+
+            torch.save(global_gan_checkpoint, global_gan_path)
+
+            self.logger.log(
+                f"[Server] Global GAN saved: "
+                f"group={group_name} | datasets={datasets} | "
+                f"clients={client_ids} | path={global_gan_path}"
+            )
+
+        local_gan_dir  = os.path.join(self.logger.log_dir, f"local_gans_round_{global_round}")
+        os.makedirs(local_gan_dir , exist_ok=True)
 
         for client in self.clients:
-            gan_checkpoint = {
+            local_gan_checkpoint = {
                 "global_round": global_round,
                 "client_id": client.id,
                 "dataset_name": client.dataset_name,
                 "group_name": client.group_name,
+                "valid_labels": client_label_distributions[client.id],
+                "class_names": list(client.class_name_set),
                 "generator": client.generator.state_dict(),
                 "discriminator": client.discriminator.state_dict()
             }
 
-            gan_save_path = os.path.join(gen_dir, f"client_GAN_{client.dataset_name}_c{client.id}.pth")
-            torch.save(gan_checkpoint, gan_save_path)
-            self.logger.log(f"[Server] Local GAN saved: {gan_save_path}")
+            local_gan_path = os.path.join(
+                local_gan_dir,
+                f"local_GAN_{client.group_name}_"
+                f"{client.dataset_name}_c{client.id}.pth"
+            )
 
-        clients_dir = os.path.join(self.logger.log_dir, f'clients_round_{global_round}_checkpoints')
-        os.makedirs(clients_dir, exist_ok=True)
+            torch.save(local_gan_checkpoint, local_gan_path)
+
+        client_model_dir = os.path.join(self.logger.log_dir, f"clients_round_{global_round}_checkpoints")
+        os.makedirs(client_model_dir, exist_ok=True)
 
         for client in self.clients:
-            arch_name = getattr(client, 'model_name', 'Unknown')
-            client_path = os.path.join(clients_dir, f'client_model_{client.dataset_name}_c{client.id}_{arch_name}.pth')
-            torch.save(client.model.state_dict(), client_path)
-            
-        self.logger.log(f"[Server] All {len(self.clients)} clients saved in {clients_dir}/")
+            arch_name = client.model_name
+
+            local_model_checkpoint = {
+                "global_round": global_round,
+                "client_id": client.id,
+                "dataset_name": client.dataset_name,
+                "group_name": client.group_name,
+                "valid_labels": client_label_distributions[client.id],
+                "class_names": list(client.class_name_set),
+                "model_name": arch_name,
+                "model": client.model.state_dict()
+            }
+
+            client_model_path = os.path.join(
+                client_model_dir,
+                f"client_model_{client.group_name}_"
+                f"{client.dataset_name}_c{client.id}_{arch_name}.pth"
+            )
+
+            torch.save(local_model_checkpoint, client_model_path)

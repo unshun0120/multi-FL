@@ -615,36 +615,14 @@ def run_offline(args):
                 writer = csv.writer(f)
 
                 if not file_exists:
-                    writer.writerow([
-                        "global_round",
-                        threshold_col,
-                        "recall",
-                        "specificity",
-                        "precision",
-                        "average_accuracy",
-                        "f1_score",
-                        "mcc",
-                        "TP",
-                        "FP",
-                        "TN",
-                        "FN"
-                    ])
+                    writer.writerow(["global_round", threshold_col,
+                        "recall", "specificity", "precision", "average_accuracy", "f1_score", "mcc",
+                        "TP", "FP", "TN", "FN"])
                     file_exists = True
 
-                writer.writerow([
-                    rnd,
-                    threshold,
-                    metrics["Recall"],
-                    metrics["Specificity"],
-                    metrics["Precision"],
-                    metrics["AvgAccuracy"],
-                    metrics["F1-Score"],
-                    metrics["MCC"],
-                    metrics["TP"],
-                    metrics["FP"],
-                    metrics["TN"],
-                    metrics["FN"]
-                ])
+                writer.writerow([rnd, threshold,
+                    metrics["Recall"], metrics["Specificity"], metrics["Precision"], metrics["AvgAccuracy"], metrics["F1-Score"], metrics["MCC"], 
+                    metrics["TP"], metrics["FP"], metrics["TN"], metrics["FN"]])
 
     print("\n" + "=" * 60)
     print(f"Saved results: {run_output_dir}")
