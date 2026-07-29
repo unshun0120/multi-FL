@@ -6,7 +6,7 @@ import matplotlib.pyplot as plt
 def make_best_table():
     # results_dir = "logs_temp/2026-06-19_21-08-41/GeFL_GAN_baseline/mapping_results"
     results_dir = ""
-    output_dir = "./plot/noniid_label_mapping_table"
+    output_dir = "./label_mapping/offline_pacfl_noniid_results(label)/improve_single/table"
     os.makedirs(output_dir, exist_ok=True)
 
     # methods = {
@@ -27,10 +27,10 @@ def make_best_table():
     # }
 
     methods = {
-        "bi-direct": "./label_mapping/offline_noniid_results(noniid_label)/image-bi/label_mapping/offline_image-bi_noniid_mapping_acc.csv",
-        "Improve-single\n(Single-direct)": "./label_mapping/offline_noniid_results(noniid_label)/improve_single/label_mapping/offline_improve_single_noniid_mapping_acc.csv",
-        "Missing Link": "./label_mapping/offline_noniid_results(noniid_label)/missing_link/label_mapping/offline_missing_link_noniid_mapping_acc.csv",
-        "Improve-single\n + \nMissing Link": "./label_mapping/offline_noniid_results(noniid_label)/improve_single_label_noniid(1)/label_mapping/offline_improve_single_label_noniid_noniid_mapping_acc.csv",
+        "bi-direct": "./label_mapping/offline_pacfl_noniid_results(label)/image-bi/label_mapping/offline_image-bi_noniid_mapping_acc.csv",
+        "Improve-single": "./label_mapping/offline_pacfl_noniid_results(label)/improve_single/label_mapping/offline_improve_single_noniid_mapping_acc.csv",
+        "Missing Link": "./label_mapping/offline_pacfl_noniid_results(label)/missing_link/label_mapping/offline_missing_link_noniid_mapping_acc.csv",
+        #"Improve-single\n + \nMissing Link": "./label_mapping/offline_pacfl_noniid_results(label)/improve_single_label_noniid(1)/label_mapping/offline_improve_single_label_noniid_noniid_mapping_acc.csv",
     }
     no_entropy_methods={}
     slam_dunk_values={}
@@ -53,7 +53,7 @@ def make_best_table():
         "bi-direct": "entropy_ratio",
         "Improve-single\n + \nMissing Link": "missing_threshold",
         "Improve-single\n(Single-direct)": "entropy_ratio",
-        "Missing Link": "entropy_ratio",
+        #"Missing Link": "entropy_ratio",
     }
 
     # slam_dunk_values = {
@@ -100,7 +100,7 @@ def make_best_table():
     # }
 
     # method_order = ["SlamDunk", "Cosine-Similarity", "Ours", "Ours\n(no Entropy)", "Single-direct", "Feature-Bi", "Missing Link", "Improve-single",  "Improve-single\n(no Entropy)", "Improve-single\n(no Result Voting)"]
-    method_order = ["bi-direct", "Missing Link", "Improve-single\n + \nMissing Link", "Improve-single\n(Single-direct)"]
+    method_order = ["bi-direct", "Missing Link", "Improve-single", "Improve-single\n + \nMissing Link", "Improve-single\n(Single-direct)"]
     data = {}
     all_rounds = set()
 
@@ -167,7 +167,7 @@ def make_best_table():
             })
 
         # for method in ["Cosine-Similarity", "Ours", "Single-direct", "Feature-Bi", "Missing Link", "Improve-single", "Improve-single\n(no Result Voting)"]:
-        for method in ["bi-direct", "Missing Link", "Improve-single\n + \nMissing Link", "Improve-single\n(Single-direct)"]:
+        for method in ["bi-direct", "Missing Link", "Improve-single", "Improve-single\n + \nMissing Link", "Improve-single\n(Single-direct)"]:
             if method not in data:
                 continue
 

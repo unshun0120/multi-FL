@@ -43,6 +43,7 @@ IMPLEMENTED_ALGORITHMS = ["Local", # FL with local only
                           'GeFL_DDPM_baseline_total_sep',
                           'GeFL_gan_missing_link',
                           "GeFL_gan_pacfl_iid",
+                          "GeFL_gan_pacfl_iid_2",
                           "GeFL_gan_pacfl_noniid",
                           "BaseFL_public",
                           "BaseFL_DDPM",
@@ -91,10 +92,10 @@ def parser_args():
     parser.add_argument("--algorithm", type=str, default="Ours", choices=IMPLEMENTED_ALGORITHMS,
                         help=f"the implemented algorithms, choices include: {IMPLEMENTED_ALGORITHMS}")
     parser.add_argument("--noniid_partition", type=str, default="dirichlet", choices=["dirichlet", "noniid_label"])
-    parser.add_argument("--aggregate_method", type=str, default="dataset_name", choices=["dataset_name", "pacfl"])
+    parser.add_argument("--aggregate_method", type=str, default="pacfl", choices=["dataset_name", "pacfl"])
     
     # --- Dataset ---
-    parser.add_argument('--num_new_clients', type=int, default=1, 
+    parser.add_argument('--num_new_clients', type=int, default=0, 
                         help='Number of IID New clients for generalization test (for all dataset)')
     parser.add_argument("--num_train_mnist", type=int, default=10, 
                         help="number of training clients for mnist")

@@ -317,7 +317,7 @@ def label_mapping(get_images_func, dataset_ids, clients_dict, label_space_meta, 
 
                 if res_tgt is None: 
                     #logger.log(f"{src_id}:'{l_name}' -> {tgt_id} ❌ (Uncertain)")
-                    print(f"{src_id}:'{l_name}' -> {tgt_id} ❌ (Uncertain)")
+                    #print(f"{src_id}:'{l_name}' -> {tgt_id} ❌ (Uncertain)")
                     continue
                 
                 pred_tgt_idx = res_tgt['pred_idx']
@@ -326,7 +326,7 @@ def label_mapping(get_images_func, dataset_ids, clients_dict, label_space_meta, 
                     if pred_tgt_idx not in valid_labels_dict[tgt_id]:
                         continue
                 #logger.log(f"{src_id}:'{l_name}' -> {tgt_id} | Predict: '{pred_tgt_name}' (Ent: {res_tgt['entropy']:.2f})")
-                print(f"{src_id}:'{l_name}' -> {tgt_id} | Predict: '{pred_tgt_name}' (Ent: {res_tgt['entropy']:.2f})")
+                #print(f"{src_id}:'{l_name}' -> {tgt_id} | Predict: '{pred_tgt_name}' (Ent: {res_tgt['entropy']:.2f})")
 
                 if get_images_kwargs:
                     imgs_tgt = get_images_func(tgt_id, pred_tgt_idx, **get_images_kwargs)
@@ -345,17 +345,17 @@ def label_mapping(get_images_func, dataset_ids, clients_dict, label_space_meta, 
 
                 if res_back is None:
                     #logger.log(f"  -> Cycle Check: {tgt_id} -> {src_id} ❌ (Back-check Uncertain)")
-                    print(f"  -> Cycle Check: {tgt_id} -> {src_id} ❌ (Back-check Uncertain)")
+                    #print(f"  -> Cycle Check: {tgt_id} -> {src_id} ❌ (Back-check Uncertain)")
                     continue
                 
                 if res_back['pred_idx'] == l_idx:
                     #logger.log(f"  ✅ [Match] {src_id}:'{l_name}' <==> {tgt_id}:'{pred_tgt_name}' (Ent: {res_back['entropy']:.2f})")
-                    print(f"  ✅ [Match] {src_id}:'{l_name}' <==> {tgt_id}:'{pred_tgt_name}' (Ent: {res_back['entropy']:.2f})")
+                    #print(f"  ✅ [Match] {src_id}:'{l_name}' <==> {tgt_id}:'{pred_tgt_name}' (Ent: {res_back['entropy']:.2f})")
 
                     register_mapping(local_id_to_global_id, src_id, l_idx, tgt_id, pred_tgt_idx)
-                else:
+                #else:
                     #logger.log(f"  ⚠️ [Mismatch] Cycle Back predicted '{res_back['pred_name']}' (Expected '{l_name}') (Ent: {res_back['entropy']:.2f})")
-                    print(f"  ⚠️ [Mismatch] Cycle Back predicted '{res_back['pred_name']}' (Expected '{l_name}') (Ent: {res_back['entropy']:.2f})")
+                    #print(f"  ⚠️ [Mismatch] Cycle Back predicted '{res_back['pred_name']}' (Expected '{l_name}') (Ent: {res_back['entropy']:.2f})")
                     
     for d_id in dataset_ids:
         for l_idx in range(len(label_space_meta[d_id])):

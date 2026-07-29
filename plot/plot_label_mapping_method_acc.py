@@ -3,7 +3,86 @@ import pandas as pd
 import matplotlib.pyplot as plt
 
 
-def plot_mapping_analyze_results():
+def plot_mapping_analyze_fixed_confuse_ratio():
+    csv_path = "./label_mapping/offline_ours_results_analyze/Voting_AvgSoftLabel/offline_improve_mapping_acc.csv"
+    output_base_dir = os.path.join(os.path.dirname(csv_path), "plots_onlyVoting")
+    os.makedirs(output_base_dir, exist_ok=True)
+
+    df = pd.read_csv(csv_path)
+
+    numeric_columns = [
+        "global_round", "entropy_ratio", "confuse_model_ratio",
+        "recall", "specificity", "precision", "average_accuracy", "f1_score", "mcc"
+    ]
+
+    for col in numeric_columns:
+        df[col] = pd.to_numeric(df[col], errors="coerce")
+
+    df["vote_mode"] = df["vote_mode"].astype(str).str.strip().str.lower().map({"true": True, "false": False})
+    df = df.dropna(subset=["global_round", "entropy_ratio", "confuse_model_ratio", "vote_mode"])
+
+    metrics = {
+        "Recall": "recall",
+        "Specificity": "specificity",
+        "Precision": "precision",
+        "Average_Accuracy": "average_accuracy",
+        "F1_Score": "f1_score",
+        "MCC": "mcc"
+    }
+
+    confuse_values = sorted(df["confuse_model_ratio"].dropna().unique())
+    entropy_values = sorted(df["entropy_ratio"].dropna().unique())
+    rounds = sorted(df["global_round"].dropna().unique())
+
+    for metric_name, metric_col in metrics.items():
+        metric_dir = os.path.join(output_base_dir, metric_name)
+        os.makedirs(metric_dir, exist_ok=True)
+
+        for rnd in rounds:
+            round_dir = os.path.join(metric_dir, f"Round_{int(rnd)}")
+            os.makedirs(round_dir, exist_ok=True)
+            df_round = df[df["global_round"] == rnd]
+
+            for confuse_model_ratio in confuse_values:
+                df_plot = df_round[(df_round["confuse_model_ratio"] - confuse_model_ratio).abs() < 1e-8].copy()
+
+                if df_plot.empty:
+                    continue
+
+                fig, ax = plt.subplots(figsize=(10, 6))
+
+                for vote_value, line_name, marker in [(True, "Voting", "o")]:
+                    line_df = df_plot[df_plot["vote_mode"] == vote_value].sort_values("entropy_ratio")
+
+                    if line_df.empty:
+                        continue
+
+                    ax.plot(line_df["entropy_ratio"], line_df[metric_col], marker=marker, linewidth=2, label=line_name)
+
+                ax.set_title(f"{metric_name} | Round {int(rnd)} | Confuse Model Ratio {confuse_model_ratio:.2f}", fontsize=14)
+                ax.set_xlabel("Entropy Ratio", fontsize=12)
+                ax.set_ylabel(metric_name, fontsize=12)
+                ax.set_xticks(entropy_values)
+                ax.set_xlim(min(entropy_values) - 0.025, max(entropy_values) + 0.025)
+
+                if metric_name == "MCC":
+                    ax.set_ylim(-1.05, 1.05)
+                else:
+                    ax.set_ylim(-0.05, 1.05)
+
+                ax.grid(True, linestyle="--", alpha=0.7)
+                ax.legend(fontsize=11, loc="best")
+
+                confuse_text = f"{confuse_model_ratio:.2f}".replace(".", "_")
+                save_path = os.path.join(round_dir, f"{metric_name}_Round_{int(rnd)}_Confuse_{confuse_text}.pdf")
+
+                plt.savefig(save_path, bbox_inches="tight")
+                plt.close()
+
+                print(f"Saved: {save_path}")
+
+
+def plot_mapping_analyze_results_fixed_entropy():
     csv_path = "./label_mapping/offline_ours_results_analyze/2026_07_24_12_01_36/offline_improve_mapping_acc.csv"
     output_base_dir = os.path.join(os.path.dirname(csv_path), "plots")
     os.makedirs(output_base_dir, exist_ok=True)
@@ -131,15 +210,15 @@ def plot_mapping_results():
     # }
 
     # noniid
-    output_base_dir = "./label_mapping/offline_noniid_results(noniid_label)/improve_single_label_noniid(2)"
+    output_base_dir = "./label_mapping/offline_pacfl_noniid_results(label)/improve_single"
 
     methods = {
-        "bi-direct": "./label_mapping/offline_noniid_results(noniid_label)/image-bi/label_mapping/offline_image-bi_noniid_mapping_acc.csv",
-        "Missing Link": "./label_mapping/offline_noniid_results(noniid_label)/missing_link/label_mapping/offline_missing_link_noniid_mapping_acc.csv",
+        "bi-direct": "./label_mapping/offline_pacfl_noniid_results(label)/image-bi/label_mapping/offline_image-bi_noniid_mapping_acc.csv",
+        "Missing Link": "./label_mapping/offline_pacfl_noniid_results(label)/missing_link/label_mapping/offline_missing_link_noniid_mapping_acc.csv",
         #"Improve": os.path.join(output_base_dir, "label_mapping/offline_improve_single_noniid_mapping_acc.csv"),
-        "Improve": "./label_mapping/offline_noniid_results(noniid_label)/improve_single/label_mapping/offline_improve_single_noniid_mapping_acc.csv",
+        "Improve": os.path.join(output_base_dir, "label_mapping/offline_improve_single_noniid_mapping_acc.csv"),
         #"single-direct": "./label_mapping/offline_noniid_results/2026_07_20_10_40_34/label_mapping/offline_image-single_noniid_mapping_acc.csv",
-        "Improve_noniid": os.path.join(output_base_dir, "label_mapping/offline_improve_single_label_noniid_noniid_mapping_acc.csv"),
+        # "Improve_noniid": os.path.join(output_base_dir, "label_mapping/offline_improve_single_label_noniid_noniid_mapping_acc.csv"),
     }
 
     color_map = {
@@ -160,8 +239,8 @@ def plot_mapping_results():
         "Feature_biDirection": "entropy_ratio",
         "Image_singleDirection": "entropy_ratio",
         "Cosine_Similarity": "entropy_ratio",
-        #"Missing Link": "missing_threshold",
-        "Missing Link": "entropy_ratio",
+        "Missing Link": "missing_threshold",
+        #"Missing Link": "entropy_ratio",
         "Improve_noniid": "missing_threshold",
     }
 
@@ -328,5 +407,6 @@ def plot_mapping_results():
             
 
 if __name__ == "__main__":
-    plot_mapping_analyze_results()
-    # plot_mapping_results()
+    # plot_mapping_analyze_results_fixed_entropy()
+    # plot_mapping_analyze_fixed_confuse_ratio()
+    plot_mapping_results()

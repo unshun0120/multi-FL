@@ -20,6 +20,7 @@ data/cache/
 checkpoints/
 runs/
 logs/
+logs_temp/
 result/
 saved_models/
 *.pt
