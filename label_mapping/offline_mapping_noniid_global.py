@@ -305,6 +305,7 @@ def load_global_gans(log_dir, global_round, group_label_space_meta, args, device
 
 def load_client_models(log_dir, global_round, group_label_space_meta, global_dim, args, device):
     group_clients_dict = {}
+    client_valid_labels_dict = {}
     clients_dir = os.path.join(log_dir, f"clients_round_{global_round}_checkpoints")
 
     if not os.path.exists(clients_dir):
@@ -336,12 +337,14 @@ def load_client_models(log_dir, global_round, group_label_space_meta, global_dim
 
         if group_name not in group_clients_dict:
             group_clients_dict[group_name] = []
+            client_valid_labels_dict[group_name] = []
 
         group_clients_dict[group_name].append(model)
+        client_valid_labels_dict[group_name].append(checkpoint.get("valid_labels", list(range(len(group_label_space_meta[group_name])))))
 
         print(f"[Loaded Client] client_{client_id} -> " f"{group_name}: {os.path.basename(model_path)}")
 
-    return group_clients_dict
+    return group_clients_dict, client_valid_labels_dict
 
 
 def save_mapping_summary(path, mapping, label_space_meta, threshold_name, threshold):
@@ -395,6 +398,68 @@ def get_unique_output_dir(output_dir, folder_name):
 
     return os.path.join(output_dir, f"{folder_name}({index})")
 
+
+def get_quality_gan_images(dataset_id, label_idx, base_get_images_func=None, usable_labels_dict=None, **kwargs):
+    if usable_labels_dict is not None and dataset_id in usable_labels_dict:
+        if label_idx not in usable_labels_dict[dataset_id]:
+            return None
+
+    return base_get_images_func(dataset_id, label_idx, **kwargs)
+    
+
+def check_gan_quality(active_datasets, generators, clients_dict, client_valid_labels_dict, label_space_meta, valid_labels_dict, group_dataset_names, args, logger, quality_threshold=0.5, save_path=None):
+    usable_labels_dict = {}
+    quality_records = []
+
+    for group_name in active_datasets:
+        usable_labels_dict[group_name] = []
+        models = clients_dict.get(group_name, [])
+        model_valid_labels = client_valid_labels_dict.get(group_name, [])
+        dataset_name = group_dataset_names.get(group_name)
+
+        for label_idx in valid_labels_dict.get(group_name, []):
+            imgs = get_gen_images(group_name, label_idx, args=args, gen_dict=generators)
+
+            if imgs is None:
+                continue
+
+            confidence_scores = []
+            accuracy_scores = []
+
+            for model, labels in zip(models, model_valid_labels):
+                if label_idx not in labels:
+                    continue
+
+                with torch.no_grad():
+                    output = model(imgs)
+                    logits = output[-1]
+                    probs = torch.softmax(logits, dim=1)
+
+                confidence_scores.append(probs[:, label_idx].mean().item())
+                accuracy_scores.append((torch.argmax(probs, dim=1) == label_idx).float().mean().item())
+            
+            if len(confidence_scores) == 0:
+                logger.log(f"[GAN Quality] {group_name} | dataset={dataset_name} | label={label_idx} | no available local model")
+                quality_records.append([group_name, dataset_name, label_idx, label_space_meta[group_name][label_idx], 0, 0.0, 0.0, False])
+                continue
+
+            confidence = sum(confidence_scores) / len(confidence_scores)
+            accuracy = sum(accuracy_scores) / len(accuracy_scores)
+            passed = confidence >= quality_threshold
+
+            if passed:
+                usable_labels_dict[group_name].append(label_idx)
+
+            logger.log(f"[GAN Quality] {group_name} | dataset={dataset_name} | label={label_idx} | models={len(confidence_scores)} | confidence={confidence:.4f} | accuracy={accuracy:.4f} | passed={passed}")
+            quality_records.append([group_name, dataset_name, label_idx, label_space_meta[group_name][label_idx], len(confidence_scores), confidence, accuracy, passed])
+
+    if save_path is not None:
+        with open(save_path, mode="w", newline="", encoding="utf-8") as f:
+            writer = csv.writer(f)
+            writer.writerow(["group_name", "dataset_name", "label_id", "label_name", "model_count", "confidence", "accuracy", "passed"])
+            writer.writerows(quality_records)
+
+    return usable_labels_dict
 
 def run_offline(args):
     set_seed(args.seed)
@@ -480,7 +545,7 @@ def run_offline(args):
             device=device
         )
 
-        dataset_clients_dict = load_client_models(
+        dataset_clients_dict, client_valid_labels_dict = load_client_models(
             log_dir=args.log_dir,
             global_round=rnd,
             group_label_space_meta=label_space_meta,
@@ -510,12 +575,38 @@ def run_offline(args):
         clear_image_caches()
 
         if args.image_source == "gan":
-            get_images_func = get_gen_images
+            # get_images_func = get_gen_images
 
-            image_source_kwargs = {
+            # image_source_kwargs = {
+            #     "args": args,
+            #     "gen_dict": generators
+            # }
+
+            quality_csv_path = os.path.join(run_output_dir, f"gan_quality_round_{rnd}.csv")
+
+            usable_labels_dict = check_gan_quality(
+                active_datasets=active_datasets,
+                generators=generators,
+                clients_dict=dataset_clients_dict,
+                client_valid_labels_dict=client_valid_labels_dict,
+                label_space_meta=dataset_label_space_meta,
+                valid_labels_dict=valid_labels_dict,
+                group_dataset_names=group_dataset_names,
+                args=args,
+                logger=logger,
+                quality_threshold=args.gan_quality_threshold,
+                save_path=quality_csv_path
+            )
+
+            mapping_get_images_func = get_quality_gan_images
+            mapping_image_source_kwargs = {
+                "base_get_images_func": get_gen_images,
+                "usable_labels_dict": usable_labels_dict,
                 "args": args,
                 "gen_dict": generators
             }
+
+            logger.log(f"[GAN Quality] Usable labels: {usable_labels_dict}")
 
         elif args.image_source == "testset":
             get_images_func = get_test_images
@@ -576,20 +667,43 @@ def run_offline(args):
                 )
 
             elif args.label_mapping == "missing_link":
+                # mapping = missing_link_label_mapping(
+                #     get_images_func=get_images_func,
+                #     dataset_ids=active_datasets,
+                #     clients_dict=dataset_clients_dict,
+                #     label_space_meta=dataset_label_space_meta,
+                #     missing_threshold=threshold,
+                #     logger=logger,
+                #     valid_labels_dict=valid_labels_dict,
+                #     **image_source_kwargs
+                # )
+
                 mapping = missing_link_label_mapping(
-                    get_images_func=get_images_func,
+                    get_images_func=mapping_get_images_func,
                     dataset_ids=active_datasets,
                     clients_dict=dataset_clients_dict,
                     label_space_meta=dataset_label_space_meta,
                     missing_threshold=threshold,
                     logger=logger,
                     valid_labels_dict=valid_labels_dict,
-                    **image_source_kwargs
+                    **mapping_image_source_kwargs
                 )
 
             elif args.label_mapping == "improve_single":
+                # mapping = improve_label_mapping(
+                #     get_images_func=get_images_func,
+                #     dataset_ids=active_datasets,
+                #     clients_dict=dataset_clients_dict,
+                #     label_space_meta=dataset_label_space_meta,
+                #     entropy_ratio=threshold,
+                #     use_new_entropy_method=True,
+                #     logger=logger,
+                #     valid_labels_dict=valid_labels_dict,
+                #     **image_source_kwargs
+                # )
+
                 mapping = improve_label_mapping(
-                    get_images_func=get_images_func,
+                    get_images_func=mapping_get_images_func,
                     dataset_ids=active_datasets,
                     clients_dict=dataset_clients_dict,
                     label_space_meta=dataset_label_space_meta,
@@ -597,7 +711,7 @@ def run_offline(args):
                     use_new_entropy_method=True,
                     logger=logger,
                     valid_labels_dict=valid_labels_dict,
-                    **image_source_kwargs
+                    **mapping_image_source_kwargs
                 )
 
             elif args.label_mapping == "improve_single_label_noniid":
@@ -656,9 +770,9 @@ def run_offline(args):
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
 
-    parser.add_argument("--log_dir", type=str, default="./logs/2026-07-29_09-16-46/GeFL_gan_pacfl_iid")
+    parser.add_argument("--log_dir", type=str, default="./logs/round_5-25_label_noniid_global_gan_weight/GeFL_gan_pacfl_iid")
     parser.add_argument("--data_dir", type=str, default="./data/raw")
-    parser.add_argument("--output_dir", type=str, default="./label_mapping/offline_pacfl_noniid_results(label)")
+    parser.add_argument("--output_dir", type=str, default="./label_mapping/offline_pacfl_noniid_results(label)_2")
     parser.add_argument("--seed", type=int, default=None, help="random seed")
     parser.add_argument("--image_source", type=str, default="gan", choices=["gan", "testset"])
     parser.add_argument("--dataset", type=str, default="all", choices=["all", "mnist", "emnist", "cifar10"])
@@ -671,6 +785,8 @@ if __name__ == "__main__":
     parser.add_argument("--fixed_entropy_ratio", type=float, default=0.1)
     parser.add_argument("--cs_thresholds", type=str, default="0.1,0.2,0.3,0.4,0.5,0.6,0.7,0.8,0.9,1.0")
     parser.add_argument("--use_new_entropy_method", action="store_true")
+
+    parser.add_argument("--gan_quality_threshold", type=float, default=0.5)
 
     parser.add_argument("--device", type=str, default="cuda:1")
     parser.add_argument("--img_num_samples", type=int, default=8)

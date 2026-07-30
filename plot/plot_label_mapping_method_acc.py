@@ -210,11 +210,11 @@ def plot_mapping_results():
     # }
 
     # noniid
-    output_base_dir = "./label_mapping/offline_pacfl_noniid_results(label)/improve_single"
+    output_base_dir = "./label_mapping/offline_pacfl_noniid_results(label)_2/improve_single(1)"
 
     methods = {
-        "bi-direct": "./label_mapping/offline_pacfl_noniid_results(label)/image-bi/label_mapping/offline_image-bi_noniid_mapping_acc.csv",
-        "Missing Link": "./label_mapping/offline_pacfl_noniid_results(label)/missing_link/label_mapping/offline_missing_link_noniid_mapping_acc.csv",
+        #"bi-direct": "./label_mapping/offline_pacfl_noniid_results(label)_2/image-bi/label_mapping/offline_image-bi_noniid_mapping_acc.csv",
+        "Missing Link": "./label_mapping/offline_pacfl_noniid_results(label)_2/missing_link(1)/label_mapping/offline_missing_link_noniid_mapping_acc.csv",
         #"Improve": os.path.join(output_base_dir, "label_mapping/offline_improve_single_noniid_mapping_acc.csv"),
         "Improve": os.path.join(output_base_dir, "label_mapping/offline_improve_single_noniid_mapping_acc.csv"),
         #"single-direct": "./label_mapping/offline_noniid_results/2026_07_20_10_40_34/label_mapping/offline_image-single_noniid_mapping_acc.csv",

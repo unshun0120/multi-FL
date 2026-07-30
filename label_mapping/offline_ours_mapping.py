@@ -9,6 +9,7 @@ from contextlib import redirect_stdout
 from datetime import datetime
 import random
 import numpy as np
+import time
 
 CURRENT_DIR = os.path.dirname(os.path.abspath(__file__))
 PROJECT_ROOT = os.path.dirname(CURRENT_DIR)
@@ -37,6 +38,7 @@ from label_mapping_utils import (
     global_to_local_mapping,
     single_direction_label_mapping,
     improve_label_mapping,
+    missing_link_label_mapping,
 )
 
 import label_mapping_utils as lm_utils
@@ -46,9 +48,12 @@ class SimpleLogger:
     def __init__(self, log_dir):
         self.log_dir = log_dir
         os.makedirs(log_dir, exist_ok=True)
+        self.time_path = os.path.join(log_dir, "execution_time.log")
 
     def log(self, msg):
         print(msg)
+        with open(self.time_path, "a", encoding="utf-8") as f:
+            f.write(str(msg) + "\n")
 
 
 def safe_torch_load(path, device):
@@ -280,20 +285,42 @@ def run_offline(args):
 
         mapping_log_path = os.path.join(run_output_dir, f"round_{rnd}_improve_mapping_summary.log")
 
+        total_time = 0.0
+
         for entropy_ratio in entropy_ratios:
             print(f"\n[Run] Round {rnd} | Entropy ratio = {entropy_ratio}")
 
-            mapping = improve_label_mapping(
-                get_images_func=get_gen_images,
-                dataset_ids=active_datasets,
-                clients_dict=dataset_clients_dict,
-                label_space_meta=dataset_label_space_meta,
-                entropy_ratio=entropy_ratio,
-                use_new_entropy_method=True,
-                logger=logger,
-                args=args,
-                gen_dict=generators
-            )
+            single_start_time = time.time()
+
+            if args.label_mapping == "missing_link":
+                mapping = missing_link_label_mapping(
+                    get_images_func=get_gen_images,
+                    dataset_ids=active_datasets,
+                    clients_dict=dataset_clients_dict,
+                    label_space_meta=dataset_label_space_meta,
+                    missing_threshold=entropy_ratio,
+                    logger=logger,
+                    args=args,
+                    gen_dict=generators,
+                )
+
+            elif args.label_mapping == "improve_single":
+                mapping = improve_label_mapping(
+                    get_images_func=get_gen_images,
+                    dataset_ids=active_datasets,
+                    clients_dict=dataset_clients_dict,
+                    label_space_meta=dataset_label_space_meta,
+                    entropy_ratio=entropy_ratio,
+                    use_new_entropy_method=True,
+                    logger=logger,
+                    args=args,
+                    gen_dict=generators,
+                )
+
+            single_time = time.time() - single_start_time
+            total_time += single_time
+
+            logger.log(f"Single Threshold Time: {args.label_mapping} | Threshold {entropy_ratio:.2f} | {single_time:.6f} seconds")
 
             save_mapping_summary(
                 path=mapping_log_path,
@@ -355,18 +382,21 @@ def run_offline(args):
     print(f"Saved CSV: {csv_path}")
     print("=" * 60)
 
+    logger.log(f"\nAll Threshold Time: {args.label_mapping} | Round {rnd} | {total_time:.6f} seconds")
+    logger.log(f"\nAverage Time: {args.label_mapping} | Round {rnd} | {total_time / len(entropy_ratios):.6f} seconds")
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
 
     parser.add_argument("--log_dir", type=str, default="./logs/round_5-25_gan_weight/GeFL_DDPM_baseline_total_gan")
     parser.add_argument("--output_dir", type=str, default="./label_mapping/offline_ours_results")
-    parser.add_argument("--seed", type=int, default=None, help="random seed")
+    parser.add_argument("--seed", type=int, default=15698, help="random seed")
     
     parser.add_argument("--rounds", type=str, default="5,10,15,20,25")
     # parser.add_argument("--entropy_ratios", type=str, default="0.1,0.2,0.3,0.4,0.5,0.6,0.7,0.8,0.9,1.0")
     parser.add_argument("--entropy_ratios", type=str, default="0.1, 0.15, 0.2, 0.25, 0.3, 0.35, 0.4, 0.45, 0.5, 0.55, 0.6, 0.65, 0.7, 0.75, 0.8, 0.85, 0.9, 0.95, 1.0")
     parser.add_argument("--use_new_entropy_method", action="store_true")
+    parser.add_argument("--label_mapping", type=str, default="improve_single", choices=["image-bi", "image-single", "missing_link", "improve_single", "image-cs", "improve_single_label_noniid"])
 
     parser.add_argument("--device", type=str, default="cuda:1")
 

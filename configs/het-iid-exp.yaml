@@ -5,7 +5,7 @@ heterogeneous: True # whether to use heterogeneous model architecture
 
 # 2. Basic args for Federated Learning
 dirichlet_alpha: 0.1
-global_rounds: 25 # communication rounds
+global_rounds: 100 # communication rounds
 local_epochs: 1 # epochs of local update
 local_loss_fn: 'CrossEntropyLoss' # loss fn name in torch.nn.*
 local_optim: 'Adam'  # optimizer name in torch.optim.*, e.g. Adam, SGD
