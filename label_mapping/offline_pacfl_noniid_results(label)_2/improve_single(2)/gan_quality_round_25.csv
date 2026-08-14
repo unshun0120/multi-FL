@@ -1,0 +1,158 @@
+group_name, dataset_name, label_id, label_name, model_count, confidence            , accuracy          , passed
+Cluster_0 , MNIST       ,        2, 2         ,           1, 1.0                   , 1.0               , True
+Cluster_1 , MNIST       ,        5, 5         ,           1, 0.9635636806488037    , 1.0               , True
+Cluster_1 , MNIST       ,        6, 6         ,           1, 0.999370276927948     , 1.0               , True
+Cluster_2 , MNIST       ,        3, 3         ,           2, 0.9999741911888123    , 1.0               , True
+Cluster_2 , MNIST       ,        4, 4         ,           1, 0.9999997615814209    , 1.0               , True
+Cluster_2 , MNIST       ,        6, 6         ,           1, 0.9988913536071777    , 1.0               , True
+Cluster_2 , MNIST       ,        7, 7         ,           1, 0.9999485015869141    , 1.0               , True
+Cluster_2 , MNIST       ,        9, 9         ,           1, 0.9992251992225647    , 1.0               , True
+Cluster_3 , MNIST       ,        1, 1         ,           1, 0.999980628490448     , 1.0               , True
+Cluster_3 , MNIST       ,        6, 6         ,           1, 0.999775230884552     , 1.0               , True
+Cluster_4 , MNIST       ,        3, 3         ,           1, 0.8875016570091248    , 0.875             , True
+Cluster_4 , MNIST       ,        4, 4         ,           1, 0.9373242855072021    , 1.0               , True
+Cluster_4 , MNIST       ,        5, 5         ,           1, 0.894831657409668     , 0.875             , True
+Cluster_4 , MNIST       ,        6, 6         ,           1, 0.9990315437316895    , 1.0               , True
+Cluster_4 , MNIST       ,        8, 8         ,           1, 0.9983843564987183    , 1.0               , True
+Cluster_5 , MNIST       ,        1, 1         ,           1, 0.18777064979076385   , 0.125             , False
+Cluster_5 , MNIST       ,        2, 2         ,           1, 0.7962242364883423    , 0.75              , True
+Cluster_5 , MNIST       ,        9, 9         ,           1, 0.9997733235359192    , 1.0               , True
+Cluster_6 , MNIST       ,        4, 4         ,           1, 0.999719500541687     , 1.0               , True
+Cluster_6 , MNIST       ,        5, 5         ,           1, 0.9999613761901855    , 1.0               , True
+Cluster_6 , MNIST       ,        7, 7         ,           1, 0.9999896883964539    , 1.0               , True
+Cluster_7 , MNIST       ,        0, 0         ,           1, 0.8698527812957764    , 0.875             , True
+Cluster_7 , MNIST       ,        1, 1         ,           1, 0.9602810144424438    , 1.0               , True
+Cluster_7 , MNIST       ,        2, 2         ,           1, 0.9985483884811401    , 1.0               , True
+Cluster_7 , MNIST       ,        4, 4         ,           1, 0.7760313749313354    , 0.875             , True
+Cluster_7 , MNIST       ,        6, 6         ,           1, 0.9922904372215271    , 1.0               , True
+Cluster_7 , MNIST       ,        7, 7         ,           1, 0.8811877965927124    , 0.875             , True
+Cluster_8 , MNIST       ,        5, 5         ,           1, 0.9996222853660583    , 1.0               , True
+Cluster_8 , MNIST       ,        6, 6         ,           1, 0.9994550347328186    , 1.0               , True
+Cluster_8 , MNIST       ,        9, 9         ,           1, 0.9997031092643738    , 1.0               , True
+Cluster_9 , EMNIST      ,        1, 1         ,           3, 0.7521136502424876    , 0.6666666666666666, True
+Cluster_9 , EMNIST      ,        2, 2         ,           1, 0.7872580289840698    , 1.0               , True
+Cluster_9 , EMNIST      ,        3, 3         ,           3, 0.9994043310483297    , 1.0               , True
+Cluster_9 , EMNIST      ,        5, 5         ,           1, 0.9960603713989258    , 1.0               , True
+Cluster_9 , EMNIST      ,        6, 6         ,           2, 0.9810105562210083    , 1.0               , True
+Cluster_9 , EMNIST      ,        7, 7         ,           2, 0.8287559747695923    , 1.0               , True
+Cluster_9 , EMNIST      ,        9, 9         ,           1, 0.9321370124816895    , 1.0               , True
+Cluster_9 , EMNIST      ,       10, A         ,           1, 0.9999606013298035    , 1.0               , True
+Cluster_9 , EMNIST      ,       11, B         ,           1, 0.24589094519615173   , 0.0               , False
+Cluster_9 , EMNIST      ,       12, C         ,           1, 0.73271244764328      , 1.0               , True
+Cluster_9 , EMNIST      ,       13, D         ,           2, 0.05405204618728021   , 0.0               , False
+Cluster_9 , EMNIST      ,       14, E         ,           1, 0.9256570339202881    , 1.0               , True
+Cluster_9 , EMNIST      ,       16, G         ,           1, 0.9992066621780396    , 1.0               , True
+Cluster_9 , EMNIST      ,       18, I         ,           1, 0.7525772452354431    , 1.0               , True
+Cluster_9 , EMNIST      ,       19, J         ,           1, 0.002350239548832178  , 0.0               , False
+Cluster_9 , EMNIST      ,       20, K         ,           1, 0.9867587089538574    , 1.0               , True
+Cluster_9 , EMNIST      ,       21, L         ,           3, 0.8262403210004171    , 1.0               , True
+Cluster_9 , EMNIST      ,       22, M         ,           1, 0.4409472942352295    , 1.0               , False
+Cluster_9 , EMNIST      ,       23, N         ,           1, 0.5944628119468689    , 1.0               , True
+Cluster_9 , EMNIST      ,       24, O         ,           2, 0.9992762207984924    , 1.0               , True
+Cluster_9 , EMNIST      ,       25, P         ,           1, 0.9998656511306763    , 1.0               , True
+Cluster_9 , EMNIST      ,       26, Q         ,           2, 0.9658905863761902    , 1.0               , True
+Cluster_9 , EMNIST      ,       27, R         ,           2, 0.03709450358292088   , 0.0               , False
+Cluster_9 , EMNIST      ,       28, S         ,           2, 0.6421944499015808    , 0.5               , True
+Cluster_9 , EMNIST      ,       29, T         ,           1, 0.09866517782211304   , 0.0               , False
+Cluster_9 , EMNIST      ,       30, U         ,           1, 0.985514760017395     , 1.0               , True
+Cluster_9 , EMNIST      ,       33, X         ,           1, 0.4318212866783142    , 0.0               , False
+Cluster_9 , EMNIST      ,       34, Y         ,           1, 0.9881322979927063    , 1.0               , True
+Cluster_9 , EMNIST      ,       35, Z         ,           2, 0.4550481787882745    , 0.5               , False
+Cluster_9 , EMNIST      ,       37, b         ,           1, 0.9879819750785828    , 1.0               , True
+Cluster_9 , EMNIST      ,       38, c         ,           1, 0.8367125988006592    , 1.0               , True
+Cluster_9 , EMNIST      ,       39, d         ,           2, 0.8886791169643402    , 1.0               , True
+Cluster_9 , EMNIST      ,       44, i         ,           2, 0.11561806127429008   , 0.0               , False
+Cluster_9 , EMNIST      ,       45, j         ,           1, 0.0044807069934904575 , 0.0               , False
+Cluster_9 , EMNIST      ,       46, k         ,           1, 0.39642176032066345   , 1.0               , False
+Cluster_9 , EMNIST      ,       47, l         ,           1, 0.5902719497680664    , 1.0               , True
+Cluster_9 , EMNIST      ,       48, m         ,           2, 0.7475504875183105    , 1.0               , True
+Cluster_9 , EMNIST      ,       49, n         ,           1, 0.7245480418205261    , 1.0               , True
+Cluster_9 , EMNIST      ,       52, q         ,           1, 0.002716205082833767  , 0.0               , False
+Cluster_9 , EMNIST      ,       55, t         ,           1, 0.9350324869155884    , 1.0               , True
+Cluster_9 , EMNIST      ,       56, u         ,           1, 0.583605170249939     , 1.0               , True
+Cluster_9 , EMNIST      ,       58, w         ,           2, 0.9140461981296539    , 1.0               , True
+Cluster_9 , EMNIST      ,       59, x         ,           1, 0.21146827936172485   , 1.0               , False
+Cluster_9 , EMNIST      ,       60, y         ,           1, 0.9896901845932007    , 1.0               , True
+Cluster_9 , EMNIST      ,       61, z         ,           2, 0.4880260694772005    , 0.5               , False
+Cluster_10, EMNIST      ,        0, 0         ,           4, 0.8218517750501633    , 0.75              , True
+Cluster_10, EMNIST      ,        1, 1         ,           2, 0.9058133065700531    , 1.0               , True
+Cluster_10, EMNIST      ,        2, 2         ,           2, 0.9233775436878204    , 1.0               , True
+Cluster_10, EMNIST      ,        4, 4         ,           2, 0.955574631690979     , 1.0               , True
+Cluster_10, EMNIST      ,        5, 5         ,           1, 0.8694440722465515    , 1.0               , True
+Cluster_10, EMNIST      ,        6, 6         ,           1, 0.8504594564437866    , 1.0               , True
+Cluster_10, EMNIST      ,        7, 7         ,           1, 0.9999717473983765    , 1.0               , True
+Cluster_10, EMNIST      ,        8, 8         ,           2, 0.804375171661377     , 1.0               , True
+Cluster_10, EMNIST      ,        9, 9         ,           1, 0.0819820761680603    , 0.0               , False
+Cluster_10, EMNIST      ,       10, A         ,           1, 5.072418503004883e-07 , 0.0               , False
+Cluster_10, EMNIST      ,       11, B         ,           2, 0.026516149897361174  , 0.0               , False
+Cluster_10, EMNIST      ,       12, C         ,           1, 0.85919189453125      , 1.0               , True
+Cluster_10, EMNIST      ,       13, D         ,           1, 3.1342140573542565e-05, 0.0               , False
+Cluster_10, EMNIST      ,       14, E         ,           1, 0.003983088303357363  , 0.0               , False
+Cluster_10, EMNIST      ,       15, F         ,           2, 0.00014881516835885122, 0.0               , False
+Cluster_10, EMNIST      ,       17, H         ,           4, 0.5626779009717211    , 0.75              , True
+Cluster_10, EMNIST      ,       19, J         ,           1, 0.0011808499693870544 , 0.0               , False
+Cluster_10, EMNIST      ,       20, K         ,           1, 3.096408249803062e-07 , 0.0               , False
+Cluster_10, EMNIST      ,       21, L         ,           1, 0.0006079168524593115 , 0.0               , False
+Cluster_10, EMNIST      ,       22, M         ,           3, 0.795322597026825     , 1.0               , True
+Cluster_10, EMNIST      ,       24, O         ,           1, 0.40707072615623474   , 1.0               , False
+Cluster_10, EMNIST      ,       26, Q         ,           2, 0.011090125190094113  , 0.0               , False
+Cluster_10, EMNIST      ,       27, R         ,           2, 0.0013279182976475568 , 0.0               , False
+Cluster_10, EMNIST      ,       28, S         ,           2, 0.9876099526882172    , 1.0               , True
+Cluster_10, EMNIST      ,       29, T         ,           1, 1.6936519386945292e-06, 0.0               , False
+Cluster_10, EMNIST      ,       30, U         ,           2, 0.8158873021602631    , 1.0               , True
+Cluster_10, EMNIST      ,       31, V         ,           2, 0.7352076172828674    , 1.0               , True
+Cluster_10, EMNIST      ,       32, W         ,           2, 0.3832232728600502    , 0.5               , False
+Cluster_10, EMNIST      ,       33, X         ,           2, 0.0008138758566929027 , 0.0               , False
+Cluster_10, EMNIST      ,       35, Z         ,           1, 3.3144829103548545e-09, 0.0               , False
+Cluster_10, EMNIST      ,       36, a         ,           2, 0.5175896435976028    , 1.0               , True
+Cluster_10, EMNIST      ,       37, b         ,           1, 3.553440546966158e-05 , 0.0               , False
+Cluster_10, EMNIST      ,       38, c         ,           1, 0.03795677796006203   , 0.0               , False
+Cluster_10, EMNIST      ,       39, d         ,           2, 0.2961018308997154    , 0.375             , False
+Cluster_10, EMNIST      ,       40, e         ,           2, 0.9789803922176361    , 1.0               , True
+Cluster_10, EMNIST      ,       41, f         ,           3, 0.0730330104809885    , 0.0               , False
+Cluster_10, EMNIST      ,       42, g         ,           2, 0.15235544741153717   , 0.0               , False
+Cluster_10, EMNIST      ,       43, h         ,           1, 0.8704913258552551    , 1.0               , True
+Cluster_10, EMNIST      ,       44, i         ,           3, 0.34359953383682296   , 0.3333333333333333, False
+Cluster_10, EMNIST      ,       45, j         ,           1, 0.9891101121902466    , 1.0               , True
+Cluster_10, EMNIST      ,       46, k         ,           2, 0.30014479241799563   , 0.375             , False
+Cluster_10, EMNIST      ,       47, l         ,           1, 0.061274204403162     , 0.0               , False
+Cluster_10, EMNIST      ,       48, m         ,           1, 1.1907430336882685e-12, 0.0               , False
+Cluster_10, EMNIST      ,       49, n         ,           2, 0.002001061689497874  , 0.0               , False
+Cluster_10, EMNIST      ,       50, o         ,           1, 0.1315952092409134    , 0.0               , False
+Cluster_10, EMNIST      ,       51, p         ,           4, 0.9979866296052933    , 1.0               , True
+Cluster_10, EMNIST      ,       52, q         ,           3, 0.6829170087973276    , 0.6666666666666666, True
+Cluster_10, EMNIST      ,       53, r         ,           2, 0.5485770553350449    , 0.5               , True
+Cluster_10, EMNIST      ,       54, s         ,           2, 0.4625648343935609    , 0.5               , False
+Cluster_10, EMNIST      ,       55, t         ,           2, 0.0366307528456673    , 0.0               , False
+Cluster_10, EMNIST      ,       56, u         ,           1, 1.2495183909777552e-07, 0.0               , False
+Cluster_10, EMNIST      ,       57, v         ,           2, 0.04866921156644821   , 0.0               , False
+Cluster_10, EMNIST      ,       58, w         ,           2, 0.5061234533786774    , 0.5               , True
+Cluster_10, EMNIST      ,       59, x         ,           1, 0.0644933432340622    , 0.0               , False
+Cluster_10, EMNIST      ,       60, y         ,           2, 0.3844837546348572    , 0.5               , False
+Cluster_10, EMNIST      ,       61, z         ,           1, 1.907440491777379e-05 , 0.0               , False
+Cluster_11, EMNIST      ,        1, 1         ,           1, 0.9956018924713135    , 1.0               , True
+Cluster_11, EMNIST      ,        4, 4         ,           1, 0.998411238193512     , 1.0               , True
+Cluster_11, EMNIST      ,        6, 6         ,           1, 0.9695018529891968    , 1.0               , True
+Cluster_11, EMNIST      ,       13, D         ,           1, 0.9918572902679443    , 1.0               , True
+Cluster_11, EMNIST      ,       17, H         ,           1, 0.8046879768371582    , 0.875             , True
+Cluster_11, EMNIST      ,       19, J         ,           1, 0.9973703622817993    , 1.0               , True
+Cluster_11, EMNIST      ,       22, M         ,           1, 0.9924142956733704    , 1.0               , True
+Cluster_11, EMNIST      ,       23, N         ,           1, 0.9526791572570801    , 1.0               , True
+Cluster_11, EMNIST      ,       35, Z         ,           1, 0.9841263294219971    , 1.0               , True
+Cluster_11, EMNIST      ,       37, b         ,           1, 0.7675197720527649    , 0.875             , True
+Cluster_11, EMNIST      ,       38, c         ,           1, 0.8587136268615723    , 0.875             , True
+Cluster_11, EMNIST      ,       42, g         ,           1, 0.9080739617347717    , 1.0               , True
+Cluster_11, EMNIST      ,       43, h         ,           1, 0.9751169681549072    , 1.0               , True
+Cluster_11, EMNIST      ,       46, k         ,           1, 0.8621594309806824    , 1.0               , True
+Cluster_11, EMNIST      ,       58, w         ,           1, 0.9881801009178162    , 1.0               , True
+Cluster_11, EMNIST      ,       59, x         ,           1, 0.9853893518447876    , 1.0               , True
+Cluster_12, CIFAR10     ,        0, airplane  ,           4, 0.7843221127986908    , 0.8125            , True
+Cluster_12, CIFAR10     ,        1, automobile,           5, 0.5012702465057373    , 0.475             , True
+Cluster_12, CIFAR10     ,        2, bird      ,           1, 0.8061569929122925    , 0.875             , True
+Cluster_12, CIFAR10     ,        3, cat       ,           3, 0.6246180335680643    , 0.8333333333333334, True
+Cluster_12, CIFAR10     ,        4, deer      ,           2, 0.9039341509342194    , 1.0               , True
+Cluster_12, CIFAR10     ,        5, dog       ,           4, 0.6315929517149925    , 0.625             , True
+Cluster_12, CIFAR10     ,        6, frog      ,           2, 0.7057790458202362    , 0.75              , True
+Cluster_12, CIFAR10     ,        7, horse     ,           2, 0.5930851697921753    , 0.4375            , True
+Cluster_12, CIFAR10     ,        8, ship      ,           2, 0.6788019686937332    , 0.625             , True
+Cluster_12, CIFAR10     ,        9, truck     ,           2, 0.5122479796409607    , 0.625             , True

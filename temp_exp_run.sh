@@ -8,11 +8,6 @@ TOTAL_START=$SECONDS
 METHOD="syn"
 CUDA="cuda:1"
 
-# python main.py --seed=15698 --algorithm=Local --num_train_cifar100=0 --num_train_fashionmnist=0 --num_train_usps=0 --device=cuda:1 --exp_conf=./configs/het-iid-exp.yaml
-# python main.py --seed=15698 --algorithm=Local --num_train_cifar100=0 --num_train_fashionmnist=0 --num_train_usps=0 --device=cuda:1 --exp_conf=./configs/het-noniid-exp.yaml
-# python main.py --seed=15698 --algorithm=Local --num_train_cifar100=0 --num_train_fashionmnist=0 --num_train_usps=0 --device=cuda:1 --exp_conf=./configs/homo-iid-exp.yaml
-# python main.py --seed=15698 --algorithm=Local --num_train_cifar100=0 --num_train_fashionmnist=0 --num_train_usps=0 --device=cuda:1 --exp_conf=./configs/homo-noniid-exp.yaml
-
 # python label_mapping/label_mapping.py --model_path=logs/Local_iid_het_gb40/Local/ --device=$CUDA --method=real
 # python label_mapping/label_mapping.py --model_path=logs/Local_iid_het_gb40/Local/ --device=$CUDA --method=DI --gen_mode=old
 # python label_mapping/label_mapping.py --model_path=logs/Local_iid_het_gb40/Local/ --device=$CUDA --method=DI --gen_mode=new
@@ -62,16 +57,38 @@ CUDA="cuda:1"
 # python label_mapping/label_mapping.py --model_path=logs/2026-05-12_17-40-17/Local/ --device=$CUDA --method=NAYER --gen_mode=old
 # python label_mapping/label_mapping.py --model_path=logs/2026-05-12_17-40-17/Local/ --device=$CUDA --method=Fed --gen_mode=old
 
-# python main.py --seed=15698 --algorithm=Ours --num_train_cifar100=0 --num_train_cifar10=0 --num_train_usps=0 --device=cuda:1 --exp_conf=./configs/het-iid-exp.yaml
-# python main.py --seed=15698 --algorithm=Ours --num_train_cifar100=0 --num_train_fashionmnist=0 --num_train_usps=0 --device=cuda:1 --exp_conf=./configs/het-iid-exp.yaml
 
-python main.py --seed=15698 --algorithm=GeFL_DDPM_baseline_total --label_mapping=image-bi --num_train_cifar100=0 --num_train_fashionmnist=0 --num_train_usps=0 --device=cuda:0 --exp_conf=./configs/het-iid-exp.yaml
-python main.py --seed=15698 --algorithm=GeFL_DDPM_baseline_total --label_mapping=feature-bi --num_train_cifar100=0 --num_train_fashionmnist=0 --num_train_usps=0 --device=cuda:0 --exp_conf=./configs/het-iid-exp.yaml
+# ------------------------------------------------------------------------
+# Noniid
+# ------------------------------------------------------------------------
 
-# python main.py --seed=15698 --algorithm=GeFL_DDPM_baseline_total_public --label_mapping=image-bi --num_train_cifar100=0 --num_train_fashionmnist=0 --num_train_usps=0 --device=cuda:0 --exp_conf=./configs/het-iid-exp.yaml
-# python main.py --seed=15698 --algorithm=GeFL_DDPM_baseline_total_public --label_mapping=image-single --num_train_cifar100=0 --num_train_fashionmnist=0 --num_train_usps=0 --device=cuda:0 --exp_conf=./configs/het-iid-exp.yaml
-# python main.py --seed=15698 --algorithm=GeFL_DDPM_baseline_total_public --label_mapping=feature-bi --num_train_cifar100=0 --num_train_fashionmnist=0 --num_train_usps=0 --device=cuda:0 --exp_conf=./configs/het-iid-exp.yaml
-# python main.py --seed=15698 --algorithm=GeFL_DDPM_baseline_total_public --label_mapping=image-cs --num_train_cifar100=0 --num_train_fashionmnist=0 --num_train_usps=0 --device=cuda:0 --exp_conf=./configs/het-iid-exp.yaml
+python main.py --seed=15698 --algorithm=GeFL_gan_pacfl_iid --num_train_cifar100=0 --num_train_fashionmnist=0 --num_train_usps=0 \
+            --device=cuda:0 --exp_conf=./configs/het-iid-exp.yaml --pacfl_cluster_alpha=20 --pacfl_basis_budget=20 --start_mapping_epoch=25 --label_mapping=missing_link
+
+python main.py --seed=15698 --algorithm=GeFL_gan_pacfl_iid --num_train_cifar100=0 --num_train_fashionmnist=0 --num_train_usps=0 \
+            --device=cuda:0 --exp_conf=./configs/het-iid-exp.yaml --pacfl_cluster_alpha=20 --pacfl_basis_budget=20 --start_mapping_epoch=25 --label_mapping=feature-bi
+
+python main.py --seed=15698 --algorithm=GeFL_gan_pacfl_iid --num_train_cifar100=0 --num_train_fashionmnist=0 --num_train_usps=0 \
+            --device=cuda:0 --exp_conf=./configs/het-iid-exp.yaml --pacfl_cluster_alpha=10 --pacfl_basis_budget=20 --start_mapping_epoch=5 --label_mapping=missing_link
+
+python main.py --seed=15698 --algorithm=GeFL_gan_pacfl_iid --num_train_cifar100=0 --num_train_fashionmnist=0 --num_train_usps=0 \
+            --device=cuda:0 --exp_conf=./configs/het-iid-exp.yaml --pacfl_cluster_alpha=10 --pacfl_basis_budget=20 --start_mapping_epoch=10 --label_mapping=missing_link
+
+python main.py --seed=15698 --algorithm=GeFL_gan_pacfl_iid --num_train_cifar100=0 --num_train_fashionmnist=0 --num_train_usps=0 \
+            --device=cuda:0 --exp_conf=./configs/het-iid-exp.yaml --pacfl_cluster_alpha=10 --pacfl_basis_budget=20 --start_mapping_epoch=15 --label_mapping=missing_link
+
+    # global round=25
+python main.py --seed=15698 --algorithm=GeFL_gan_pacfl_iid --num_train_cifar100=0 --num_train_fashionmnist=0 --num_train_usps=0 \
+            --device=cuda:0 --exp_conf=./configs/het-iid-exp.yaml --pacfl_cluster_alpha=20 --pacfl_basis_budget=20 --start_mapping_epoch=25 --label_mapping=improve_single_noniid
+
+python main.py --seed=15698 --algorithm=GeFL_gan_pacfl_iid --num_train_cifar100=0 --num_train_fashionmnist=0 --num_train_usps=0 \
+            --device=cuda:0 --exp_conf=./configs/het-iid-exp.yaml --pacfl_cluster_alpha=20 --pacfl_basis_budget=20 --start_mapping_epoch=20 --label_mapping=missing_link
+
+python main.py --seed=15698 --algorithm=GeFL_gan_pacfl_iid --num_train_cifar100=0 --num_train_fashionmnist=0 --num_train_usps=0 \
+            --device=cuda:0 --exp_conf=./configs/het-iid-exp.yaml --pacfl_cluster_alpha=20 --pacfl_basis_budget=20 --start_mapping_epoch=25 --label_mapping=image-cs
+
+python main.py --seed=15698 --algorithm=GeFL_gan_pacfl_iid --num_train_cifar100=0 --num_train_fashionmnist=0 --num_train_usps=0 \
+            --device=cuda:0 --exp_conf=./configs/het-iid-exp.yaml --pacfl_cluster_alpha=20 --pacfl_basis_budget=20 --start_mapping_epoch=25 --label_mapping=feature-bi
 
 
 TOTAL_TIME=$((SECONDS - TOTAL_START))

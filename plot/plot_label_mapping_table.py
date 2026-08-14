@@ -6,8 +6,8 @@ import matplotlib.pyplot as plt
 def make_best_table():
     # results_dir = "logs_temp/2026-06-19_21-08-41/GeFL_GAN_baseline/mapping_results"
     results_dir = ""
-    output_dir = "./label_mapping/offline_pacfl_noniid_results(label)/improve_single/table"
-    os.makedirs(output_dir, exist_ok=True)
+    # output_dir = "./label_mapping/offline_pacfl_noniid_3cluster(dirirchlet)/improve_single/table"
+    # os.makedirs(output_dir, exist_ok=True)
 
     # methods = {
     #     "Ours": "GeFL_GAN_baseline_Ours_mapping_acc.csv",
@@ -26,15 +26,26 @@ def make_best_table():
     #     "Improve-single\n(no Result Voting)": "./label_mapping/offline_ours_results/improve_single(noResultVoting)/offline_improve_mapping_acc.csv",
     # }
 
+    # 1, 42, 758, 1248, 15698
+    seed = 15698
+    distribution = "noniid"
+    output_dir = f"./label_mapping/pacfl_3cluster/{distribution}/improve_single_noniid_seed{seed}/table"
+    #output_dir = f"./label_mapping/pacfl_3cluster/{distribution}/ablation/seed{seed}_table"
+    os.makedirs(output_dir, exist_ok=True)
     methods = {
-        "bi-direct": "./label_mapping/offline_pacfl_noniid_results(label)/image-bi/label_mapping/offline_image-bi_noniid_mapping_acc.csv",
-        "Improve-single": "./label_mapping/offline_pacfl_noniid_results(label)/improve_single/label_mapping/offline_improve_single_noniid_mapping_acc.csv",
-        "Missing Link": "./label_mapping/offline_pacfl_noniid_results(label)/missing_link/label_mapping/offline_missing_link_noniid_mapping_acc.csv",
-        #"Improve-single\n + \nMissing Link": "./label_mapping/offline_pacfl_noniid_results(label)/improve_single_label_noniid(1)/label_mapping/offline_improve_single_label_noniid_noniid_mapping_acc.csv",
+        # "bi-direct": "./label_mapping/offline_pacfl_noniid_results(label)/image-bi/label_mapping/offline_image-bi_noniid_mapping_acc.csv",
+        # "Improve-single": f"./label_mapping/pacfl_3cluster/{distribution}/improve_single_seed{seed}/label_mapping/offline_improve_single_noniid_mapping_acc.csv",
+        "Feature": f"./label_mapping/pacfl_3cluster/{distribution}/feature_seed{seed}/label_mapping/offline_feature_noniid_mapping_acc.csv",
+        "Cosine-Similarity": f"./label_mapping/pacfl_3cluster/{distribution}/image-cs_seed{seed}/label_mapping/offline_image-cs_noniid_mapping_acc.csv",
+        "Missing Link": f"./label_mapping/pacfl_3cluster/{distribution}/missing_link_seed{seed}/label_mapping/offline_missing_link_noniid_mapping_acc.csv",
+        "Improve_noniid": f"./label_mapping/pacfl_3cluster/{distribution}/improve_single_noniid_seed{seed}/label_mapping/offline_improve_single_noniid_noniid_mapping_acc.csv",
+
+        # "Improve_noniid\n(noSame)": f"./label_mapping/pacfl_3cluster/{distribution}/improve_single_noniid_seed{seed}_noSame/label_mapping/offline_improve_single_noniid_noniid_mapping_acc.csv",
+        # "Improve_noniid\n(noCheck)": f"./label_mapping/pacfl_3cluster/{distribution}/improve_single_noniid_seed{seed}_noCheck/label_mapping/offline_improve_single_noniid_noniid_mapping_acc.csv",
+        # "Improve_noniid\n(noSame)\n(noCheck)": f"./label_mapping/pacfl_3cluster/{distribution}/improve_single_noniid_seed{seed}_noSame_noCheck/label_mapping/offline_improve_single_noniid_noniid_mapping_acc.csv",
     }
     no_entropy_methods={}
     slam_dunk_values={}
-
 
     # no_entropy_methods = {
     #     "Ours": "Ours\n(no Entropy)",
@@ -44,10 +55,14 @@ def make_best_table():
     x_col_map = {
         "Ours": "entropy_ratio",
         "Single-direct": "entropy_ratio",
-        "Feature-Bi": "entropy_ratio",
-        "Cosine-Similarity": "entropy_ratio",
+        "Feature": "entropy_ratio",
+        "Cosine-Similarity": "cs_threshold",
         "Missing Link": "missing_threshold",
         "Improve-single": "entropy_ratio",
+        "Improve_noniid": "entropy_ratio",
+        "Improve_noniid\n(noSame)": "entropy_ratio",
+        "Improve_noniid\n(noCheck)": "entropy_ratio",
+        "Improve_noniid\n(noSame)\n(noCheck)": "entropy_ratio",
         "Improve-single\n(no Result Voting)": "entropy_ratio",
 
         "bi-direct": "entropy_ratio",
@@ -100,7 +115,8 @@ def make_best_table():
     # }
 
     # method_order = ["SlamDunk", "Cosine-Similarity", "Ours", "Ours\n(no Entropy)", "Single-direct", "Feature-Bi", "Missing Link", "Improve-single",  "Improve-single\n(no Entropy)", "Improve-single\n(no Result Voting)"]
-    method_order = ["bi-direct", "Missing Link", "Improve-single", "Improve-single\n + \nMissing Link", "Improve-single\n(Single-direct)"]
+    #method_order = ["bi-direct", "Missing Link", "Improve-single", "Improve_noniid", "Improve-single\n + \nMissing Link", "Improve-single\n(Single-direct)"]
+    method_order = ["Missing Link", "Feature", "Cosine-Similarity", "Improve-single", "Improve_noniid", "Improve_noniid\n(noSame)", "Improve_noniid\n(noCheck)", "Improve_noniid\n(noSame)\n(noCheck)"]
     data = {}
     all_rounds = set()
 
@@ -128,11 +144,11 @@ def make_best_table():
                 "Round": int(rnd),
                 "Method": "SlamDunk",
                 "Best Threshold": "-",
+                "F1": v["f1_score"],
                 "MCC": v["mcc"],
                 "Recall": v["recall"],
                 "Precision": v["precision"],
                 "Specificity": v["specificity"],
-                "F1": v["f1_score"],
             })
 
 
@@ -159,15 +175,16 @@ def make_best_table():
                 "Round": int(rnd),
                 "Method": no_entropy_name,
                 "Best Threshold": "-",
+                "F1": no_entropy_row["f1_score"],
                 "MCC": no_entropy_row["mcc"],
                 "Recall": no_entropy_row["recall"],
                 "Precision": no_entropy_row["precision"],
                 "Specificity": no_entropy_row["specificity"],
-                "F1": no_entropy_row["f1_score"],
             })
 
         # for method in ["Cosine-Similarity", "Ours", "Single-direct", "Feature-Bi", "Missing Link", "Improve-single", "Improve-single\n(no Result Voting)"]:
-        for method in ["bi-direct", "Missing Link", "Improve-single", "Improve-single\n + \nMissing Link", "Improve-single\n(Single-direct)"]:
+        # for method in ["bi-direct", "Missing Link", "Improve-single", "Improve_noniid", "Improve-single\n + \nMissing Link", "Improve-single\n(Single-direct)"]:
+        for method in ["Missing Link", "Feature", "Cosine-Similarity", "Improve-single", "Improve_noniid", "Improve_noniid\n(noSame)", "Improve_noniid\n(noCheck)", "Improve_noniid\n(noSame)\n(noCheck)"]:
             if method not in data:
                 continue
 
@@ -201,17 +218,18 @@ def make_best_table():
             if df_round.empty:
                 continue
 
-            best_row = df_round.loc[df_round["mcc"].idxmax()]
+            # best_row = df_round.loc[df_round["mcc"].idxmax()]
+            best_row = df_round.loc[df_round["f1_score"].idxmax()]
 
             rows.append({
                 "Round": int(rnd),
                 "Method": method,
                 "Best Threshold": best_row[x_col],
+                "F1": best_row["f1_score"],
                 "MCC": best_row["mcc"],
                 "Recall": best_row["recall"],
                 "Precision": best_row["precision"],
                 "Specificity": best_row["specificity"],
-                "F1": best_row["f1_score"],
             })
 
         if len(rows) == 0:
@@ -229,7 +247,7 @@ def make_best_table():
             lambda x: "-" if x == "-" else f"{float(x):.2f}"
         )
 
-        for col in ["MCC", "Recall", "Precision", "Specificity", "F1"]:
+        for col in ["F1", "MCC", "Recall", "Precision", "Specificity"]:
             display_df[col] = display_df[col].map(lambda x: f"{x:.4f}")
 
         display_df = display_df.rename(columns={
@@ -264,7 +282,7 @@ def make_best_table():
                 table_row_idx = row_idx + 1   
                 table[table_row_idx, method_col_idx].set_facecolor(ours_color)
 
-            elif str(display_df.loc[row_idx, "Method"]) == "Improve-single":
+            elif str(display_df.loc[row_idx, "Method"]) == "Improve_noniid":
                 table_row_idx = row_idx + 1   
                 table[table_row_idx, method_col_idx].set_facecolor(improve_color)
 
@@ -273,7 +291,8 @@ def make_best_table():
             table[0, c].set_facecolor("white")
 
         mcc_color = "#f4cccc"  # 淡紅色
-        mcc_col_idx = list(display_df.columns).index("MCC")
+        # mcc_col_idx = list(display_df.columns).index("MCC")
+        mcc_col_idx = list(display_df.columns).index("F1")
 
         for row_idx in range(len(display_df) + 1):
             table[row_idx, mcc_col_idx].set_facecolor(mcc_color)
@@ -281,7 +300,7 @@ def make_best_table():
         for c in range(len(display_df.columns)):
             table[0, c].set_height(table[0, c].get_height() * 1.6)
 
-        metric_cols = ["MCC", "Recall", "Precision", "Specificity", "F1"]
+        metric_cols = ["F1", "MCC", "Recall", "Precision", "Specificity"]
 
         for row_idx in range(len(display_df)):
             for col_idx in range(len(display_df.columns)):

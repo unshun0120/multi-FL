@@ -33,7 +33,8 @@ class Node:
         self.batch_size = exp_conf.get('batch_size', 64)
         self.test_interval = exp_conf.get('test_interval', 1)
         self.global_feature_dim = exp_conf.get('global_feature_dim', 256)
-        self.start_mapping_epoch = exp_conf.get('start_mapping_epoch', 1)
+        #self.start_mapping_epoch = exp_conf.get('start_mapping_epoch', 1)
+        self.start_mapping_epoch = args.start_mapping_epoch
 
         # initial variables
         self.label_space_meta =  {} # { 'ls_id': ['dog', 'cat', ...] }

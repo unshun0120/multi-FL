@@ -56,6 +56,7 @@ IMPLEMENTED_LM = ["image-bi", "image-single", "feature-bi", "image-cs", "slam_du
                   "ours_5", "ours_10", "ours_15", "ours_20", "ours_25",
                   "ours_5_noEntropy", 
                   "slam_dunk_mapping_5", "slam_dunk_mapping_10", "slam_dunk_mapping_15", "slam_dunk_mapping_20", "slam_dunk_mapping_25",
+                  "improve_single_noniid",
                   ]   
 
 DATASET_META = { 
@@ -91,7 +92,7 @@ def parser_args():
                         help="random seed")
     parser.add_argument("--algorithm", type=str, default="Ours", choices=IMPLEMENTED_ALGORITHMS,
                         help=f"the implemented algorithms, choices include: {IMPLEMENTED_ALGORITHMS}")
-    parser.add_argument("--noniid_partition", type=str, default="dirichlet", choices=["dirichlet", "noniid_label"])
+    parser.add_argument("--noniid_partition", type=str, default="dirichlet", choices=["dirichlet", "noniid_label", "quantity_skew", "quantity_skew_equalSize"])
     parser.add_argument("--aggregate_method", type=str, default="pacfl", choices=["dataset_name", "pacfl"])
     
     # --- Dataset ---
@@ -113,6 +114,12 @@ def parser_args():
     # --- Config ---
     parser.add_argument("--label_mapping", type=str, default="image-bi", choices=IMPLEMENTED_LM,
                         help="label mapping method")
+    parser.add_argument("--start_mapping_epoch", type=int, default=25,
+                        help="epoch to start label mapping")
+    parser.add_argument("--pacfl_basis_budget", type=int, default=20, 
+                                help="cluster alpha for PACFL")
+    parser.add_argument("--pacfl_cluster_alpha", type=int, default=20, 
+                            help="cluster alpha for PACFL")
 
     return parser.parse_args()
 

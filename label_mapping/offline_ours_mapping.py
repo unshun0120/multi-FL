@@ -39,6 +39,7 @@ from label_mapping_utils import (
     single_direction_label_mapping,
     improve_label_mapping,
     missing_link_label_mapping,
+    improve_label_mapping_noniid,
 )
 
 import label_mapping_utils as lm_utils
@@ -317,6 +318,18 @@ def run_offline(args):
                     gen_dict=generators,
                 )
 
+            elif args.label_mapping == "improve_single_noniid":
+                mapping = improve_label_mapping_noniid(
+                    get_images_func=get_gen_images,
+                    dataset_ids=active_datasets,
+                    clients_dict=dataset_clients_dict,
+                    label_space_meta=dataset_label_space_meta,
+                    entropy_ratio=entropy_ratio,
+                    logger=logger,
+                    args=args,
+                    gen_dict=generators,
+                )
+
             single_time = time.time() - single_start_time
             total_time += single_time
 
@@ -396,7 +409,7 @@ if __name__ == "__main__":
     # parser.add_argument("--entropy_ratios", type=str, default="0.1,0.2,0.3,0.4,0.5,0.6,0.7,0.8,0.9,1.0")
     parser.add_argument("--entropy_ratios", type=str, default="0.1, 0.15, 0.2, 0.25, 0.3, 0.35, 0.4, 0.45, 0.5, 0.55, 0.6, 0.65, 0.7, 0.75, 0.8, 0.85, 0.9, 0.95, 1.0")
     parser.add_argument("--use_new_entropy_method", action="store_true")
-    parser.add_argument("--label_mapping", type=str, default="improve_single", choices=["image-bi", "image-single", "missing_link", "improve_single", "image-cs", "improve_single_label_noniid"])
+    parser.add_argument("--label_mapping", type=str, default="improve_single", choices=["image-bi", "image-single", "missing_link", "improve_single", "image-cs", "improve_single_noniid"])
 
     parser.add_argument("--device", type=str, default="cuda:1")
 

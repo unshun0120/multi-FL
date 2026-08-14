@@ -210,15 +210,17 @@ def plot_mapping_results():
     # }
 
     # noniid
-    output_base_dir = "./label_mapping/offline_pacfl_noniid_results(label)_2/improve_single(1)"
+    seed = 15698
+    distribution = "noniid"
+    output_base_dir = f"./label_mapping/pacfl_3cluster/{distribution}/improve_single_noniid_seed{seed}(3)"
 
     methods = {
         #"bi-direct": "./label_mapping/offline_pacfl_noniid_results(label)_2/image-bi/label_mapping/offline_image-bi_noniid_mapping_acc.csv",
-        "Missing Link": "./label_mapping/offline_pacfl_noniid_results(label)_2/missing_link(1)/label_mapping/offline_missing_link_noniid_mapping_acc.csv",
-        #"Improve": os.path.join(output_base_dir, "label_mapping/offline_improve_single_noniid_mapping_acc.csv"),
-        "Improve": os.path.join(output_base_dir, "label_mapping/offline_improve_single_noniid_mapping_acc.csv"),
-        #"single-direct": "./label_mapping/offline_noniid_results/2026_07_20_10_40_34/label_mapping/offline_image-single_noniid_mapping_acc.csv",
-        # "Improve_noniid": os.path.join(output_base_dir, "label_mapping/offline_improve_single_label_noniid_noniid_mapping_acc.csv"),
+        "Missing Link": f"./label_mapping/pacfl_3cluster/{distribution}/missing_link_seed{seed}/label_mapping/offline_missing_link_noniid_mapping_acc.csv",
+        "Improve": f"./label_mapping/pacfl_3cluster/{distribution}/improve_single_seed{seed}/label_mapping/offline_improve_single_noniid_mapping_acc.csv",
+        #"Improve": os.path.join(output_base_dir, "label_mapping/offline_improve_single_noniid_noniid_mapping_acc.csv"),
+        # "single-direct": "./label_mapping/offline_pacfl_noniid_3cluster(dirirchlet)/single-direct_seed15698/label_mapping/offline_image-single_noniid_mapping_acc.csv",
+        "Improve_noniid": f"./label_mapping/pacfl_3cluster/{distribution}/improve_single_noniid_seed{seed}/label_mapping/offline_improve_single_noniid_noniid_mapping_acc.csv",
     }
 
     color_map = {
@@ -241,7 +243,7 @@ def plot_mapping_results():
         "Cosine_Similarity": "entropy_ratio",
         "Missing Link": "missing_threshold",
         #"Missing Link": "entropy_ratio",
-        "Improve_noniid": "missing_threshold",
+        "Improve_noniid": "entropy_ratio",
     }
 
     metrics = {

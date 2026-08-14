@@ -23,7 +23,8 @@ from label_mapping.label_mapping_utils import (
     label_mapping, evaluate_mapping_results, 
     feature_bi_direction_label_mapping, single_direction_label_mapping,
     get_gen_images, global_to_local_mapping, clear_image_caches,
-    image_cosine_similarity_mapping, missing_link_label_mapping
+    image_cosine_similarity_mapping, missing_link_label_mapping,
+    improve_label_mapping_noniid,
 )
 from utils.nets import ResNet, BasicBlock
 
@@ -40,30 +41,125 @@ class Server(BaseServer):
 
     def initialize_client_groups(self):
         self.logger.log("Clustering clients by PACFL ...")
+        # # iid
+        # # n_basis = 3
+        # # cluster_alpha = 15
+
+        # # non-iid (label skew + quantity skew)
+        # n_basis = 4
+        # cluster_alpha = 30
+        # # sample_size = 500
+        # sample_size = 64
+
+        # U_clients = []
  
-        n_basis = 3
-        cluster_alpha = 15
+        # for client in self.clients:
+        #     local_images = []
+        #     count = 0
+ 
+        #     for imgs, _ in client.train_loader:
+        #         local_images.append(imgs.detach().cpu().numpy())
+        #         count += imgs.size(0)
+        #         if count >= sample_size:
+        #             break
+
+        #     # iid
+        #     local_ds = np.concatenate(local_images, axis=0)[:sample_size]
+
+        #     local_ds = local_ds.reshape(local_ds.shape[0], -1).T
+        #     local_ds = (local_ds * 0.5) + 0.5
+ 
+        #     u_temp, _, _ = np.linalg.svd(local_ds, full_matrices=False)
+        #     u_temp = u_temp / np.linalg.norm(u_temp, ord=2, axis=0)
+        #     U_clients.append(copy.deepcopy(u_temp[:, :n_basis]))
+
+        basis_budget = self.args.pacfl_basis_budget
+        sample_size = 64
+
+        cluster_alpha = self.args.pacfl_cluster_alpha
+
         U_clients = []
- 
+
         for client in self.clients:
-            local_images = []
-            count = 0
+            label_images = defaultdict(list)
+            label_counts = defaultdict(int)
+            label_stored = defaultdict(int)
+
+            for imgs, labels in client.train_loader:
+                imgs = imgs.detach().cpu().numpy()
+                labels = labels.detach().cpu().numpy()
+
+                for label in np.unique(labels):
+                    label = int(label)
+                    idxs = np.where(labels == label)[0]
+
+                    label_counts[label] += len(idxs)
+
+                    remain = sample_size - label_stored[label]
+                    if remain > 0:
+                        selected = imgs[idxs[:remain]]
+                        label_images[label].append(selected)
+                        label_stored[label] += len(selected)
+
+            labels = sorted(label_counts.keys())
+            counts = np.array([label_counts[label] for label in labels], dtype=float)
+
+            raw_basis = counts / counts.sum() * basis_budget
+            basis_counts = np.floor(raw_basis).astype(int)
+
+            remaining = basis_budget - basis_counts.sum()
+            order = np.argsort(raw_basis - basis_counts)[::-1]
+            basis_counts[order[:remaining]] += 1
+
+            U_temp = []
+
+            for label, K in zip(labels, basis_counts):
+                if K <= 0:
+                    continue
+
+                local_ds = np.concatenate(label_images[label], axis=0)
+                local_ds = local_ds.reshape(local_ds.shape[0], -1).T
+                local_ds = (local_ds * 0.5) + 0.5
+
+                u_temp, _, _ = np.linalg.svd(local_ds, full_matrices=False)
+                u_temp = u_temp / np.linalg.norm(u_temp, ord=2, axis=0)
+
+                K = min(K, u_temp.shape[1])
+                U_temp.append(u_temp[:, :K])
+
+            U_clients.append(copy.deepcopy(np.hstack(U_temp)))
  
-            for imgs, _ in client.train_loader:
-                local_images.append(imgs.detach().cpu().numpy())
-                count += imgs.size(0)
-                if count >= 500:
-                    break
- 
-            local_ds = np.concatenate(local_images, axis=0)[:500]
-            local_ds = local_ds.reshape(local_ds.shape[0], -1).T
-            local_ds = (local_ds * 0.5) + 0.5
- 
-            u_temp, _, _ = np.linalg.svd(local_ds, full_matrices=False)
-            u_temp = u_temp / np.linalg.norm(u_temp, ord=2, axis=0)
-            U_clients.append(copy.deepcopy(u_temp[:, :n_basis]))
- 
-        adj_mat      = calculating_adjacency(list(range(len(self.clients))), U_clients)
+        adj_mat = calculating_adjacency(list(range(len(self.clients))), U_clients)
+
+        # print("\n===== PACFL Adjacency Matrix =====")
+        # print(np.round(adj_mat, 2))
+
+        # distance_groups = defaultdict(list)
+
+        # for i in range(len(self.clients)):
+        #     for j in range(i + 1, len(self.clients)):
+        #         d1 = self.clients[i].dataset_name
+        #         d2 = self.clients[j].dataset_name
+
+        #         if d1 == d2:
+        #             key = f"{d1}-{d1}"
+        #         else:
+        #             key = "-".join(sorted([d1, d2]))
+
+        #         distance_groups[key].append(adj_mat[i, j])
+
+        # print("\n===== PACFL Distance Statistics =====")
+        # for key, values in distance_groups.items():
+        #     values = np.array(values)
+
+        #     print(
+        #         f"{key}: "
+        #         f"min={values.min():.2f}, "
+        #         f"max={values.max():.2f}, "
+        #         f"mean={values.mean():.2f}, "
+        #         f"median={np.median(values):.2f}"
+        #     )
+
         clusters_idx = hierarchical_clustering(copy.deepcopy(adj_mat), thresh=cluster_alpha, linkage="average")
  
         self.client_groups = defaultdict(list)
@@ -265,6 +361,20 @@ class Server(BaseServer):
                     logger=self.logger, 
                     args=self.args,
                     gen_dict=generators
+                )
+                global_map = global_to_local_mapping(mapping, logger=self.logger, label_space_meta=dataset_label_space_meta)
+                self.local_id_to_global_id = mapping
+
+            elif self.args.label_mapping == "improve_single_noniid":
+                mapping = improve_label_mapping_noniid(
+                    get_images_func=get_gen_images,
+                    dataset_ids=active_datasets,
+                    clients_dict=dataset_clients_dict,
+                    label_space_meta=dataset_label_space_meta,
+                    entropy_ratio=entropy_ratio,
+                    logger=self.logger,
+                    args=self.args,
+                    gen_dict=generators 
                 )
                 global_map = global_to_local_mapping(mapping, logger=self.logger, label_space_meta=dataset_label_space_meta)
                 self.local_id_to_global_id = mapping

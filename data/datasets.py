@@ -6,7 +6,7 @@ import numpy as np
 from collections import Counter, defaultdict
 from torchvision import datasets, transforms
 from torch.utils.data import Dataset, ConcatDataset, DataLoader, Subset
-from data.dirichlet_noniid import partition_data, partition_data_noniid_label
+from data.dirichlet_noniid import partition_data, partition_data_noniid_label, partition_data_quantity_skew, partition_data_quantity_skew_equalSize
 
 class Global_Dataset(Dataset):
     def __init__(self, dataset, mapping):
@@ -242,9 +242,9 @@ def load_partitioned_datasets(args, DATA_ROOT, **exp_conf):
             args.seed 
         )
 
-        if args.noniid_partition == "noniid_label":
+        if args.noniid_partition in ["noniid_label", "quantity_skew", "quantity_skew_equalSize"]:
             cache_dir = os.path.dirname(cache_path)
-            cache_name = f"{d_name}_C{n_clients}_New{args.num_new_clients}_noniid_label_alpha{str(dirichlet_alpha).replace('.', 'p')}_seed{args.seed}.json"
+            cache_name = f"{d_name}_C{n_clients}_New{args.num_new_clients}_{args.noniid_partition}_alpha{str(dirichlet_alpha).replace('.', 'p')}_seed{args.seed}.json"
             cache_path = os.path.join(cache_dir, cache_name)
 
         if os.path.exists(cache_path):
@@ -261,6 +261,10 @@ def load_partitioned_datasets(args, DATA_ROOT, **exp_conf):
                 train_idcs, test_idcs = partition_data(train_labels_for_split, test_labels_for_split, alpha=dirichlet_alpha, total_clients=n_clients, num_new_clients=args.num_new_clients)
             elif args.noniid_partition == "noniid_label":
                 train_idcs, test_idcs = partition_data_noniid_label(train_labels_for_split, test_labels_for_split, alpha=dirichlet_alpha, total_clients=n_clients, num_new_clients=args.num_new_clients)
+            elif args.noniid_partition == "quantity_skew":
+                train_idcs, test_idcs = partition_data_quantity_skew(train_labels_for_split, test_labels_for_split, alpha=dirichlet_alpha, total_clients=n_clients, num_new_clients=args.num_new_clients)
+            elif args.noniid_partition == "quantity_skew_equalSize":
+                train_idcs, test_idcs = partition_data_quantity_skew_equalSize(train_labels_for_split, test_labels_for_split, alpha=dirichlet_alpha, total_clients=n_clients, num_new_clients=args.num_new_clients)
 
             # 把用這次參數切的資料集存在 json
             to_save = {

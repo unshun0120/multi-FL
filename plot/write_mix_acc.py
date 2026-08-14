@@ -57,8 +57,8 @@ if __name__ == "__main__":
         # "logs/2026-07-07_12-42-21/GeFL_DDPM_baseline_total_gan",
         # "logs/2026-07-07_12-42-43/GeFL_DDPM_baseline_total_gan",
 
-        "logs/2026-07-23_12-41-26/GeFL_gan_pacfl_noniid",
-        "logs/2026-07-23_12-41-28/GeFL_gan_pacfl_noniid",
+        "logs/2026-08-10_16-11-03/GeFL_gan_pacfl_iid",
+        "logs/2026-08-10_16-13-09/GeFL_gan_pacfl_iid",
     ]
 
     for log in log_dir : 
