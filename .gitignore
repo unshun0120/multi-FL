@@ -14,7 +14,7 @@ data/cache/
 *.tar
 *.tar.gz
 # *.pdf
-# *.png
+*.png
 
 # Checkpoints & logs
 checkpoints/
