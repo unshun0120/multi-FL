@@ -1119,13 +1119,15 @@ def run_offline(args):
                     metrics["Recall"], metrics["Specificity"], metrics["Precision"], metrics["AvgAccuracy"], metrics["F1-Score"], metrics["MCC"], 
                     metrics["TP"], metrics["FP"], metrics["TN"], metrics["FN"]])
 
+        logger.log(f"\nAll Threshold Time: {args.label_mapping} | Round {rnd} | {total_time:.6f} seconds")
+        logger.log(f"\nAverage Time: {args.label_mapping} | Round {rnd} | {total_time / len(entropy_ratios):.6f} seconds")
+
     print("\n" + "=" * 60)
     print(f"Saved results: {run_output_dir}")
     print(f"Saved CSV: {csv_path}")
     print("=" * 60)
 
-    logger.log(f"\nAll Threshold Time: {args.label_mapping} | Round {rnd} | {total_time:.6f} seconds")
-    logger.log(f"\nAverage Time: {args.label_mapping} | Round {rnd} | {total_time / len(entropy_ratios):.6f} seconds")
+    
 
 
 if __name__ == "__main__":

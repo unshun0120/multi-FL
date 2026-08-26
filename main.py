@@ -28,6 +28,7 @@ IMPLEMENTED_ALGORITHMS = ["Local", # FL with local only
                           "Ours_GeFL", # Ours with generative model
                           "GeFL_DeepInversion",
                           "GeFL_DeepInversion_gen",
+                          "GeFL_DeepInversion_gen_table",
                           "GeFL_DDPM",
                           "GeFL_slamdunk",  
                           "GeFL_GAN_DDPM",

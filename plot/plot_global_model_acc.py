@@ -83,6 +83,7 @@ def plot_global_accuracy_by_epoch():
 
 
 def plot_global_accuracy():
+    round = 15
     methods_dirs = {
         # mnist + emnist + fashionmnist
         # "Ours_GeFL": "logs/2026-05-11_18-56-10/Ours_GeFL",
@@ -107,10 +108,11 @@ def plot_global_accuracy():
         # "feature-bi": "logs/2026-06-19_12-23-24/GeFL_DDPM_baseline_total_gan",
         # "image-cs": "logs/2026-06-19_23-40-42/GeFL_DDPM_baseline_total_gan",
 
-        # "bi-direct (MCC=0.9126)": "logs_temp/2026-06-23_15-41-16/GeFL_DDPM_baseline_total_gan",
-       
-        # "feature-bi (MCC=0.0)": "logs_temp/2026-06-23_15-43-33/GeFL_DDPM_baseline_total_gan",
-        # "cosine-similarity (MCC=0.3982)": "logs_temp/2026-06-23_15-42-48/GeFL_DDPM_baseline_total_gan",
+        # "Ours": "logs_temp/2026-06-23_15-41-16/GeFL_DDPM_baseline_total_gan",
+        # 'Missing_link':'logs/start25_gan_slamdunk/GeFL_slamdunk', 
+
+        # "feature": "logs_temp/2026-06-23_15-43-33/GeFL_DDPM_baseline_total_gan",
+        # "cosine-similarity": "logs_temp/2026-06-23_15-42-48/GeFL_DDPM_baseline_total_gan",
 
         # "class_name (MCC=1.0)": "logs/2026-07-04_07-47-20/GeFL_DDPM_baseline_total_gan",
 
@@ -128,19 +130,20 @@ def plot_global_accuracy():
 
         # global round 20
         # 'ours':'logs/start20_gan_our/GeFL_DDPM_baseline_total_gan',
-        # 'SlamDunk':'logs/start20_gan_slamdunk/GeFL_slamdunk', 
+        # 'Missing_link':'logs/start25_gan_slamdunk/GeFL_slamdunk', 
         # 'feature':'logs/start20_gan_feature/GeFL_DDPM_baseline_total_gan',
         # "cosine-similarity": "logs/start20_gan_cs/GeFL_DDPM_baseline_total_gan",
 
-        "class_name": "logs/2026-07-23_12-41-26/GeFL_gan_pacfl_noniid",
-        "independent": "logs/2026-07-23_12-41-28/GeFL_gan_pacfl_noniid",
-
+        'Ours':f'logs/start{round}_noniid_gan_ours/GeFL_gan_pacfl_iid',
+        'Missing Link':f'logs/start{round}_noniid_gan_missinglink/GeFL_gan_pacfl_iid', 
+        'feature':f'logs/start{round}_noniid_gan_feature/GeFL_gan_pacfl_iid',
+        "cosine-similarity": f'logs/start{round}_noniid_gan_cs/GeFL_gan_pacfl_iid',
     }
     
     #datasets = ["MNIST", "EMNIST", "FashionMNIST", "mix"]
     datasets = ["MNIST", "EMNIST", "CIFAR10", "mix"]
     
-    output_dir = "./plot/global_temp/gan_iid"
+    output_dir = f"./plot/global_accuracy_plots/global_{round}_noniid"
     os.makedirs(output_dir, exist_ok=True)
     
     for dataset in datasets:
@@ -178,7 +181,7 @@ def plot_global_accuracy():
             plt.xlabel("Global Round", fontsize=12)
             plt.ylabel("Accuracy (%)", fontsize=12)
             plt.ylim(0, 105)
-            plt.xlim(0, 20)
+            plt.xlim(round, round+25)
             plt.gca().xaxis.set_major_locator(MultipleLocator(1))
             plt.grid(True, linestyle='--', alpha=0.7)
             #plt.legend(loc='lower right', fontsize=10)

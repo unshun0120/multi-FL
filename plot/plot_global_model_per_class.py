@@ -24,26 +24,34 @@ import os
 # df_feat = pd.read_csv('logs/2026-06-19_12-23-24/GeFL_DDPM_baseline_total_gan/global_model_class_acc.csv')
 # df_feat['Mapping'] = 'Feature-Bi'
 
-df_bi = pd.read_csv('logs/start20_gan_our/GeFL_DDPM_baseline_total_gan/global_model_class_acc.csv')
-df_bi['Mapping'] = 'Bi-Direct (Ours)'
+# df_bi = pd.read_csv('logs/start15_gan_our/GeFL_DDPM_baseline_total_gan/global_model_class_acc.csv')
+# df_bi['Mapping'] = 'Ours'
 
-# df_single = pd.read_csv('logs_temp/2026-06-23_15-42-03/GeFL_DDPM_baseline_total_gan/global_model_class_acc.csv')
-# df_single['Mapping'] = 'Single-Direct'
+df_slamdunk = pd.read_csv('logs/start25_gan_slamdunk/GeFL_slamdunk/global_model_class_acc.csv')
+df_slamdunk['Mapping'] = 'Missing link'
 
-df_cs = pd.read_csv('logs/start20_gan_cs/GeFL_DDPM_baseline_total_gan/global_model_class_acc.csv')
-df_cs['Mapping'] = 'Image-cs'
+# df_cs = pd.read_csv('logs/start15_gan_cs/GeFL_DDPM_baseline_total_gan/global_model_class_acc.csv')
+# df_cs['Mapping'] = 'cosine-similarity'
 
-df_feat = pd.read_csv('logs/start20_gan_feature/GeFL_DDPM_baseline_total_gan/global_model_class_acc.csv')
-df_feat['Mapping'] = 'Feature-Bi'
+# df_feat = pd.read_csv('logs/start15_gan_feature/GeFL_DDPM_baseline_total_gan/global_model_class_acc.csv')
+# df_feat['Mapping'] = 'feature'
 
-df_slamdunk = pd.read_csv('logs/start20_gan_slamdunk/GeFL_slamdunk/global_model_class_acc.csv')
-df_slamdunk['Mapping'] = 'SlamDunk'
+df_bi = pd.read_csv("logs_temp/2026-06-23_15-41-16/GeFL_DDPM_baseline_total_gan/global_model_class_acc.csv")
+df_bi['Mapping'] = 'Ours'
+
+df_cs = pd.read_csv('logs_temp/2026-06-23_15-43-33/GeFL_DDPM_baseline_total_gan/global_model_class_acc.csv')
+df_cs['Mapping'] = 'cosine-similarity'
+
+df_feat = pd.read_csv('logs_temp/2026-06-23_15-42-48/GeFL_DDPM_baseline_total_gan/global_model_class_acc.csv')
+df_feat['Mapping'] = 'feature'
+
+
 
 # df_all = pd.concat([df_class_name, df_independent], ignore_index=True)
 # df_all = pd.concat([df_independent, df_identical, df_class_name], ignore_index=True)
 # df_all = pd.concat([df_bi, df_cs, df_feat], ignore_index=True)
 
-df_all = pd.concat([df_bi, df_cs, df_feat, df_slamdunk], ignore_index=True)
+df_all = pd.concat([df_bi, df_slamdunk, df_feat, df_cs], ignore_index=True)
 
 target_datasets = ["MNIST", "EMNIST"]
 target_classes = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]
@@ -131,5 +139,5 @@ g.fig.text(x_pos, emnist_y, "EMNIST", fontsize=20, fontweight="bold",
 save_dir = "./plot/Per_class"
 os.makedirs(save_dir, exist_ok=True)
 
-plt.savefig(f"{save_dir}/gb20_gan_mnist_emnist.pdf", dpi=300, bbox_inches="tight")
+plt.savefig(f"{save_dir}/global_round_25.pdf", dpi=300, bbox_inches="tight")
 plt.show()

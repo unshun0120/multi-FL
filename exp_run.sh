@@ -163,5 +163,12 @@ CUDA="cuda:1"
 #     --cifar10_split ./data/raw/splits/CIFAR10_C10_New0_alpha100p0_seed15698.json
 
 
+python label_mapping/offline_mapping_noniid.py --seed=1 --label_mapping=temp2
+python label_mapping/offline_mapping_noniid.py --seed=42 --label_mapping=temp2
+python label_mapping/offline_mapping_noniid.py --seed=758 --label_mapping=temp2
+python label_mapping/offline_mapping_noniid.py --seed=1248 --label_mapping=temp2
+python label_mapping/offline_mapping_noniid.py --seed=15698 --label_mapping=temp2
+
+
 TOTAL_TIME=$((SECONDS - TOTAL_START))
 echo "Total execution time: $((TOTAL_TIME / 3600)) hours, $((TOTAL_TIME / 60)) minutes and $((TOTAL_TIME % 60)) seconds."

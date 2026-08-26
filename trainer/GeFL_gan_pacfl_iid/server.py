@@ -195,8 +195,8 @@ class Server(BaseServer):
 
             self.aggregate()
 
-            if (r+1) % 5 == 0:
-                self.save_model(r+1) 
+            # if (r+1) % 5 == 0:
+            #     self.save_model(r+1) 
 
         # self.save_model()
         # plot_accuracy_curves(self.dataset_acc_history, self.logger.log_dir, self.args, self.global_rounds, self.dirichlet_alpha)
@@ -366,16 +366,54 @@ class Server(BaseServer):
                 self.local_id_to_global_id = mapping
 
             elif self.args.label_mapping == "improve_single_noniid":
-                mapping = improve_label_mapping_noniid(
-                    get_images_func=get_gen_images,
-                    dataset_ids=active_datasets,
-                    clients_dict=dataset_clients_dict,
-                    label_space_meta=dataset_label_space_meta,
-                    entropy_ratio=entropy_ratio,
-                    logger=self.logger,
-                    args=self.args,
-                    gen_dict=generators 
-                )
+                # mapping = improve_label_mapping_noniid(
+                #     get_images_func=get_gen_images,
+                #     dataset_ids=active_datasets,
+                #     clients_dict=dataset_clients_dict,
+                #     label_space_meta=dataset_label_space_meta,
+                #     entropy_ratio=entropy_ratio,
+                #     logger=self.logger,
+                #     args=self.args,
+                #     gen_dict=generators 
+                # )
+                # global_map = global_to_local_mapping(mapping, logger=self.logger, label_space_meta=dataset_label_space_meta)
+                # self.local_id_to_global_id = mapping
+
+                entropy_thresholds = [0.1, 0.15, 0.2, 0.25, 0.3, 0.35, 0.4, 0.45, 0.5, 0.55, 0.6, 0.65, 0.7, 0.75, 0.8, 0.85, 0.9, 0.95, 1.0]
+
+                best_f1 = -1.0
+                best_entropy_ratio = None
+                best_mapping = None
+
+                for threshold in entropy_thresholds:
+                    mapping_temp = improve_label_mapping_noniid(
+                        get_images_func=get_gen_images,
+                        dataset_ids=active_datasets,
+                        clients_dict=dataset_clients_dict,
+                        label_space_meta=dataset_label_space_meta,
+                        entropy_ratio=threshold,
+                        logger=self.logger,
+                        args=self.args,
+                        gen_dict=generators,
+                    )
+
+                    metrics = evaluate_mapping_results(
+                        dataset_ids=active_datasets,
+                        label_space_meta=dataset_label_space_meta,
+                        local_id_to_global_id=mapping_temp,
+                    )
+
+                    f1 = metrics["F1-Score"]
+                    self.logger.log(f"[Entropy Search] entropy_ratio={threshold:.2f} | F1={f1:.4f} | MCC={metrics['MCC']:.4f} | Recall={metrics['Recall']:.4f} | Precision={metrics['Precision']:.4f}")
+
+                    if f1 > best_f1:
+                        best_f1 = f1
+                        best_entropy_ratio = threshold
+                        best_mapping = mapping_temp
+
+                self.logger.log(f"[Best Entropy] entropy_ratio={best_entropy_ratio:.2f} | F1={best_f1:.4f}")
+
+                mapping = best_mapping
                 global_map = global_to_local_mapping(mapping, logger=self.logger, label_space_meta=dataset_label_space_meta)
                 self.local_id_to_global_id = mapping
 

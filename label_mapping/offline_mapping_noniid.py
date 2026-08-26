@@ -5,11 +5,15 @@ import csv
 import glob
 import argparse
 import torch
+import time
 from datetime import datetime
 from contextlib import redirect_stdout
 import random
 import numpy as np
 from torchvision import datasets, transforms
+import json
+from torch.utils.data import DataLoader, Subset
+import math
 
 CURRENT_DIR = os.path.dirname(os.path.abspath(__file__))
 PROJECT_ROOT = os.path.dirname(CURRENT_DIR)
@@ -40,7 +44,10 @@ from label_mapping_utils import (
     global_to_local_mapping,
     missing_link_label_mapping,
     improve_label_mapping,
-    improve_label_mapping_label_noniid,
+    improve_label_mapping_noniid,
+    improve_label_mapping_noniid_temp,
+    improve_label_mapping_noniid_temp_2,
+    feature_bi_direction_label_mapping,
 )
 from slam_dunk import slam_dunk_label_mapping
 
@@ -121,6 +128,34 @@ def get_test_transform(dataset_name):
         ])
 
 
+def load_train_datasets(args):
+    train_dataset_dict = {
+        "MNIST": datasets.MNIST(
+            root=args.data_dir,
+            train=True,
+            download=True,
+            transform=get_test_transform("MNIST")
+        ),
+
+        "EMNIST": datasets.EMNIST(
+            root=args.data_dir,
+            split="byclass",
+            train=True,
+            download=True,
+            transform=get_test_transform("EMNIST")
+        ),
+
+        "CIFAR10": datasets.CIFAR10(
+            root=args.data_dir,
+            train=True,
+            download=True,
+            transform=get_test_transform("CIFAR10")
+        )
+    }
+
+    return train_dataset_dict
+
+
 def load_test_datasets(args):
     test_dataset_dict = {
         "MNIST": datasets.MNIST(
@@ -147,6 +182,49 @@ def load_test_datasets(args):
     }
 
     return test_dataset_dict
+
+
+def load_split_files(args):
+    split_paths = {
+        "MNIST": args.mnist_split,
+        "EMNIST": args.emnist_split,
+        "CIFAR10": args.cifar10_split
+    }
+
+    split_dict = {}
+
+    for dataset_name, path in split_paths.items():
+        if path == "":
+            continue
+
+        with open(path, "r", encoding="utf-8") as f:
+            split_dict[dataset_name] = json.load(f)
+
+        print(f"[Loaded Split] {dataset_name}: {path}")
+
+    return split_dict
+
+def build_dataset_local_client_id_map(client_metadata):
+    dataset_client_ids = {}
+
+    for client_id, client_info in client_metadata.items():
+        client_id = int(client_id)
+        dataset_name = client_info["dataset_name"]
+
+        if dataset_name not in dataset_client_ids:
+            dataset_client_ids[dataset_name] = []
+
+        dataset_client_ids[dataset_name].append(client_id)
+
+    global_to_local = {}
+
+    for dataset_name, client_ids in dataset_client_ids.items():
+        client_ids = sorted(client_ids)
+
+        for local_id, global_id in enumerate(client_ids):
+            global_to_local[global_id] = local_id
+
+    return global_to_local
 
 
 def build_test_label_indices(test_dataset_dict):
@@ -252,41 +330,38 @@ def get_label_space(dataset_name, num_classes):
     return [f"{dataset_name}_{i}" for i in range(num_classes)]
 
 
-def load_local_gans(log_dir, global_round, label_space_meta, args, device):
+def load_global_gans(log_dir, global_round, group_label_space_meta, args, device):
     generators = {}
-    client_label_space_meta = {}
-    client_dataset_names = {}
-    gan_dir = os.path.join(log_dir, f"local_gans_round_{global_round}")
+    group_dataset_names = {}
+
+    gan_dir = os.path.join(log_dir, f"global_gans_round_{global_round}")
 
     if not os.path.exists(gan_dir):
-        raise FileNotFoundError(f"Local GAN directory not found: {gan_dir}")
+        raise FileNotFoundError(f"Global GAN directory not found: {gan_dir}")
 
-    gan_paths = sorted(glob.glob(os.path.join(gan_dir, "client_GAN_*_c*.pth")))
+    gan_paths = sorted(
+        glob.glob(os.path.join(gan_dir, "global_GAN_*.pth"))
+    )
 
     for gan_path in gan_paths:
         checkpoint = safe_torch_load(gan_path, device)
-        client_id = checkpoint.get("client_id", get_client_id_from_path(gan_path))
-        dataset_name = checkpoint["dataset_name"]
-        d_name = f"client_{client_id}"
-        client_dataset_names[d_name] = dataset_name
 
-        generator_state_dict = checkpoint["generator"]
+        group_name = checkpoint["group_name"]
+        datasets = checkpoint.get("datasets", [])
 
-        dataset_num_classes = {
-            "MNIST": 10,
-            "EMNIST": 62,
-            "CIFAR10": 10,
-        }
+        if group_name not in group_label_space_meta:
+            print(f"[Skip GAN] {group_name} not found in group_label_space_meta")
+            continue
 
-        if dataset_name not in dataset_num_classes:
-            raise ValueError(f"Unknown dataset: {dataset_name}")
+        if len(datasets) != 1:
+            raise ValueError(
+                f"{group_name} contains multiple datasets: {datasets}"
+            )
 
-        num_classes = dataset_num_classes[dataset_name]
-
-        client_label_space_meta[d_name] = get_label_space(dataset_name, num_classes)
+        labels = group_label_space_meta[group_name]
 
         gen = DCGANGenerator(
-            num_classes=len(client_label_space_meta[d_name]),
+            num_classes=len(labels),
             noise_dim=args.gen_noise_dim,
             img_size=args.img_size,
             channels=args.channels
@@ -294,14 +369,21 @@ def load_local_gans(log_dir, global_round, label_space_meta, args, device):
 
         gen.load_state_dict(checkpoint["generator"])
         gen.eval()
-        generators[d_name] = gen
-        print(f"[Loaded GAN] {d_name}: {gan_path}")
 
-    return generators, client_label_space_meta, client_dataset_names
+        generators[group_name] = gen
+        group_dataset_names[group_name] = datasets[0]
+
+        print(
+            f"[Loaded Global GAN] {group_name} | "
+            f"dataset={datasets[0]} | path={gan_path}"
+        )
+
+    return generators, group_dataset_names
 
 
-def load_client_models(log_dir, global_round, label_space_meta, global_dim, args, device):
-    dataset_clients_dict = {}
+def load_client_models(log_dir, global_round, group_label_space_meta, global_dim, args, device):
+    group_clients_dict = {}
+    client_valid_labels_dict = {}
     clients_dir = os.path.join(log_dir, f"clients_round_{global_round}_checkpoints")
 
     if not os.path.exists(clients_dir):
@@ -310,30 +392,40 @@ def load_client_models(log_dir, global_round, label_space_meta, global_dim, args
     model_paths = sorted(glob.glob(os.path.join(clients_dir, "client_model_*_c*_*.pth")))
 
     for model_path in model_paths:
-        client_id = get_client_id_from_path(model_path)
-        d_name = f"client_{client_id}"
+        checkpoint = safe_torch_load(model_path, device)
 
-        if d_name not in label_space_meta:
-            print(f"[Skip Model] {d_name} not found in label_space_meta")
+        group_name = checkpoint["group_name"]
+        client_id = checkpoint["client_id"]
+
+        if group_name  not in group_label_space_meta:
+            print(f"[Skip Model] {group_name } not found in label_space_meta")
             continue
 
         model = build_client_model(
             model_path=model_path,
-            d_name=d_name,
-            label_space_meta=label_space_meta,
+            d_name=group_name,
+            label_space_meta=group_label_space_meta,
             global_dim=global_dim,
             args=args,
             device=device
         )
 
-        state_dict = safe_torch_load(model_path, device)
-        model.load_state_dict(state_dict)
+        model.load_state_dict(checkpoint["model"])
         model.eval()
+        valid_labels = checkpoint.get("valid_labels", list(range(len(group_label_space_meta[group_name]))))
+        model.client_id = client_id
+        model.valid_labels = valid_labels
 
-        dataset_clients_dict[d_name] = [model]
-        print(f"[Loaded Client] {d_name}: {os.path.basename(model_path)}")
+        if group_name not in group_clients_dict:
+            group_clients_dict[group_name] = []
+            client_valid_labels_dict[group_name] = []
 
-    return dataset_clients_dict
+        group_clients_dict[group_name].append(model)
+        client_valid_labels_dict[group_name].append(checkpoint.get("valid_labels", list(range(len(group_label_space_meta[group_name])))))
+
+        print(f"[Loaded Client] client_{client_id} -> " f"{group_name}: {os.path.basename(model_path)}")
+
+    return group_clients_dict, client_valid_labels_dict
 
 
 def save_mapping_summary(path, mapping, label_space_meta, threshold_name, threshold):
@@ -372,7 +464,7 @@ def get_output_folder_name(args):
     dataset_name = args.dataset.replace("-", "")
     dataset_suffix = "" if dataset_name == "all" else f"_{dataset_name}"
     source_suffix = "(raw)" if args.image_source == "testset" else ""
-    return f"{mapping_name}{dataset_suffix}{source_suffix}"
+    return f"{mapping_name}{dataset_suffix}_seed{args.seed}{source_suffix}"
 
 
 def get_unique_output_dir(output_dir, folder_name):
@@ -388,6 +480,235 @@ def get_unique_output_dir(output_dir, folder_name):
     return os.path.join(output_dir, f"{folder_name}({index})")
 
 
+def log_local_model_outputs(get_images_func, dataset_ids, clients_dict, label_space_meta, group_dataset_names, valid_labels_dict, save_path, **get_images_kwargs):
+    dataset_pairs = []
+
+    for i in range(len(dataset_ids)):
+        for j in range(i + 1, len(dataset_ids)):
+            d1 = dataset_ids[i]
+            d2 = dataset_ids[j]
+
+            if len(label_space_meta[d1]) <= len(label_space_meta[d2]):
+                dataset_pairs.append((d1, d2))
+            else:
+                dataset_pairs.append((d2, d1))
+
+    images_cache = {}
+
+    with open(save_path, "w", encoding="utf-8") as f:
+        for src_id, tgt_id in dataset_pairs:
+            src_name = group_dataset_names.get(src_id, src_id)
+            tgt_name = group_dataset_names.get(tgt_id, tgt_id)
+
+            src_names = label_space_meta[src_id]
+            tgt_names = label_space_meta[tgt_id]
+            tgt_clients = clients_dict.get(tgt_id, [])
+
+            for l_idx, l_name in enumerate(src_names):
+                if valid_labels_dict is not None and src_id in valid_labels_dict:
+                    if l_idx not in valid_labels_dict[src_id]:
+                        continue
+
+                key = (src_id, l_idx)
+
+                if key not in images_cache:
+                    imgs_src = get_images_func(src_id, l_idx, **get_images_kwargs) if get_images_kwargs else get_images_func(src_id, l_idx)
+
+                    if imgs_src is None:
+                        continue
+
+                    images_cache[key] = imgs_src
+
+                imgs_src = images_cache[key]
+
+                for model_idx, model in enumerate(tgt_clients):
+                    device = next(model.parameters()).device
+
+                    with torch.no_grad():
+                        output = model(imgs_src.to(device))
+                        logits = output[-1]
+                        probs = torch.softmax(logits, dim=1)
+                        mean_probs = probs.mean(dim=0)
+
+                    entropy = -(mean_probs * torch.log(mean_probs + 1e-12)).sum().item()
+                    pred_idx = torch.argmax(mean_probs).item()
+
+                    client_id = getattr(model, "client_id", model_idx)
+                    train_labels = getattr(model, "valid_labels", [])
+                    pred_name = tgt_names[pred_idx]
+
+                    train_label_text = ", ".join(
+                        f"{label_idx}({tgt_names[label_idx]})"
+                        for label_idx in train_labels
+                    )
+
+                    distribution = ", ".join(
+                        f"{tgt_names[i]}:{mean_probs[i].item():.10f}"
+                        for i in range(len(tgt_names))
+                    )
+
+                    # soft_label = ", ".join(
+                    #     f"{p.item():.4f}" for p in mean_probs
+                    # )
+
+                    f.write(
+                        f"{src_name} label {l_idx} ({l_name}) -> "
+                        f"{tgt_name} client_{client_id}\n"
+                    )
+                    f.write(f"training labels = [{train_label_text}]\n")
+                    f.write(f"distribution = {{{distribution}}}\n")
+                    # f.write(f"soft_label = [{soft_label}]\n")
+                    f.write(f"result = {pred_idx} ({pred_name})\n")
+                    f.write(f"entropy = {entropy:.6f}\n\n")
+
+
+def log_emnist_model_outputs(get_images_func, dataset_ids, clients_dict, label_space_meta, group_dataset_names, client_metadata, entropy_ratios, save_path, **get_images_kwargs):
+    emnist_id = None
+    for d_id in dataset_ids:
+        if group_dataset_names.get(d_id) == "EMNIST":
+            emnist_id = d_id
+            break
+
+    if emnist_id is None:
+        return
+
+    emnist_names = label_space_meta[emnist_id]
+    emnist_clients = clients_dict.get(emnist_id, [])
+    images_cache = {}
+    client_ground_truth = {}
+    client_detected_labels = {}
+
+    with open(save_path, "w", encoding="utf-8") as f:
+        for model_idx, model in enumerate(emnist_clients):
+            client_id = model.client_id
+            client_info = client_metadata.get(client_id)
+
+            if client_info is None:
+                client_info = client_metadata.get(str(client_id), {})
+
+            ground_truth_labels = sorted(client_info.get("valid_labels", []))
+            client_ground_truth[client_id] = ground_truth_labels
+            detected_labels = []
+            emnist_results = []
+
+            for l_idx, l_name in enumerate(emnist_names):
+                key = (emnist_id, l_idx)
+
+                if key not in images_cache:
+                    imgs_src = get_images_func(emnist_id, l_idx, **get_images_kwargs) if get_images_kwargs else get_images_func(emnist_id, l_idx)
+                    if imgs_src is None:
+                        continue
+                    images_cache[key] = imgs_src
+
+                imgs_src = images_cache[key]
+                device = next(model.parameters()).device
+
+                with torch.no_grad():
+                    output = model(imgs_src.to(device))
+                    logits = output[-1]
+                    probs = torch.softmax(logits, dim=1)
+                    mean_probs = probs.mean(dim=0)
+
+                entropy = -(mean_probs * torch.log(mean_probs + 1e-12)).sum().item()
+                pred_idx = torch.argmax(mean_probs).item()
+                required_ratio = entropy / math.log(len(emnist_names))
+                first_pass_threshold = next((threshold for threshold in entropy_ratios if entropy <= math.log(len(emnist_names)) * threshold), None)
+
+                if pred_idx == l_idx:
+                    detected_labels.append(l_idx)
+
+                emnist_results.append((l_idx, l_name, pred_idx, entropy, required_ratio, first_pass_threshold, mean_probs))
+
+            client_detected_labels[client_id] = detected_labels
+
+            detected_text = ", ".join(f"{idx}({emnist_names[idx]})" for idx in detected_labels)
+            ground_truth_text = ", ".join(f"{idx}({emnist_names[idx]})" for idx in ground_truth_labels)
+            correct_labels = sorted(set(detected_labels) & set(ground_truth_labels))
+            missed_labels = sorted(set(ground_truth_labels) - set(detected_labels))
+            extra_labels = sorted(set(detected_labels) - set(ground_truth_labels))
+
+            correct_text = ", ".join(f"{idx}({emnist_names[idx]})" for idx in correct_labels)
+            missed_text = ", ".join(f"{idx}({emnist_names[idx]})" for idx in missed_labels)
+            extra_text = ", ".join(f"{idx}({emnist_names[idx]})" for idx in extra_labels)
+
+            f.write("=" * 100 + "\n")
+            f.write(f"EMNIST client_{client_id}\n")
+            f.write("=" * 100 + "\n")
+            f.write(f"GAN detected training labels = [{detected_text}]\n")
+            f.write(f"Ground truth training labels = [{ground_truth_text}]\n")
+            f.write(f"Correct detected labels = [{correct_text}]\n")
+            f.write(f"Missed labels = [{missed_text}]\n")
+            f.write(f"Extra detected labels = [{extra_text}]\n\n")
+
+            # f.write("[EMNIST Global GAN -> EMNIST Local Model]\n\n")
+
+            # for l_idx, l_name, pred_idx, entropy, required_ratio, first_pass_threshold, mean_probs in emnist_results:
+            #     pred_name = emnist_names[pred_idx]
+            #     distribution = ", ".join(f"{emnist_names[i]}:{mean_probs[i].item():.10f}" for i in range(len(emnist_names)))
+            #     pass_text = f"{first_pass_threshold:.2f}" if first_pass_threshold is not None else "> 1.00"
+
+            #     f.write(f"EMNIST label {l_idx} ({l_name}) -> EMNIST client_{client_id}\n")
+            #     f.write(f"distribution = {{{distribution}}}\n")
+            #     f.write(f"result = {pred_idx} ({pred_name})\n")
+            #     f.write(f"same label = {pred_idx == l_idx}\n")
+            #     f.write(f"entropy = {entropy:.6f}\n")
+            #     f.write(f"required entropy ratio = {required_ratio:.6f}\n")
+            #     f.write(f"first pass threshold = {pass_text}\n\n")
+
+        f.write("[MNIST / CIFAR10 Global GAN -> EMNIST Local Model]\n\n")
+
+        for src_id in dataset_ids:
+            src_name = group_dataset_names.get(src_id, src_id)
+
+            if src_name not in ["MNIST", "CIFAR10"]:
+                continue
+
+            src_names = label_space_meta[src_id]
+
+            for l_idx, l_name in enumerate(src_names):
+                key = (src_id, l_idx)
+
+                if key not in images_cache:
+                    imgs_src = get_images_func(src_id, l_idx, **get_images_kwargs) if get_images_kwargs else get_images_func(src_id, l_idx)
+                    if imgs_src is None:
+                        continue
+                    images_cache[key] = imgs_src
+
+                imgs_src = images_cache[key]
+
+                for model_idx, model in enumerate(emnist_clients):
+                    client_id = model.client_id
+                    device = next(model.parameters()).device
+                    detected_labels = client_detected_labels.get(client_id, [])
+                    detected_text = ", ".join(f"{idx}({emnist_names[idx]})" for idx in detected_labels)
+                    ground_truth_labels = client_ground_truth.get(client_id, [])
+                    ground_truth_text = ", ".join(f"{idx}({emnist_names[idx]})" for idx in ground_truth_labels)
+
+                    with torch.no_grad():
+                        output = model(imgs_src.to(device))
+                        logits = output[-1]
+                        probs = torch.softmax(logits, dim=1)
+                        mean_probs = probs.mean(dim=0)
+
+                    entropy = -(mean_probs * torch.log(mean_probs + 1e-12)).sum().item()
+                    pred_idx = torch.argmax(mean_probs).item()
+                    pred_name = emnist_names[pred_idx]
+
+                    required_ratio = entropy / math.log(len(emnist_names))
+                    first_pass_threshold = next((threshold for threshold in entropy_ratios if entropy <= math.log(len(emnist_names)) * threshold), None)
+                    pass_text = f"{first_pass_threshold:.2f}" if first_pass_threshold is not None else "> 1.00"
+
+                    distribution = ", ".join(f"{emnist_names[i]}:{mean_probs[i].item():.10f}" for i in range(len(emnist_names)))
+
+                    f.write(f"{src_name} label {l_idx} ({l_name}) -> EMNIST client_{client_id}\n")
+                    f.write(f"GAN detected labels = [{detected_text}]\n")
+                    f.write(f"Ground truth labels = [{ground_truth_text}]\n")
+                    f.write(f"distribution = {{{distribution}}}\n")
+                    f.write(f"result = {pred_idx} ({pred_name})\n")
+                    f.write(f"entropy = {entropy:.6f}\n")
+                    f.write(f"required entropy ratio = {required_ratio:.6f}\n")
+                    f.write(f"first pass threshold = {pass_text}\n\n")
+
 def run_offline(args):
     set_seed(args.seed)
 
@@ -398,7 +719,7 @@ def run_offline(args):
 
     os.makedirs(args.output_dir, exist_ok=True)
 
-    # run_time = datetime.now().strftime("%Y_%m_%d_%H_%M_%S")
+    run_time = datetime.now().strftime("%Y_%m_%d_%H_%M_%S")
     # run_output_dir = os.path.join(args.output_dir, run_time)
     # os.makedirs(run_output_dir, exist_ok=False)
 
@@ -422,13 +743,18 @@ def run_offline(args):
     test_dataset_dict = None
     test_label_indices = None
 
+    train_dataset_dict = None
+    split_dict = None
+
     if args.image_source == "testset":
         test_dataset_dict = load_test_datasets(args)
-        test_label_indices = build_test_label_indices(
-            test_dataset_dict
-        )
+        test_label_indices = build_test_label_indices(test_dataset_dict)
 
         print("[Loaded Test Sets] MNIST, EMNIST, CIFAR10")
+
+    if args.label_mapping == "feature":
+        train_dataset_dict = load_train_datasets(args)
+        split_dict = load_split_files(args)
 
     for rnd in rounds:
         print("\n" + "=" * 60)
@@ -436,26 +762,46 @@ def run_offline(args):
         print("=" * 60)
 
         checkpoint = load_server_checkpoint(args.log_dir, rnd, device)
-        label_space_meta = checkpoint["label_space_meta"]
+        label_space_meta = checkpoint["group_label_space_meta"]
+        group_metadata = checkpoint["group_metadata"]
+        client_metadata = checkpoint["client_metadata"]
         global_dim = checkpoint.get("global_feature_dim", 256)
-        client_label_distributions = checkpoint["client_label_distributions"]
 
         valid_labels_dict = {}
-        for client_id, labels in client_label_distributions.items():
-            valid_labels_dict[f"client_{int(client_id)}"] = sorted(labels)
+        for group_name, group_info in group_metadata.items():
+            group_valid_labels = set()
 
-        generators, client_label_space_meta, client_dataset_names = load_local_gans(
+            for client_id in group_info["client_ids"]:
+                client_info = client_metadata.get(client_id)
+
+                if client_info is None:
+                    client_info = client_metadata.get(str(client_id))
+
+                if client_info is None:
+                    raise KeyError(
+                        f"Client metadata not found: client_id={client_id}"
+                    )
+
+                group_valid_labels.update(
+                    client_info["valid_labels"]
+                )
+
+            valid_labels_dict[group_name] = sorted(
+                group_valid_labels
+            )
+
+        generators, group_dataset_names = load_global_gans(
             log_dir=args.log_dir,
             global_round=rnd,
-            label_space_meta=label_space_meta,
+            group_label_space_meta=label_space_meta,
             args=args,
             device=device
         )
 
-        dataset_clients_dict = load_client_models(
+        dataset_clients_dict, client_valid_labels_dict = load_client_models(
             log_dir=args.log_dir,
             global_round=rnd,
-            label_space_meta=client_label_space_meta,
+            group_label_space_meta=label_space_meta,
             global_dim=global_dim,
             args=args,
             device=device
@@ -464,129 +810,102 @@ def run_offline(args):
         active_datasets = []
         dataset_label_space_meta = {}
 
-        for d_name in client_label_space_meta.keys():
-            if target_dataset is not None and client_dataset_names.get(d_name) != target_dataset:
+        for group_name in label_space_meta.keys():
+            if target_dataset is not None and group_dataset_names.get(group_name) != target_dataset:
                 continue
 
-            if d_name in generators and d_name in dataset_clients_dict:
-                active_datasets.append(d_name)
-                dataset_label_space_meta[d_name] = client_label_space_meta[d_name]
+            if group_name in generators and group_name in dataset_clients_dict:
+                active_datasets.append(group_name)
+                dataset_label_space_meta[group_name] = label_space_meta[group_name]
 
         if len(active_datasets) == 0:
             print(f"[Skip Round {rnd}] No active clients.")
             continue
 
         print(f"Run Dataset: {args.dataset}")
-        print(f"Active clients: {active_datasets}")
+        print(f"Active clusters: {active_datasets}")
 
         clear_image_caches()
 
-        if args.image_source == "local_gan":
-            get_images_func = get_gen_images
+        get_images_func = get_gen_images
 
-            image_source_kwargs = {
-                "args": args,
-                "gen_dict": generators
-            }
+        image_source_kwargs = {
+            "args": args,
+            "gen_dict": generators
+        }
 
-        elif args.image_source == "testset":
-            get_images_func = get_test_images
-
-            image_source_kwargs = {
-                "args": args,
-                "test_dataset_dict": test_dataset_dict,
-                "test_label_indices": test_label_indices,
-                "client_dataset_names": client_dataset_names
-            }
-
-        else:
-            raise ValueError(
-                f"Unknown image source: {args.image_source}"
-            )
+        mapping_get_images_func = get_images_func
+        mapping_image_source_kwargs = image_source_kwargs
 
         mapping_log_path = os.path.join(mapping_log_dir, f"global_round_{rnd}.log")
 
-        if args.label_mapping in ["image-bi", "image-single", "improve_single"]:
-            thresholds = entropy_ratios
-            threshold_name = "Entropy Ratio"
-            threshold_col = "entropy_ratio"
-        elif args.label_mapping in ["missing_link", "improve_single_label_noniid"]:
-            thresholds = parse_float_list(args.missing_thresholds)
-            threshold_name = "Missing Link Threshold"
-            threshold_col = "missing_threshold"
-        elif args.label_mapping == "image-cs":
-            thresholds = parse_float_list(args.cs_thresholds)
-            threshold_name = "Cosine Similarity Threshold"
-            threshold_col = "cs_threshold"
-        else:
-            thresholds = [None]
-            threshold_name = "Threshold"
-            threshold_col = "threshold"
+        if args.log_model_outputs and args.image_source == "gan":
+            model_output_dir = os.path.join(run_output_dir, "local_model_outputs")
+            os.makedirs(model_output_dir, exist_ok=True)
+
+            model_output_path = os.path.join(model_output_dir, f"global_round_{rnd}.log")
+
+            # log_local_model_outputs(
+            #     get_images_func=get_images_func,
+            #     dataset_ids=active_datasets,
+            #     clients_dict=dataset_clients_dict,
+            #     label_space_meta=dataset_label_space_meta,
+            #     group_dataset_names=group_dataset_names,
+            #     valid_labels_dict=valid_labels_dict,
+            #     save_path=model_output_path,
+            #     **image_source_kwargs
+            # )
+
+            log_emnist_model_outputs(
+                get_images_func=get_images_func,
+                dataset_ids=active_datasets,
+                clients_dict=dataset_clients_dict,
+                label_space_meta=dataset_label_space_meta,
+                group_dataset_names=group_dataset_names,
+                client_metadata=client_metadata,
+                entropy_ratios=entropy_ratios,
+                save_path=model_output_path,
+                **image_source_kwargs
+            )
+
+        mapping_log_path = os.path.join(
+            mapping_log_dir,
+            f"global_round_{rnd}.log"
+        )
+
+        thresholds = entropy_ratios
+        threshold_name = "Entropy Ratio"
+        threshold_col = "entropy_ratio"
+
+        total_time = 0.0
 
         for threshold in thresholds:
             print(f"\n[Run] Round {rnd} | {threshold_name} = {threshold}")
 
-            if args.label_mapping == "image-bi":
-                mapping = label_mapping(
+            single_start_time = time.time()
+
+            if args.label_mapping == "temp":
+                mapping = improve_label_mapping_noniid_temp(
                     get_images_func=get_images_func,
                     dataset_ids=active_datasets,
                     clients_dict=dataset_clients_dict,
                     label_space_meta=dataset_label_space_meta,
                     entropy_ratio=threshold,
-                    use_new_entropy_method=args.use_new_entropy_method,
-                    logger=logger,
-                    **image_source_kwargs,
-                    valid_labels_dict=valid_labels_dict
-                )
-
-            elif args.label_mapping == "image-single":
-                mapping = single_direction_label_mapping(
-                    get_images_func=get_images_func,
-                    dataset_ids=active_datasets,
-                    clients_dict=dataset_clients_dict,
-                    label_space_meta=dataset_label_space_meta,
-                    entropy_ratio=threshold,
-                    use_new_entropy_method=args.use_new_entropy_method,
-                    logger=logger,
-                    **image_source_kwargs,
-                    valid_labels_dict=valid_labels_dict
-                )
-
-            elif args.label_mapping == "missing_link":
-                mapping = missing_link_label_mapping(
-                    get_images_func=get_images_func,
-                    dataset_ids=active_datasets,
-                    clients_dict=dataset_clients_dict,
-                    label_space_meta=dataset_label_space_meta,
-                    missing_threshold=threshold,
                     logger=logger,
                     valid_labels_dict=valid_labels_dict,
                     **image_source_kwargs
                 )
 
-            elif args.label_mapping == "improve_single":
-                mapping = improve_label_mapping(
+            elif args.label_mapping == "temp2":
+                mapping = improve_label_mapping_noniid_temp_2(
                     get_images_func=get_images_func,
                     dataset_ids=active_datasets,
                     clients_dict=dataset_clients_dict,
                     label_space_meta=dataset_label_space_meta,
                     entropy_ratio=threshold,
-                    use_new_entropy_method=True,
                     logger=logger,
                     valid_labels_dict=valid_labels_dict,
-                    **image_source_kwargs
-                )
-
-            elif args.label_mapping == "improve_single_label_noniid":
-                mapping = improve_label_mapping_label_noniid(
-                    get_images_func=get_images_func,
-                    dataset_ids=active_datasets,
-                    clients_dict=dataset_clients_dict,
-                    label_space_meta=dataset_label_space_meta,
-                    entropy_ratio=args.fixed_entropy_ratio,
-                    missing_threshold=threshold,
-                    logger=logger,
-                    valid_labels_dict=valid_labels_dict,
+                    client_valid_labels_dict=client_valid_labels_dict,
                     **image_source_kwargs
                 )
 
@@ -595,6 +914,9 @@ def run_offline(args):
                 logger=logger,
                 label_space_meta=dataset_label_space_meta
             )
+
+            single_time = time.time() - single_start_time
+            total_time += single_time
 
             save_mapping_summary(
                 path=mapping_log_path,
@@ -624,6 +946,9 @@ def run_offline(args):
                     metrics["Recall"], metrics["Specificity"], metrics["Precision"], metrics["AvgAccuracy"], metrics["F1-Score"], metrics["MCC"], 
                     metrics["TP"], metrics["FP"], metrics["TN"], metrics["FN"]])
 
+        logger.log(f"\nAll Threshold Time: {args.label_mapping} | Round {rnd} | {total_time:.6f} seconds")
+        logger.log(f"\nAverage Time: {args.label_mapping} | Round {rnd} | {total_time / len(entropy_ratios):.6f} seconds")
+
     print("\n" + "=" * 60)
     print(f"Saved results: {run_output_dir}")
     print(f"Saved CSV: {csv_path}")
@@ -633,21 +958,31 @@ def run_offline(args):
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
 
-    parser.add_argument("--log_dir", type=str, default="./logs/round_5-45_label_noniid_gan_weight/GeFL_DDPM_baseline_total_gan_noniid")
+    #parser.add_argument("--log_dir", type=str, default="./logs/2026-08-10_10-24-36/GeFL_gan_pacfl_iid")
+    parser.add_argument("--log_dir", type=str, default="./logs/seed15698_noniid_gan_weight/GeFL_gan_pacfl_iid")
     parser.add_argument("--data_dir", type=str, default="./data/raw")
-    parser.add_argument("--output_dir", type=str, default="./label_mapping/offline_noniid_results(noniid_label)")
+    parser.add_argument("--output_dir", type=str, default="./label_mapping/pacfl_3cluster_test/noniid")
     parser.add_argument("--seed", type=int, default=None, help="random seed")
-    parser.add_argument("--image_source", type=str, default="local_gan", choices=["local_gan", "testset"])
+    parser.add_argument("--image_source", type=str, default="gan", choices=["gan", "testset"])
     parser.add_argument("--dataset", type=str, default="all", choices=["all", "mnist", "emnist", "cifar10"])
 
-    parser.add_argument("--rounds", type=str, default="5,10,15,20,25")
-    parser.add_argument("--label_mapping", type=str, default="improve_single", choices=["image-bi", "image-single", "missing_link", "improve_single", "image-cs", "improve_single_label_noniid"])
+    parser.add_argument("--mnist_split", type=str, default="")
+    parser.add_argument("--emnist_split", type=str, default="")
+    parser.add_argument("--cifar10_split", type=str, default="")
 
-    parser.add_argument("--entropy_ratios", type=str, default="0.1,0.2,0.3,0.4,0.5,0.6,0.7,0.8,0.9,1.0")
-    parser.add_argument("--missing_thresholds", type=str, default="0.1,0.2,0.3,0.4,0.5,0.6,0.7,0.8,0.9,1.0")
+    # parser.add_argument("--rounds", type=str, default="5,10,15,20,25,30,35,40,45,50,55,60,65,70,75,80,85,90,95,100")
+    parser.add_argument("--rounds", type=str, default="5,10,15,20,25")
+    parser.add_argument("--label_mapping", type=str, default="temp", 
+                        choices=["image-bi", "image-single", "missing_link", "improve_single", "image-cs", "improve_single_noniid", "temp", "temp2", "feature"])
+
+    parser.add_argument("--entropy_ratios", type=str, default="0.1, 0.15, 0.2, 0.25, 0.3, 0.35, 0.4, 0.45, 0.5, 0.55, 0.6, 0.65, 0.7, 0.75, 0.8, 0.85, 0.9, 0.95, 1.0")
+    parser.add_argument("--missing_thresholds", type=str, default="0.1, 0.15, 0.2, 0.25, 0.3, 0.35, 0.4, 0.45, 0.5, 0.55, 0.6, 0.65, 0.7, 0.75, 0.8, 0.85, 0.9, 0.95, 1.0")
     parser.add_argument("--fixed_entropy_ratio", type=float, default=0.1)
-    parser.add_argument("--cs_thresholds", type=str, default="0.1,0.2,0.3,0.4,0.5,0.6,0.7,0.8,0.9,1.0")
+    parser.add_argument("--cs_thresholds", type=str, default="-1.0,-0.9,-0.8,-0.7,-0.6,-0.5,-0.4,-0.3,-0.2,-0.1,0.0,0.1,0.2,0.3,0.4,0.5,0.6,0.7,0.8,0.9,1.0")
     parser.add_argument("--use_new_entropy_method", action="store_true")
+    parser.add_argument("--log_model_outputs", action="store_true")
+
+    parser.add_argument("--gan_quality_threshold", type=float, default=0.5)
 
     parser.add_argument("--device", type=str, default="cuda:1")
     parser.add_argument("--img_num_samples", type=int, default=8)

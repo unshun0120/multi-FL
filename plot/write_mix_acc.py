@@ -50,6 +50,7 @@ def create_mix_new_csv(log_dir):
 
 
 if __name__ == "__main__":
+    round = 5
     log_dir = [
         # "logs/2026-07-07_12-39-17/GeFL_DDPM_baseline_total_gan", 
         # "logs/2026-07-07_12-39-45/GeFL_DDPM_baseline_total_gan",
@@ -57,8 +58,10 @@ if __name__ == "__main__":
         # "logs/2026-07-07_12-42-21/GeFL_DDPM_baseline_total_gan",
         # "logs/2026-07-07_12-42-43/GeFL_DDPM_baseline_total_gan",
 
-        "logs/2026-08-10_16-11-03/GeFL_gan_pacfl_iid",
-        "logs/2026-08-10_16-13-09/GeFL_gan_pacfl_iid",
+        f"logs/start{round}_noniid_gan_missinglink/GeFL_gan_pacfl_iid",
+        f"logs/start{round}_noniid_gan_ours/GeFL_gan_pacfl_iid",
+        f"logs/start{round}_noniid_gan_feature/GeFL_gan_pacfl_iid", 
+        f"logs/start{round}_noniid_gan_cs/GeFL_gan_pacfl_iid",
     ]
 
     for log in log_dir : 
