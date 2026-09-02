@@ -961,7 +961,7 @@ if __name__ == "__main__":
     #parser.add_argument("--log_dir", type=str, default="./logs/2026-08-10_10-24-36/GeFL_gan_pacfl_iid")
     parser.add_argument("--log_dir", type=str, default="./logs/seed15698_noniid_gan_weight/GeFL_gan_pacfl_iid")
     parser.add_argument("--data_dir", type=str, default="./data/raw")
-    parser.add_argument("--output_dir", type=str, default="./label_mapping/pacfl_3cluster_test/noniid")
+    parser.add_argument("--output_dir", type=str, default="./label_mapping/pacfl_3cluster_test/iid")
     parser.add_argument("--seed", type=int, default=None, help="random seed")
     parser.add_argument("--image_source", type=str, default="gan", choices=["gan", "testset"])
     parser.add_argument("--dataset", type=str, default="all", choices=["all", "mnist", "emnist", "cifar10"])

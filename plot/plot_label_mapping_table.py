@@ -1,4 +1,5 @@
 import os
+from tokenize import Single
 import pandas as pd
 import matplotlib.pyplot as plt
 
@@ -28,9 +29,9 @@ def make_best_table():
 
     # 1, 42, 758, 1248, 15698
     seed = 15698
-    distribution = "noniid"
+    distribution = "iid"
     #output_dir = f"./label_mapping/pacfl_3cluster/{distribution}/improve_single_noniid_seed{seed}(3)/table"
-    output_dir = f"./label_mapping/pacfl_3cluster_test/{distribution}/temp2_seed{seed}(2)"
+    output_dir = f"./label_mapping/pacfl_3cluster_test/{distribution}/missing_link_single_seed{seed}"
     os.makedirs(output_dir, exist_ok=True)
     methods = {
         # "bi-direct": "./label_mapping/offline_pacfl_noniid_results(label)/image-bi/label_mapping/offline_image-bi_noniid_mapping_acc.csv",
@@ -39,13 +40,14 @@ def make_best_table():
         # "Cosine-Similarity": f"./label_mapping/pacfl_3cluster/{distribution}/image-cs_seed{seed}/label_mapping/offline_image-cs_noniid_mapping_acc.csv",
         "Missing Link": f"./label_mapping/pacfl_3cluster/{distribution}/missing_link_seed{seed}(2)/label_mapping/offline_missing_link_noniid_mapping_acc.csv",
         "Missing Link (1)": f"./label_mapping/pacfl_3cluster/{distribution}/missing_link_seed{seed}(1)/label_mapping/offline_missing_link_noniid_mapping_acc.csv",
-        "Improve_noniid": f"./label_mapping/pacfl_3cluster/{distribution}/improve_single_noniid_seed{seed}(1)/label_mapping/offline_improve_single_noniid_noniid_mapping_acc.csv",
+        "Missing Link Single": f"./label_mapping/pacfl_3cluster_test/{distribution}/missing_link_single_seed{seed}/label_mapping/offline_missing_link_single_noniid_mapping_acc.csv",
+        "Improve_noniid": f"./label_mapping/pacfl_3cluster/{distribution}/improve_single_noniid_seed{seed}/label_mapping/offline_improve_single_noniid_noniid_mapping_acc.csv",
 
         # "Improve_noniid\n(noSame)": f"./label_mapping/pacfl_3cluster/{distribution}/improve_single_noniid_seed{seed}(3)/label_mapping/offline_improve_single_noniid_noniid_mapping_acc.csv",
         # "Improve_noniid\n(noCheck)": f"./label_mapping/pacfl_3cluster/{distribution}/improve_single_noniid_seed{seed}_noCheck/label_mapping/offline_improve_single_noniid_noniid_mapping_acc.csv",
         # "Improve_noniid\n(noSame)\n(noCheck)": f"./label_mapping/pacfl_3cluster/{distribution}/improve_single_noniid_seed{seed}_noSame_noCheck/label_mapping/offline_improve_single_noniid_noniid_mapping_acc.csv",
 
-        "temp2": f"./label_mapping/pacfl_3cluster_test/{distribution}/temp2_seed{seed}(2)/label_mapping/offline_temp2_noniid_mapping_acc.csv",
+        "temp2": f"./label_mapping/pacfl_3cluster_test/{distribution}/temp2_seed{seed}/label_mapping/offline_temp2_noniid_mapping_acc.csv",
     }
     no_entropy_methods={}
     slam_dunk_values={}
@@ -62,6 +64,7 @@ def make_best_table():
         "Cosine-Similarity": "cs_threshold",
         "Missing Link": "missing_threshold",
         "Missing Link (1)": "missing_threshold",
+        "Missing Link Single": "missing_threshold",
         "Improve-single": "entropy_ratio",
         "Improve_noniid": "entropy_ratio",
         "Improve_noniid\n(noSame)": "entropy_ratio",
@@ -122,7 +125,7 @@ def make_best_table():
 
     # method_order = ["SlamDunk", "Cosine-Similarity", "Ours", "Ours\n(no Entropy)", "Single-direct", "Feature-Bi", "Missing Link", "Improve-single",  "Improve-single\n(no Entropy)", "Improve-single\n(no Result Voting)"]
     #method_order = ["bi-direct", "Missing Link", "Improve-single", "Improve_noniid", "Improve-single\n + \nMissing Link", "Improve-single\n(Single-direct)"]
-    method_order = ["Missing Link", "Missing Link (1)", "Feature", "Cosine-Similarity", "Improve-single", "Improve_noniid", "temp", "temp2",
+    method_order = ["Missing Link", "Missing Link (1)", "Missing Link Single", "Feature", "Cosine-Similarity", "Improve-single", "Improve_noniid", "temp", "temp2",
                     "Improve_noniid\n(noSame)", "Improve_noniid\n(noCheck)", "Improve_noniid\n(noSame)\n(noCheck)"]
     data = {}
     all_rounds = set()
@@ -191,7 +194,7 @@ def make_best_table():
 
         # for method in ["Cosine-Similarity", "Ours", "Single-direct", "Feature-Bi", "Missing Link", "Improve-single", "Improve-single\n(no Result Voting)"]:
         # for method in ["bi-direct", "Missing Link", "Improve-single", "Improve_noniid", "Improve-single\n + \nMissing Link", "Improve-single\n(Single-direct)"]:
-        for method in ["Missing Link", "Missing Link (1)", "Feature", "Cosine-Similarity", "Improve-single", "Improve_noniid", "temp", "temp2",
+        for method in ["Missing Link", "Missing Link (1)", "Missing Link Single", "Feature", "Cosine-Similarity", "Improve-single", "Improve_noniid", "temp", "temp2",
                        "Improve_noniid\n(noSame)", "Improve_noniid\n(noCheck)", "Improve_noniid\n(noSame)\n(noCheck)"]:
             if method not in data:
                 continue

@@ -42,6 +42,7 @@ from label_mapping_utils import (
     evaluate_mapping_results,
     global_to_local_mapping,
     missing_link_label_mapping,
+    missing_link_label_mapping_single,
     improve_label_mapping,
     improve_label_mapping_noniid,
     improve_label_mapping_noniid_temp,
@@ -930,7 +931,7 @@ def run_offline(args):
             thresholds = entropy_ratios
             threshold_name = "Entropy Ratio"
             threshold_col = "entropy_ratio"
-        elif args.label_mapping in ["missing_link"]:
+        elif args.label_mapping in ["missing_link", "missing_link_single"]:
             thresholds = parse_float_list(args.missing_thresholds)
             threshold_name = "Missing Link Threshold"
             threshold_col = "missing_threshold"
@@ -999,6 +1000,19 @@ def run_offline(args):
                 # )
 
                 mapping = missing_link_label_mapping(
+                    get_images_func=mapping_get_images_func,
+                    dataset_ids=active_datasets,
+                    clients_dict=dataset_clients_dict,
+                    label_space_meta=dataset_label_space_meta,
+                    missing_threshold=threshold,
+                    logger=logger,
+                    valid_labels_dict=valid_labels_dict,
+                    **mapping_image_source_kwargs
+                )
+
+            elif args.label_mapping == "missing_link_single":
+
+                mapping = missing_link_label_mapping_single(
                     get_images_func=mapping_get_images_func,
                     dataset_ids=active_datasets,
                     clients_dict=dataset_clients_dict,
@@ -1136,7 +1150,7 @@ if __name__ == "__main__":
     #parser.add_argument("--log_dir", type=str, default="./logs/2026-08-10_10-24-36/GeFL_gan_pacfl_iid")
     parser.add_argument("--log_dir", type=str, default="./logs/2026-08-10_16-11-03/GeFL_gan_pacfl_iid")
     parser.add_argument("--data_dir", type=str, default="./data/raw")
-    parser.add_argument("--output_dir", type=str, default="./label_mapping/pacfl_3cluster/noniid")
+    parser.add_argument("--output_dir", type=str, default="./label_mapping/pacfl_3cluster_test/iid")
     parser.add_argument("--seed", type=int, default=None, help="random seed")
     parser.add_argument("--image_source", type=str, default="gan", choices=["gan", "testset"])
     parser.add_argument("--dataset", type=str, default="all", choices=["all", "mnist", "emnist", "cifar10"])
@@ -1148,7 +1162,7 @@ if __name__ == "__main__":
     # parser.add_argument("--rounds", type=str, default="5,10,15,20,25,30,35,40,45,50,55,60,65,70,75,80,85,90,95,100")
     parser.add_argument("--rounds", type=str, default="5,10,15,20,25")
     parser.add_argument("--label_mapping", type=str, default="improve_single", 
-                        choices=["image-bi", "image-single", "missing_link", "improve_single", "image-cs", "improve_single_noniid", "temp", "temp2", "feature"])
+                        choices=["image-bi", "image-single", "missing_link", "missing_link_single", "improve_single", "image-cs", "improve_single_noniid", "temp", "temp2", "feature"])
 
     parser.add_argument("--entropy_ratios", type=str, default="0.1, 0.15, 0.2, 0.25, 0.3, 0.35, 0.4, 0.45, 0.5, 0.55, 0.6, 0.65, 0.7, 0.75, 0.8, 0.85, 0.9, 0.95, 1.0")
     parser.add_argument("--missing_thresholds", type=str, default="0.1, 0.15, 0.2, 0.25, 0.3, 0.35, 0.4, 0.45, 0.5, 0.55, 0.6, 0.65, 0.7, 0.75, 0.8, 0.85, 0.9, 0.95, 1.0")

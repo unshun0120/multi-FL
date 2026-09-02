@@ -71,6 +71,13 @@ CUDA="cuda:1"
 # python label_mapping/offline_mapping_noniid_global.py --seed=1248 --label_mapping=missing_link --log_dir=./logs/seed1248_noniid_gan_weight/GeFL_gan_pacfl_iid
 # python label_mapping/offline_mapping_noniid_global.py --seed=15698 --label_mapping=missing_link --log_dir=./logs/seed15698_noniid_gan_weight/GeFL_gan_pacfl_iid
 
+# python label_mapping/offline_mapping_noniid_global.py --seed=1 --label_mapping=missing_link_single --log_dir=./logs/seed1_noniid_gan_weight/GeFL_gan_pacfl_iid
+# python label_mapping/offline_mapping_noniid_global.py --seed=42 --label_mapping=missing_link_single --log_dir=./logs/seed42_noniid_gan_weight/GeFL_gan_pacfl_iid
+# python label_mapping/offline_mapping_noniid_global.py --seed=758 --label_mapping=missing_link_single --log_dir=./logs/seed758_noniid_gan_weight/GeFL_gan_pacfl_iid
+# python label_mapping/offline_mapping_noniid_global.py --seed=1248 --label_mapping=missing_link_single --log_dir=./logs/seed1248_noniid_gan_weight/GeFL_gan_pacfl_iid
+# python label_mapping/offline_mapping_noniid_global.py --seed=15698 --label_mapping=missing_link_single --log_dir=./logs/seed15698_noniid_gan_weight/GeFL_gan_pacfl_iid
+
+
 
 # python label_mapping/offline_mapping_noniid_global.py --seed=1 --label_mapping=image-cs --log_dir=./logs/seed1_noniid_gan_weight/GeFL_gan_pacfl_iid
 # python label_mapping/offline_mapping_noniid_global.py --seed=42 --label_mapping=image-cs --log_dir=./logs/seed42_noniid_gan_weight/GeFL_gan_pacfl_iid
@@ -104,6 +111,12 @@ CUDA="cuda:1"
 #     --emnist_split ./data/raw/splits/EMNIST_C10_New0_alpha0p1_seed15698.json \
 #     --cifar10_split ./data/raw/splits/CIFAR10_C10_New0_alpha0p1_seed15698.json
 
+# python label_mapping/offline_mapping_noniid.py --seed=1 --label_mapping=temp2 --log_dir=./logs/seed1_noniid_gan_weight/GeFL_gan_pacfl_iid
+# python label_mapping/offline_mapping_noniid.py --seed=42 --label_mapping=temp2 --log_dir=./logs/seed42_noniid_gan_weight/GeFL_gan_pacfl_iid
+# python label_mapping/offline_mapping_noniid.py --seed=758 --label_mapping=temp2 --log_dir=./logs/seed758_noniid_gan_weight/GeFL_gan_pacfl_iid
+# python label_mapping/offline_mapping_noniid.py --seed=1248 --label_mapping=temp2 --log_dir=./logs/seed1248_noniid_gan_weight/GeFL_gan_pacfl_iid
+# python label_mapping/offline_mapping_noniid.py --seed=15698 --label_mapping=temp2 --log_dir=./logs/seed15698_noniid_gan_weight/GeFL_gan_pacfl_iid
+
 
 # ------------------------------------------------------------------------
 # iid
@@ -128,6 +141,12 @@ CUDA="cuda:1"
 # python label_mapping/offline_mapping_noniid_global.py --seed=758 --label_mapping=missing_link --log_dir=./logs/seed758_iid_gan_weight/GeFL_gan_pacfl_iid
 # python label_mapping/offline_mapping_noniid_global.py --seed=1248 --label_mapping=missing_link --log_dir=./logs/seed1248_iid_gan_weight/GeFL_gan_pacfl_iid
 # python label_mapping/offline_mapping_noniid_global.py --seed=15698 --label_mapping=missing_link --log_dir=./logs/seed15698_iid_gan_weight/GeFL_gan_pacfl_iid
+
+python label_mapping/offline_mapping_noniid_global.py --seed=1 --label_mapping=missing_link_single --log_dir=./logs/seed1_iid_gan_weight/GeFL_gan_pacfl_iid
+python label_mapping/offline_mapping_noniid_global.py --seed=42 --label_mapping=missing_link_single --log_dir=./logs/seed42_iid_gan_weight/GeFL_gan_pacfl_iid
+python label_mapping/offline_mapping_noniid_global.py --seed=758 --label_mapping=missing_link_single --log_dir=./logs/seed758_iid_gan_weight/GeFL_gan_pacfl_iid
+python label_mapping/offline_mapping_noniid_global.py --seed=1248 --label_mapping=missing_link_single --log_dir=./logs/seed1248_iid_gan_weight/GeFL_gan_pacfl_iid
+python label_mapping/offline_mapping_noniid_global.py --seed=15698 --label_mapping=missing_link_single --log_dir=./logs/seed15698_iid_gan_weight/GeFL_gan_pacfl_iid
 
 
 # python label_mapping/offline_mapping_noniid_global.py --seed=1 --label_mapping=image-cs --log_dir=./logs/seed1_iid_gan_weight/GeFL_gan_pacfl_iid
@@ -163,11 +182,12 @@ CUDA="cuda:1"
 #     --cifar10_split ./data/raw/splits/CIFAR10_C10_New0_alpha100p0_seed15698.json
 
 
-python label_mapping/offline_mapping_noniid.py --seed=1 --label_mapping=temp2
-python label_mapping/offline_mapping_noniid.py --seed=42 --label_mapping=temp2
-python label_mapping/offline_mapping_noniid.py --seed=758 --label_mapping=temp2
-python label_mapping/offline_mapping_noniid.py --seed=1248 --label_mapping=temp2
-python label_mapping/offline_mapping_noniid.py --seed=15698 --label_mapping=temp2
+
+# python label_mapping/offline_mapping_noniid.py --seed=1 --label_mapping=temp2 --log_dir=./logs/seed1_iid_gan_weight/GeFL_gan_pacfl_iid
+# python label_mapping/offline_mapping_noniid.py --seed=42 --label_mapping=temp2 --log_dir=./logs/seed42_iid_gan_weight/GeFL_gan_pacfl_iid
+# python label_mapping/offline_mapping_noniid.py --seed=758 --label_mapping=temp2 --log_dir=./logs/seed758_iid_gan_weight/GeFL_gan_pacfl_iid
+# python label_mapping/offline_mapping_noniid.py --seed=1248 --label_mapping=temp2 --log_dir=./logs/seed1248_iid_gan_weight/GeFL_gan_pacfl_iid
+# python label_mapping/offline_mapping_noniid.py --seed=15698 --label_mapping=temp2 --log_dir=./logs/seed15698_iid_gan_weight/GeFL_gan_pacfl_iid
 
 
 TOTAL_TIME=$((SECONDS - TOTAL_START))

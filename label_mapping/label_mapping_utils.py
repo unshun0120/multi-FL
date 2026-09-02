@@ -656,12 +656,6 @@ def missing_link_label_mapping(get_images_func, dataset_ids, clients_dict, label
     gen_dict = get_images_kwargs.get("gen_dict", None)
 
     device = getattr(args, "device", None) if args is not None else None
-    if device is None:
-        if gen_dict is not None and len(gen_dict) > 0:
-            first_gen = list(gen_dict.values())[0]
-            device = next(first_gen.parameters()).device
-        else:
-            device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
     device = torch.device(device)
 
     batch_size = 64
@@ -764,6 +758,90 @@ def missing_link_label_mapping(get_images_func, dataset_ids, clients_dict, label
     for relation_score, score_a_to_b, score_b_to_a, dataset_a, label_a_idx, label_a_name, dataset_b, label_b_idx, label_b_name in candidate_results:
         register_mapping(local_id_to_global_id, dataset_a, label_a_idx, dataset_b, label_b_idx)
 
+    for d_id in dataset_ids:
+        for l_idx in range(len(label_space_meta[d_id])):
+            if valid_labels_dict is not None and d_id in valid_labels_dict:
+                if l_idx not in valid_labels_dict[d_id]:
+                    continue
+
+            if l_idx not in local_id_to_global_id[d_id]:
+                current_max = -1
+                for d in local_id_to_global_id:
+                    if local_id_to_global_id[d]:
+                        current_max = max(current_max, max(local_id_to_global_id[d].values()))
+                local_id_to_global_id[d_id][l_idx] = current_max + 1
+
+    return local_id_to_global_id
+
+
+def missing_link_label_mapping_single(get_images_func, dataset_ids, clients_dict, label_space_meta, missing_threshold, logger, valid_labels_dict=None, **get_images_kwargs):
+    args = get_images_kwargs.get("args", None)
+    gen_dict = get_images_kwargs.get("gen_dict", None)
+
+    device = getattr(args, "device", None) if args is not None else None
+    device = torch.device(device)
+
+    batch_size = 64
+
+    local_id_to_global_id = {}
+    for d_id in dataset_ids:
+        local_id_to_global_id[d_id] = {}
+
+    logger.log(f"Single-direction Missing Link | missing_threshold: {missing_threshold}")
+
+    images_by_label = {}
+
+    for d_id in dataset_ids:
+        for l_idx in range(len(label_space_meta[d_id])):
+            if valid_labels_dict is not None and d_id in valid_labels_dict:
+                if l_idx not in valid_labels_dict[d_id]:
+                    continue
+
+            imgs = get_images_func(d_id, l_idx, **get_images_kwargs) if get_images_kwargs else get_images_func(d_id, l_idx)
+
+            if imgs is None:
+                continue
+
+            images_by_label[(d_id, l_idx)] = imgs.detach().cpu()
+
+    dataset_pairs = []
+
+    for i in range(len(dataset_ids)):
+        for j in range(i + 1, len(dataset_ids)):
+            d1 = dataset_ids[i]
+            d2 = dataset_ids[j]
+
+            if len(label_space_meta[d1]) <= len(label_space_meta[d2]):
+                dataset_pairs.append((d1, d2))
+            else:
+                dataset_pairs.append((d2, d1))
+
+    for src_id, tgt_id in dataset_pairs:
+        if src_id == tgt_id: continue
+
+        src_names = label_space_meta[src_id]
+        tgt_names = label_space_meta[tgt_id]
+        tgt_clients = clients_dict.get(tgt_id, [])
+
+        for l_idx, l_name in enumerate(src_names):
+            if (src_id, l_idx) not in images_by_label:
+                continue
+
+            imgs = images_by_label[(src_id, l_idx)]
+
+            probs = missing_link_probs(clients=tgt_clients, imgs=imgs, batch_size=batch_size, device=device)
+
+            if probs is None:
+                continue
+
+            avg_probs = probs.mean(dim=0)
+
+            best_pred_tgt_idx = torch.argmax(avg_probs).item()
+            best_score = avg_probs[best_pred_tgt_idx].item()
+
+            if best_score >= missing_threshold:
+                register_mapping(local_id_to_global_id, src_id, l_idx, tgt_id, best_pred_tgt_idx)
+                
     for d_id in dataset_ids:
         for l_idx in range(len(label_space_meta[d_id])):
             if valid_labels_dict is not None and d_id in valid_labels_dict:
@@ -1215,10 +1293,10 @@ def improve_label_mapping_noniid_temp(get_images_func, dataset_ids, clients_dict
 
         detected_labels_per_model = detected_labels_dict[tgt_id]
 
-        logger.log(f"Detected labels for {tgt_id}")
+        # logger.log(f"Detected labels for {tgt_id}")
 
-        for model_idx, detected_labels in enumerate(detected_labels_per_model):
-            logger.log(f"client_{model_idx}: {sorted(list(detected_labels))}")
+        # for model_idx, detected_labels in enumerate(detected_labels_per_model):
+        #     logger.log(f"client_{model_idx}: {sorted(list(detected_labels))}")
 
         entropy_thresh = math.log(len(tgt_names)) * entropy_ratio
         
@@ -1258,11 +1336,11 @@ def improve_label_mapping_noniid_temp(get_images_func, dataset_ids, clients_dict
 
                 pred_tgt_idx = torch.argmax(mean_probs).item()
 
-                logger.log(
-                    f"{src_id} {l_idx}({l_name}) -> model_{model_idx}: "
-                    f"pred={pred_tgt_idx}({tgt_names[pred_tgt_idx]}), "
-                    f"recognized={pred_tgt_idx in detected_labels_per_model[model_idx]}"
-                )
+                # logger.log(
+                #     f"{src_id} {l_idx}({l_name}) -> model_{model_idx}: "
+                #     f"pred={pred_tgt_idx}({tgt_names[pred_tgt_idx]}), "
+                #     f"recognized={pred_tgt_idx in detected_labels_per_model[model_idx]}"
+                # )
 
                 for k in detected_labels_per_model[model_idx]:
                     label_trained_count[k] += 1
@@ -1281,15 +1359,15 @@ def improve_label_mapping_noniid_temp(get_images_func, dataset_ids, clients_dict
 
                 label_scores[k] = label_support_count[k] / label_trained_count[k]
 
-                logger.log(f"\nMapping {src_id} {l_idx}({l_name}) -> {tgt_id}")
+                # logger.log(f"\nMapping {src_id} {l_idx}({l_name}) -> {tgt_id}")
 
-                for k in label_scores:
-                    logger.log(
-                        f"{k}({tgt_names[k]}): "
-                        f"support={label_support_count[k]}, "
-                        f"trained={label_trained_count[k]}, "
-                        f"score={label_scores[k]:.4f}"
-                    )
+                # for k in label_scores:
+                #     logger.log(
+                #         f"{k}({tgt_names[k]}): "
+                #         f"support={label_support_count[k]}, "
+                #         f"trained={label_trained_count[k]}, "
+                #         f"score={label_scores[k]:.4f}"
+                #     )
 
             if len(label_scores) == 0:
                 continue
@@ -1303,7 +1381,7 @@ def improve_label_mapping_noniid_temp(get_images_func, dataset_ids, clients_dict
                     best_labels.append(k)
 
             if len(best_labels) > 1:
-                logger.log(f"TIE: {[(k, tgt_names[k], label_scores[k]) for k in best_labels]}")
+                # logger.log(f"TIE: {[(k, tgt_names[k], label_scores[k]) for k in best_labels]}")
                 f1_scores = {}
 
                 for k in best_labels:
@@ -1330,10 +1408,10 @@ def improve_label_mapping_noniid_temp(get_images_func, dataset_ids, clients_dict
 
             #best_pred_tgt_idx = best_labels[0]
 
-            logger.log(
-                f"WINNER: {best_pred_tgt_idx}({tgt_names[best_pred_tgt_idx]}) "
-                f"score={label_scores[best_pred_tgt_idx]:.4f}"
-            )
+            # logger.log(
+            #     f"WINNER: {best_pred_tgt_idx}({tgt_names[best_pred_tgt_idx]}) "
+            #     f"score={label_scores[best_pred_tgt_idx]:.4f}"
+            # )
 
             register_mapping(local_id_to_global_id, src_id, l_idx, tgt_id, best_pred_tgt_idx)
 
@@ -1366,25 +1444,15 @@ def improve_label_mapping_noniid_temp_2(get_images_func, dataset_ids, clients_di
             else:
                 dataset_pairs.append((d2, d1))
 
-    detected_labels_dict = {}
-
     for src_id, tgt_id in dataset_pairs:
         if src_id == tgt_id: continue
-        
+
         src_names = label_space_meta[src_id]
         tgt_names = label_space_meta[tgt_id]
         tgt_clients = clients_dict.get(tgt_id, [])
 
-        if tgt_id not in detected_labels_dict:
-            detected_labels_dict[tgt_id] = []
-
-            for model_idx in range(len(tgt_clients)):
-                detected_labels_dict[tgt_id].append(set(client_valid_labels_dict[tgt_id][model_idx]))
-
-        detected_labels_per_model = detected_labels_dict[tgt_id]
-
         entropy_thresh = math.log(len(tgt_names)) * entropy_ratio
-        
+
         for l_idx, l_name in enumerate(src_names):
             if l_idx in local_id_to_global_id[src_id]:
                 src_gid = local_id_to_global_id[src_id][l_idx]
@@ -1402,17 +1470,10 @@ def improve_label_mapping_noniid_temp_2(get_images_func, dataset_ids, clients_di
             imgs_src = get_images_func(src_id, l_idx, **get_images_kwargs) if get_images_kwargs else get_images_func(src_id, l_idx)
             if imgs_src is None: continue
 
+            valid_soft_labels = []
             valid_preds = []
-            model_records = []
 
-            label_support_count = {}
-            label_trained_count = {}
-
-            for k in range(len(tgt_names)):
-                label_support_count[k] = 0
-                label_trained_count[k] = 0
-
-            for model_idx, model in enumerate(tgt_clients):
+            for model in tgt_clients:
                 with torch.no_grad():
                     output = model(imgs_src)
                     logits = output[-1]
@@ -1422,66 +1483,23 @@ def improve_label_mapping_noniid_temp_2(get_images_func, dataset_ids, clients_di
                 entropy = -(mean_probs * torch.log(mean_probs + 1e-12)).sum().item()
                 pred_tgt_idx = torch.argmax(mean_probs).item()
 
-                model_records.append({
-                    "entropy": entropy,
-                    "pred_tgt_idx": pred_tgt_idx
-                })
+                # if entropy <= entropy_thresh:
+                #     valid_soft_labels.append(mean_probs)
+                #     valid_preds.append(pred_tgt_idx)
 
-                for k in detected_labels_per_model[model_idx]:
-                    label_trained_count[k] += 1
+                valid_soft_labels.append(mean_probs)
 
-                # if entropy <= entropy_thresh and pred_tgt_idx in detected_labels_per_model[model_idx]:
-                #     label_support_count[pred_tgt_idx] += 1
-
-                if pred_tgt_idx in detected_labels_per_model[model_idx]:
-                    label_support_count[pred_tgt_idx] += 1
-
-            f1_scores = {}
-
-            for k in range(len(tgt_names)):
-                if label_trained_count[k] == 0:
-                    continue
-
-                if label_support_count[k] == 0:
-                    continue
-
-                precision = label_support_count[k]
-                recall = label_trained_count[k]
-                ratio = label_support_count[k] / label_trained_count[k]
-
-                f1_scores[k] = 3 / (1 / precision + 1 / recall + 1 / ratio)
-
-            if len(f1_scores) == 0:
+            if len(valid_soft_labels) == 0:
                 continue
 
-            max_f1 = max(f1_scores.values())
+            avg_soft_label = torch.stack(valid_soft_labels, dim=0).mean(dim=0)
 
-            best_labels = []
+            avg_entropy = -(avg_soft_label * torch.log(avg_soft_label + 1e-12)).sum().item()
 
-            for k in f1_scores:
-                if f1_scores[k] == max_f1:
-                    best_labels.append(k)
-
-            if len(best_labels) > 1:
+            if avg_entropy > entropy_thresh:
                 continue
 
-            best_pred_tgt_idx = best_labels[0]
-
-            winner_pred_count = 0
-            winner_high_entropy_count = 0
-
-            for record in model_records:
-                if record["pred_tgt_idx"] == best_pred_tgt_idx:
-                    winner_pred_count += 1
-
-                    if record["entropy"] > entropy_thresh:
-                        winner_high_entropy_count += 1
-
-            if winner_pred_count == 0:
-                continue
-
-            if winner_high_entropy_count > winner_pred_count / 2:
-                continue
+            best_pred_tgt_idx = torch.argmax(avg_soft_label).item()
 
             register_mapping(local_id_to_global_id, src_id, l_idx, tgt_id, best_pred_tgt_idx)
 
